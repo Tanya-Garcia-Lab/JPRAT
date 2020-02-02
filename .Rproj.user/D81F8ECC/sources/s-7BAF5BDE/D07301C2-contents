@@ -1,0 +1,5 @@
+Error in storage.mode(num_time) <- "integer" : 
+  'list' object cannot be coerced to type 'integer'
+Called from: get.kmjack(arbitrary, num_study, n, nmax, maxm, num_time, time_val, 
+                        p, m0_qvs, y, ymiss_ind, s, q, delta, common.param.estimation, 
+                        est.cens.depend.z, z, m)

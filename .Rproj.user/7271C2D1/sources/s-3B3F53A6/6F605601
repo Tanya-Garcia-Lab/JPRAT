@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1579205742471.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "4224097985",
+    "id" : "6F605601",
+    "lastKnownWriteTime" : 1579216590,
+    "last_content_update" : 1579216590761,
+    "path" : "C:/JPRAT/R/HDData_Cohort_Predict_Pharos.R",
+    "project_path" : "R/HDData_Cohort_Predict_Pharos.R",
+    "properties" : {
+        "cursorPosition" : "56,76",
+        "scrollLine" : "45",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
