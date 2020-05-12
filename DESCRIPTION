@@ -17,9 +17,25 @@ Description: The Joint Progression of Risk Assessment Tool (JPRAT) evaluates and
 License: GPL-3
 Encoding: UTF-8
 Depends: R (>= 3.0.1), stats, base
-Imports: mgcv, abind, gamm4, zoo, xtable, survival, ggplot2, gtable, cubature, sandwich, splines, grid, gridExtra, plyr,  mnormt
+Imports: 
+ abind,
+ cubature,
+ gamm4,
+ ggplot2,
+ grid,
+ gridExtra,
+ gtable,
+ lme4,
+ mgcv,
+ mnormt,
+ plyr,
+ sandwich,
+ splines,
+ survival,
+ xtable,
+ zoo           
 LazyData: true
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 Suggests: 
     testthat,
     knitr,
