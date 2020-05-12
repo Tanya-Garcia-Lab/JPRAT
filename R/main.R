@@ -5321,44 +5321,9 @@ apply.index <- function(x,names.use,fun,...){
 
 
 ## function to produce true estimates (for simulation study)
-
-#' Title
-#'
-#' @param combi.study
-#' @param combi.choice
-#' @param real_data
-#' @param num_study
-#' @param np
-#' @param lb
-#' @param num_time
-#' @param beta0int
-#' @param beta0
-#' @param gamma.param
-#' @param omega.param
-#' @param time_val
-#' @param time_choice.predicted
-#' @param time_choice.predicted.toadd
-#' @param num_xx
-#' @param a0
-#' @param axmod
-#' @param la
-#' @param xks
-#' @param zeval
-#' @param z.choice
-#' @param sigmar
-#' @param sigmau
-#' @param gtmod
-#' @param use.random.effects
-#' @param null.theta
-#' @param combi.null.theta
-#'
-#' @return
-#' @export
-#'
 #' @importFrom abind adrop
 #' @import cubature
 #' @import stats
-#' @examples
 get.truth <- function(combi.study,combi.choice,
                       real_data,num_study,np,lb,num_time,
                       beta0int,beta0,
@@ -5590,30 +5555,7 @@ getF <- function(Ft,p){
 ## function to generate fixed effects
 
 
-#' Title
-#'
-#' @param num_study
-#' @param nmax
-#' @param np
-#' @param lb.max
-#' @param n
-#' @param lb
-#' @param fzrform
-#' @param par1_fzr
-#' @param par2_fzr
-#' @param type_fzr
-#' @param fxform
-#' @param par1_fx
-#' @param par2_fx
-#' @param type_fx
-#' @param real_data
-#' @param x_tmp.list
-#' @param z_tmp.list
-#'
-#' @return
-#' @export
 #' @import stats
-#' @examples
 generate.fixed.effects <- function(num_study, # 3
                                    nmax,   # 915
                                    np,lb.max,n,lb,
@@ -5695,47 +5637,7 @@ generate.fixed.effects <- function(num_study, # 3
 
 
 ## keeping x,z as fixed effects
-
-#' Title
-#'
-#' @param x
-#' @param z
-#' @param delta_tmp.list
-#' @param s_tmp.list
-#' @param a0
-#' @param axmod
-#' @param num_time
-#' @param censorrate
-#' @param frform
-#' @param type_fr
-#' @param par1_fr
-#' @param par2_fr
-#' @param par1_fr2
-#' @param par2_fr2
-#' @param mix_n
-#' @param par_fu
-#' @param real_data
-#' @param time_val
-#' @param beta0int
-#' @param beta
-#' @param gamma.param
-#' @param omega.param
-#' @param n
-#' @param nmax
-#' @param m
-#' @param maxm
-#' @param la
-#' @param lb
-#' @param num_study
-#' @param np
-#' @param gtmod
-#' @param use.random.effects
-#' @param gen.cens.depend.z
-#'
-#' @return
-#' @export
 #' @importFrom abind adrop
-#' @examples
 simu.data.fixed.effects <- function(x,z,
                                     delta_tmp.list,
                                     s_tmp.list,
