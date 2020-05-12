@@ -7332,7 +7332,7 @@ get.count <- function(num_study,n,m,maxm,time_val,num_time,ynew,delta){
 }
 
 
-#'#' @useDynLib JPRAT
+#' @useDynLib JPRAT
 get.count.outside <- function(num_study,n,m,maxm,time_val,num_time,ynew,delta){
   ## storage for f90
   storage.mode(n) <- "integer"
