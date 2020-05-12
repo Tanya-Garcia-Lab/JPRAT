@@ -7062,7 +7062,7 @@ get.kmjack <- function(arbitrary,num_study,n,nmax,maxm,num_time,time_val,
         out <- .Fortran("kmjack", arbitrary,num_time,n.use,m.use,maxm,
                         time_val,p,m0_qvs,
                         y.use,ymiss_ind.use,s.use,q.use,delta.use,
-                        ynew=ynew,ynew_orig=ynew_orig, PACKAGE ="HDConverters")
+                        ynew=ynew,ynew_orig=ynew_orig, PACKAGE ="JPRAT")
         ynew_out[ss,,index.use,] <- out$ynew
         ynew_out_orig[ss,,index.use,] <- out$ynew_orig
       } else {
@@ -7122,7 +7122,7 @@ get.kmjack <- function(arbitrary,num_study,n,nmax,maxm,num_time,time_val,
             out <- .Fortran("kmjack",arbitrary,num_time,n.use,m.use,maxm,
                             time_val,p,m0_qvs,
                             y.use,ymiss_ind.use,s.use,q.use,delta.use,
-                            ynew=ynew,ynew_orig=ynew_orig, PACKAGE ="HDConverters")
+                            ynew=ynew,ynew_orig=ynew_orig, PACKAGE ="JPRAT")
 
             ynew_out[ss,,index.use,ee] <- out$ynew[,,ee,drop=FALSE]
             ynew_out_orig[ss,,index.use,ee] <- out$ynew_orig[,,ee,drop=FALSE]
@@ -7181,7 +7181,7 @@ get.kmjack <- function(arbitrary,num_study,n,nmax,maxm,num_time,time_val,
 
       out <- .Fortran("kmjack", arbitrary,num_time,n.all,m.all,maxm,time_val,p,m0_qvs,
                       y.all,ymiss_ind.all,s.all,q.all,delta.all,
-                      ynew=ynew,ynew_orig=ynew_orig, PACKAGE="HDConverters",)  ## code from fortran
+                      ynew=ynew,ynew_orig=ynew_orig, PACKAGE="JPRAT",)  ## code from fortran
 
       ##tmp <- 0
       for(ss in 1:num_study){
@@ -7246,7 +7246,7 @@ get.kmjack <- function(arbitrary,num_study,n,nmax,maxm,num_time,time_val,
 
           out <- .Fortran("kmjack", arbitrary,num_time,n.use,m.use,maxm,time_val,p,m0_qvs,
                           y.use,ymiss_ind.use,s.use,q.use,delta.use,
-                          ynew=ynew,ynew_orig=ynew_orig, PACKAGE="HDConverters")
+                          ynew=ynew,ynew_orig=ynew_orig, PACKAGE="JPRAT")
 
           for(ss in 1:num_study){
             index.match.left <- index.all[[ss]] %in% index.use
@@ -7324,7 +7324,7 @@ get.count <- function(num_study,n,m,maxm,time_val,num_time,ynew,delta){
     out <- .Fortran("get_count_new",n[ss],m[ss,1:n[ss]],maxm,num_time,
                     adrop(ynew[ss,,1:n[ss],,drop=FALSE],drop=1),
                     adrop(delta[ss,1:n[ss],,drop=FALSE],drop=1),  ### array to vector
-                    count_new=count_new, PACKAGE ="HDConverters")
+                    count_new=count_new, PACKAGE ="JPRAT")
     count_new_out[ss,,] <- out$count_new
   }
 
@@ -7359,7 +7359,7 @@ get.count.outside <- function(num_study,n,m,maxm,time_val,num_time,ynew,delta){
 
     out <- .Fortran("get_count_outside",n[ss],m[ss,1:n[ss]],maxm,num_time,
                     adrop(ynew[ss,,1:n[ss],,drop=FALSE],drop=1),
-                    adrop(delta[ss,1:n[ss],,drop=FALSE],drop=1),count_new=count_new, PACKAGE ="HDConverters")
+                    adrop(delta[ss,1:n[ss],,drop=FALSE],drop=1),count_new=count_new, PACKAGE ="JPRAT")
     count_new_out[ss,,] <- out$count_new
   }
 
