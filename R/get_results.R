@@ -224,11 +224,11 @@
 #'     show.results.description=show.results.description,
 #'     ########################################################
 #'     ## for computing sample sizes: users do not consider those arguments ##
-#'                              ########################################################
-#'                              type1.error=NULL,
-#'                              type2.error=NULL,
-#'                              treatment.effect=NULL,
-#'                              dropout.rate=NULL)
+#'     ########################################################
+#'     type1.error=NULL,
+#'     type2.error=NULL,
+#'     treatment.effect=NULL,
+#'     dropout.rate=NULL)
 #'
 #'
 view.all.results <- function(
