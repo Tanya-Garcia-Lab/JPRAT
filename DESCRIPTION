@@ -16,7 +16,7 @@ Description: The Joint Progression of Risk Assessment Tool (JPRAT) evaluates and
        multiple data hierarchy using an additive logistic mixed effect model. This algorithm handles censoring with pseudo-values and functional covariate effects with splines. 
 License: GPL-3
 Encoding: UTF-8
-Depends: R (>= 3.0.1), stats, base
+Depends: R (>= 3.5.0), stats, base
 Imports: 
  abind,
  cubature,

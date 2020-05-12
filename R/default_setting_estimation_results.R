@@ -1228,7 +1228,7 @@ default.results.setting <- function(#use_real_data,
 #' @return this function returns default parameters setting to run JPRAT on one data set.
 #' @export
 #'
-#' @examples
+## @examples ADD EXAMPLES!
 default.options.for.data.setting <- function(){ #use.bootstrap.variance
 
 
