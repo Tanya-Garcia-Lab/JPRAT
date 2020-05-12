@@ -66,8 +66,7 @@ end subroutine get_count_outside
 !  Functions for pseudovalues
 !-------------------------------------------------------------
 
-subroutine kmjack(arbitrary,num_time,n,m,maxm,time_val,p,m0_qvs,y,ymiss_ind,s,q,
-			delta,ynew,ynew_orig)
+subroutine kmjack(arbitrary,num_time,n,m,maxm,time_val,p,m0_qvs,y,ymiss_ind,s,q,delta,ynew,ynew_orig)
   implicit none
   logical,intent(in) :: arbitrary
   integer,intent(in) :: p,m0_qvs,num_time,n,maxm
