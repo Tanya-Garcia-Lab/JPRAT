@@ -237,8 +237,3 @@ A list of
 \description{
 jprat.main.estimates: alogrithm for JPRAT
 }
-\examples{
-
-
-
-}

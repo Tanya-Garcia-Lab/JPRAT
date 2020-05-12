@@ -41,7 +41,3 @@ a table for the number of subjects whoare at risk for HD for each study at times
 \description{
 compute.number.at.risk.for.HD: This function returns number of subjects who are at risk for HD for each study at times.
 }
-\examples{
-
-
-}

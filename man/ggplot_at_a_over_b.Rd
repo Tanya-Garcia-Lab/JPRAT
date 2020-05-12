@@ -76,8 +76,3 @@ This function returns all analysis results including plots and tables.
 \description{
 ggplot_at_a_over_b: This function creates ggplots for the estimated functions f(a, b) over b.
 }
-\examples{
-
-
-
-}

@@ -19,6 +19,3 @@ convert.cag(x, xmin = xmin, xmax = xmax)
 \description{
 This function converts the uniformly distributed values (CAG repeats length) on [0,1] to the original values (CAG repeats length from real data).
 }
-\examples{
-
-}

@@ -82,7 +82,3 @@ The data for "noshow" will not be shown in the data frame.
          the change of sign (\code{sign.change}) returns TRUE (or 1); otherwise, FALSE (or 0).
          This values will be used to test whether the study results are similar (whether the true model share the study parameters).
 }
-\examples{
-
-
-}

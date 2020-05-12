@@ -29,6 +29,3 @@ data.reformatted.for.analysis.results(
 \description{
 data.reformatted.for.analysis.results: This code reform datasets for JPRAT to be able to understand the given datasets to produce results tables and plots.
 }
-\examples{
-
-}

@@ -128,6 +128,3 @@ Default is "logit".}
 \description{
 convert.new.notation.to.old.for.get.results: This code converts the new notation into the original code notation for getting results (plots)
 }
-\examples{
-
-}

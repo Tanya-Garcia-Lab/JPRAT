@@ -92,15 +92,3 @@ where each element of the list is an array with zeros to store all estimates.
 \details{
 The list will be created to store estimates for "beta", "alphas", "Ft" and "Ft.predicted".
 }
-\examples{
-
-
-
-
-
-
-
-
-
-
-}

@@ -162,8 +162,3 @@ gamm4.estimates: used to get ``gamm4" estimate
 The estimates depend on whether analysis will be performed separately or jointly. See the argument \code{analyze.separately}
          \code{\link{jprat.main.estimates}}.
 }
-\examples{
-
-
-
-}

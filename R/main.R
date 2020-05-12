@@ -62,7 +62,7 @@
 #'
 #' @export
 #'
-#' @examples
+## @examples
 #'
 #'
 #'
@@ -257,7 +257,7 @@ all_null_theta <- function(theta.names,
 #'
 #'
 #'
-#' @examples
+## @examples
 #'
 #'
 #'
@@ -590,7 +590,7 @@ jprat.main.estimates<-function(method="gamm4",  ## conditional paramters to esti
 #' @export
 #'
 #'
-#' @examples
+## @examples
 #'
 #'
 #'
@@ -770,7 +770,7 @@ gamm4.estimates <- function(arbitrary, num_study, np,
 #'
 #' @export
 #'
-#' @examples
+## @examples
 #'
 boot.compare.studies <- function(arbitrary, ## False
                                  combi.study,
@@ -1167,7 +1167,7 @@ boot.compare.studies <- function(arbitrary, ## False
 #' @import gtable
 #' @export
 #'
-#' @examples
+## @examples
 #'
 #'
 #'
@@ -1408,7 +1408,7 @@ ggplot_at_a_over_b <- function(filename,
 #'
 #' @export
 #'
-#' @examples
+## @examples
 #'
 #'
 ggplot_error_bars <- function(filename,
@@ -1535,7 +1535,7 @@ ggplot_error_bars <- function(filename,
 #'                    covarites values (\code{xx_choose}, \code{zz_choose}) and the clinical events of interest for all studies.}
 #' @export
 #'
-#' @examples
+## @examples
 #'
 #'
 get.cis <- function(out,flatten.name,
@@ -1646,7 +1646,7 @@ get.cis <- function(out,flatten.name,
 #' @import survival
 #' @export
 #'
-#' @examples
+## @examples
 #'
 #'
 compute.number.at.risk.for.HD <- function(study.names,
@@ -1906,7 +1906,7 @@ compute.number.at.risk.for.HD <- function(study.names,
 #'
 #' @export
 #'
-#' @examples
+## @examples
 #'
 #'
 #'
@@ -2307,7 +2307,7 @@ data.reformatted.for.jprat.analysis<-function(use_real_data,
 #' @import stats
 #' @export
 #'
-#' @examples
+## @examples
 #'
 data.reformatted.for.analysis.results<-function(study.names, event.outcome.names=NULL,
                                                 color.names,
@@ -2445,7 +2445,7 @@ data.reformatted.for.analysis.results<-function(study.names, event.outcome.names
 #' @return
 #' @export
 #'
-#' @examples
+## @examples
 #'
 convert.new.notation.to.old.for.jprat <- function(study.names,
                                                   data.sets.as.list,
@@ -3141,7 +3141,7 @@ convert.new.notation.to.old.for.jprat <- function(study.names,
 #' @return
 #' @export
 #'
-#' @examples
+## @examples
 #'
 convert.new.notation.to.old.for.get.results <- function(study.names,
                                                         #data.sets.as.list,
@@ -4007,7 +4007,7 @@ flatten.array <- function(x,dim.order,flatten.name,theta=NULL){
 #' @return
 #' @export
 #'
-#' @examples
+## @examples
 #'
 convert.cag <- function(x,xmin=xmin,xmax=xmax){
   xorig <- x*(xmax-xmin)+xmin

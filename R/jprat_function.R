@@ -72,7 +72,6 @@
 #'
 #' @examples
 #'
-#' library(JPRAT)
 #'
 #' ####################################
 #' # For JPRAT estimation: Input data #

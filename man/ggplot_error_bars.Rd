@@ -60,7 +60,3 @@ line plots with errors bars for each event occured at specific time points (\cod
 \description{
 ggplot_error_bars: This function plots the line plots with error bars.
 }
-\examples{
-
-
-}

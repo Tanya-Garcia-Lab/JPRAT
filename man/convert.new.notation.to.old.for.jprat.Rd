@@ -96,6 +96,3 @@ If this is FALSE, the only option is  "none" (no variances are estimated). Defau
 \description{
 convert.new.notation.to.old.for.jprat: This code converts the new notation into the original code notation for JPRAT analysis.
 }
-\examples{
-
-}
