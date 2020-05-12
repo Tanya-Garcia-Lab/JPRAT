@@ -197,7 +197,6 @@ This function returns analysis results including plots and tables.
 The number of risks at each time point will be printed in the plot.
 }
 \examples{
-library(JPRAT)
 ####################################
 ##For JPRAT estimation: Input data #
 ####################################

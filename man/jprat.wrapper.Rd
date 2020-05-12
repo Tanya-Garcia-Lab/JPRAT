@@ -125,7 +125,6 @@ The Joint Progression of Risk Assessment Tool (JPRAT) evaluates and compares all
 }
 \examples{
 
-library(JPRAT)
 
 ####################################
 # For JPRAT estimation: Input data #
