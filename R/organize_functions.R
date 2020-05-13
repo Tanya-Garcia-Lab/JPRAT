@@ -3775,6 +3775,14 @@ get.my.tables.bookchapter <- function(all.data.input,zz.use,s.use.names,delta.na
 ############################################################
 ## Coding to check duplicates between studies in the data ##
 ############################################################
+count.dups <- function(DF){
+
+  DT <- data.table::data.table(DF)
+  DT[,.N, by = names(DT)]
+}
+
+
+
 ## overlap.variables.use : variables we use to check for duplicates between studies
 ## data.complete.cases: all data sets concatenated together
 check.for.duplicates <- function(overlap.variables.use,
@@ -8277,199 +8285,6 @@ get.my.tables.bookchapter <- function(all.data.input,zz.use,s.use.names,delta.na
 
 
 
-############################################################
-## Coding to check duplicates between studies in the data ##
-############################################################
-## overlap.variables.use : variables we use to check for duplicates between studies
-## data.complete.cases: all data sets concatenated together
-check.for.duplicates <- function(overlap.variables.use,
-                                 data.complete.cases,
-                                 my.data.all,
-                                 study.names){
-
-  ## update data.complete.cases to use complete information for overlap.variables.use
-  new.data.complete.cases <- data.complete.cases[complete.cases(data.complete.cases[,overlap.variables.use]),]
-
-  ## find duplicates in the data
-  ## duplicate number can be 1, 2, 3,...
-  ## When duplicate=1, it just means the value only observed once, so this is not a duplicate in our definition.
-  duplicate.check <- count.dups(new.data.complete.cases[,overlap.variables.use])
-
-  ## duplicates are those indices where the number of duplicates ("N") is 2 or more
-  index.multiple.duplicates <- which(duplicate.check[,"N"]>1)
-
-  ## Identify indivuduals for which 2 or more people share the same overlap.variables.use Values
-  duplicate.results <- duplicate.check[index.multiple.duplicates,]
-
-  #####################################################
-  ## Summarize results in terms of overlap per study ##
-  #####################################################
-  ## create study combinations
-  if(length(study.names)>1){
-    study.combinations <- get.empty.list(paste0("numstudy",2:length(study.names)))
-    for(rr in 2:length(study.names)){
-      study.combinations[[rr-1]] <- combn(study.names,rr)
-    }
-  }
-
-  ## paste names in alphabetical order
-  paste.names.alphabeticaly <- function(x){
-    return(paste(sort(x),collapse="-"))
-  }
-
-  ## make a list of where to store duplicates in the studies
-  study.intersection.names <- NULL
-  for(rr in 1:length(study.combinations)){
-    study.intersection.names <- c(study.intersection.names,
-                                  apply(study.combinations[[rr]],2,
-                                        paste.names.alphabeticaly
-                                  ))
-  }
-
-  study.duplicates <- get.empty.list(study.intersection.names)
-
-  #############################
-  ## get overlap information ##
-  #############################
-  ## We store in study.duplicates the information based on overlap.variables.use
-  ##  plus the study IDs and subject IDs.
-  ## This helps us to see if the information is truly overlapped or not.
-  ## Also, study.duplicates is a list that also contains information for duplicates
-  ## 	found within each study. But looking at that data, we will see that these people are
-  ##  actually unique by their IDs.
-  for(ii in 1:nrow(duplicate.results)){
-    index.use <- which(my.data.all[,"birthyr"]==as.numeric(duplicate.results[ii,"birthyr"]) &
-                         my.data.all[,"site"]==as.numeric(duplicate.results[ii,"site"]) &
-                         my.data.all[,"gender"]==as.numeric(duplicate.results[ii,"gender"]) &
-                         my.data.all[,"CAG"]==as.numeric(duplicate.results[ii,"CAG"]))
-
-    study.overlap <- my.data.all[index.use,c("id",overlap.variables.use,"study")]
-    study.names.overlap <- unique(study.overlap[,"study"])
-
-    ## find studies of intersection
-    where.study.overlap.occurs <- paste.names.alphabeticaly(as.character(study.names.overlap))
-    study.duplicates[[where.study.overlap.occurs]] <-
-      rbind(study.duplicates[[where.study.overlap.occurs]],
-            data.frame(study.overlap,match=ii))
-
-  }
-
-  ######################################################################
-  ## It can happen that 2 or more people in Study A match a person in Study B.
-  ## However, this still means that there is one person that is duplicated in Study A and B,
-  ##  and one person who is unique.
-  ## We will randomly select the unique person so we are appropriately counting people.
-  ############################################################################
-
-  for(rr in 1:length(study.duplicates)){
-    if(names(study.duplicates)[rr] %in% study.intersection.names){
-      ## this indicates there are duplicates between studies
-      find.matches <- unique(study.duplicates[[rr]][,"match"])
-
-      if(length(find.matches)>0){
-        for(kk in 1:length(find.matches)){
-          index.match <- which(study.duplicates[[rr]][,"match"]==find.matches[kk])
-          study.duplicates.tmp <- study.duplicates[[rr]][index.match,]
-
-          study.table.info <- table(study.duplicates.tmp[,"study"])
-          study.with.multiple.duplicates <- names(study.table.info)[which(study.table.info>1)]
-
-          if(length(study.with.multiple.duplicates)>0){
-
-            for(pp in 1:length(study.with.multiple.duplicates)){
-              index.to.move <- which(study.duplicates.tmp[,"study"]==study.with.multiple.duplicates[pp])
-              tmp <- study.duplicates.tmp[index.to.move,]
-              random.index.to.move <- sample(1:nrow(tmp),nrow(tmp)-1)
-
-
-              ## add duplicate to other study
-              study.duplicates[[study.with.multiple.duplicates[pp]]] <-
-                rbind(study.duplicates[[study.with.multiple.duplicates[pp]]],
-                      tmp[random.index.to.move,])
-
-              ## remove multiple duplicates
-              index.in.study.duplicates <- which(rownames(study.duplicates[[rr]])%in% rownames(study.duplicates.tmp)[index.to.move])
-              study.duplicates[[rr]] <- study.duplicates[[rr]][-index.in.study.duplicates,]
-
-
-              ## add back in duplicates that were NOT removed
-              study.duplicates[[rr]] <-
-                rbind(study.duplicates[[rr]],
-                      tmp[-random.index.to.move,])
-              study.duplicates[[rr]] <- study.duplicates[[rr]][order(study.duplicates[[rr]][,"match"]),]
-            }
-          }
-        }
-      }
-    }
-
-  }
-
-
-  ######################################################
-  ## create summary statistics on overlap information ##
-  ######################################################
-
-  ## create table to summarize number of duplicates between studies
-  overlap.summary.table <- rep(0,length(study.duplicates))
-  names(overlap.summary.table) <- names(study.duplicates)
-
-  ## check how many unique ids are there in the duplicates
-  unique.ids.overlap.summary.table <- overlap.summary.table
-
-  ## total number of people in study combinations
-  study.combination.totals <- overlap.summary.table
-
-  ## Sample sizes in the studies
-  total.number.in.studies <-  table(data.complete.cases[,"study"])
-
-  ## remove duplicates between studies from the data
-  my.data.all.without.duplicates <- my.data.all
-
-
-  for(rr in 1:length(overlap.summary.table)){
-    overlap.summary.table[rr] <- length(unique(study.duplicates[[rr]][,"match"]))
-
-    unique.ids.overlap.summary.table[rr] <- length(study.duplicates[[rr]][,"id"])-
-      length(unique(study.duplicates[[rr]][,"id"]))
-    ## count number of people in the study
-    study.names.tmp <- unlist(strsplit(names(overlap.summary.table)[rr],"-"))
-    study.combination.totals[rr] <- sum(total.number.in.studies[study.names.tmp])
-
-
-    #######################################
-    ## remove duplicates between studies ##
-    #######################################
-    if(names(study.duplicates)[rr] %in% study.intersection.names){
-      ## this indicates there are duplicates between studies
-      find.matches <- unique(study.duplicates[[rr]][,"match"])
-
-      if(length(find.matches)>0){
-        for(uu in 1:length(find.matches)){
-          index.match <- which(study.duplicates[[rr]][,"match"]==find.matches[uu])
-
-          study.duplicates.tmp <- study.duplicates[[rr]][index.match,]
-
-
-          ## randomly choose which individual to remove
-          random.id<- sample(1:nrow(study.duplicates.tmp),size=(nrow(study.duplicates.tmp)-1))
-
-          which.ids.to.remove <- which(rownames(my.data.all.without.duplicates)%in% rownames(study.duplicates.tmp)[random.id])
-
-
-          my.data.all.without.duplicates <- my.data.all.without.duplicates[-which.ids.to.remove,]
-        }
-      }
-    }
-
-  }
-
-
-  return(list(overlap.summary.table=overlap.summary.table,
-              unique.ids.overlap.summary.table=unique.ids.overlap.summary.table,
-              study.combination.totals=study.combination.totals,
-              my.data.all.without.duplicates=my.data.all.without.duplicates))
-}
 
 
 #########################################
