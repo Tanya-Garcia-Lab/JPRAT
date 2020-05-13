@@ -8819,21 +8819,21 @@ call.clean.data.create.tables <- function(
     myprint(foo)
   }
 
-  if(paper.type=="clinical"){
-    #######################################################
-    ## Clinical Paper Results: Get baseline age distribution  ##
-    #######################################################
-
-    data.needed <- data.complete.cases[,c("study","base_age")]
-    ## make a boxplot
-    library(datasets)
-    library(ggplot2)
-
-    postscript("base_age.eps")
-    boxplot(data.needed[,"base_age"],ylab="Age (years)",
-            cex.lab=1.5,cex.axis=1.5)
-    dev.off()
-  }
+  #if(paper.type=="clinical"){
+  #  #######################################################
+  #  ## Clinical Paper Results: Get baseline age distribution  ##
+  #  #######################################################
+  #
+  #  data.needed <- data.complete.cases[,c("study","base_age")]
+  #  ## make a boxplot
+  #  library(datasets)
+  #  library(ggplot2)
+  #
+  #  postscript("base_age.eps")
+  #  boxplot(data.needed[,"base_age"],ylab="Age (years)",
+  #          cex.lab=1.5,cex.axis=1.5)
+  #  dev.off()
+  #}
 
   ## 5-21-2018: This is not the table the reviewer is asking for
   ## clinical paper.
