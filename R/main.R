@@ -1467,36 +1467,39 @@ ggplot_error_bars <- function(filename,
 
 
   ## get legends for label.names
-  main.plot <- ggplot(data=data.plot,aes(x=x,y=y,group=Group,fill=Group,color=Group))+
-    geom_errorbar(aes(ymin=lo, ymax=hi), width=1,size=cex.line,
-                  position=position_dodge(.9)) +
-    geom_point(size=4,shape=19,position=position_dodge(.9))+
-    theme_bw()+ 	## no shaded area
-    theme(legend.key = element_blank()) + ## no boxes around legend labels
-    theme(legend.position = "top") +  	 ## legend position
-    theme(legend.title=element_blank())+  ## no legend name
-    theme(legend.text=element_text(size=cex.size))+  ## legend size
-    scale_color_manual(values=color.list)+
-    xlab(xlab.use)+
-    ylab(ylab.use)+
-    theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank(),
-          axis.text.x=element_text(size=cex.size),
-          axis.text.y=element_text(size=cex.size),
-          axis.title.x=element_text(size=cex.size),
-          axis.title.y=element_text(size=cex.size,angle=90))+
-    scale_x_discrete(limits=bvalues,breaks=bvalues,
+  main.plot <- ggplot2::ggplot(data=data.plot,
+                               ggplot2::aes(x=x,y=y,group=Group,fill=Group,color=Group))+
+    ggplot2::geom_errorbar(ggplot2::aes(ymin=lo, ymax=hi), width=1,size=cex.line,
+                  position=ggplot2::position_dodge(.9)) +
+    ggplot2::geom_point(size=4,shape=19,
+                        position=ggplot2::position_dodge(.9))+
+    ggplot2::theme_bw()+ 	## no shaded area
+    ggplot2::theme(legend.key = ggplot2::element_blank()) + ## no boxes around legend labels
+    ggplot2::theme(legend.position = "top") +  	 ## legend position
+    ggplot2::theme(legend.title=ggplot2::element_blank())+  ## no legend name
+    ggplot2::theme(legend.text=ggplot2::element_text(size=cex.size))+  ## legend size
+    ggplot2::scale_color_manual(values=color.list)+
+    ggplot2::xlab(xlab.use)+
+    ggplot2::ylab(ylab.use)+
+    ggplot2::theme(panel.grid.major=ggplot2::element_blank(),
+                   panel.grid.minor=ggplot2::element_blank(),
+          axis.text.x=ggplot2::element_text(size=cex.size),
+          axis.text.y=ggplot2::element_text(size=cex.size),
+          axis.title.x=ggplot2::element_text(size=cex.size),
+          axis.title.y=ggplot2::element_text(size=cex.size,angle=90))+
+    ggplot2::scale_x_discrete(limits=bvalues,breaks=bvalues,
                      labels=bvalues)
 
   if(!is.null(ylim)){
-    main.plot <- main.plot + ylim(ylim)
+    main.plot <- main.plot + ggplot2::ylim(ylim)
   }
 
 
-  postscript(paste(filename,".eps",sep=""))
+  ##postscript(paste(filename,".eps",sep=""))
   #print(paste(filename,".eps",sep=""))
   #x11()
-  grid.draw(main.plot)
-  dev.off()
+  grid::grid.draw(main.plot)
+  ##dev.off()
 
 }
 
