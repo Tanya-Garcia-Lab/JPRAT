@@ -71,6 +71,8 @@ when parameters were estimated differently (\code{estimated.parameters.common.fo
 
 \item{var.boot}{a logical value whether bootstrap variances are estimated. See the argument \code{use.bootstrap.variance} in the \code{\link{jprat.wrapper}} function. Default is TRUE.}
 
+\item{arbitrary}{ADD DETAILS HERE!}
+
 \item{num_study}{number of studies used in analyses. If the real data analysis used three studies called "cohort", "predict", "pharos", then number of studies is 3. i.e., \code{num_study=3}.}
 
 \item{np}{number of clinical events, which is the length of the character vector for names of time-to-event outcomes (\code{event.outcome.names}) in \code{\link{jprat.wrapper}} function.}

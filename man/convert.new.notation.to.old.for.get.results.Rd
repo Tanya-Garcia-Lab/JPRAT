@@ -93,6 +93,8 @@ Default is "logit".}
 
 \item{use.bootstrap.variance}{See the argument in the \code{\link{jprat.wrapper}} function.}
 
+\item{time.points.of.interest}{ADD DETAILS HERE!!}
+
 \item{time.points.of.interest.ci}{a vector of time points at which confidence intervals of
 \eqn{\alpha(X,t)} are predicted. These time points are used to be labeled for the plot.}
 
@@ -106,6 +108,8 @@ Default is "logit".}
 
 \item{xlabel.for.plots.comparing.studies}{See the argument in the \code{\link{view.all.results}} function.}
 
+\item{plot.confidence.intervals}{ADD DETAILS HERE!}
+
 \item{color.labels}{See the argument in the \code{\link{view.all.results}} function.}
 
 \item{legend.labels}{See the argument in the \code{\link{view.all.results}} function.}
@@ -115,6 +119,8 @@ Default is "logit".}
 \item{functional.covariate.comparisons}{See the argument in the \code{\link{view.all.results}} function.}
 
 \item{functional.covariate.comparisons.for.sample.size}{See the argument in the \code{\link{view.all.results}} function.}
+
+\item{type1.error}{ADD DETAILS HERE!}
 
 \item{type2.error}{See the argument in the \code{\link{view.all.results}} function.}
 

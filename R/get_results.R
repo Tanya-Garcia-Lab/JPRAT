@@ -28,6 +28,7 @@
 #'         For example, we set the values \eqn{x=46, 51} in the analysis.
 #'         We recommend users to choose the same vector of functional covariate values X as in the interested functional covariate values (\code{functional.covariate.values.of.interest})
 #'        to ease estimation procedure in the analysis.
+#' @param number.of.bootstraps ADD DETAILS HERE!
 #' @param time.points.of.interest a vector of specific time points at which the smooth functional parameters \eqn{\alpha(X,t)}
 #'        will be predicted. These time points are used to be labeled for the plot.
 #'        For example, we set the values \eqn{x=46, 56} in the analysis.

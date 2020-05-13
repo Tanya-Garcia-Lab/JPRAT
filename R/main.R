@@ -139,6 +139,7 @@ all_null_theta <- function(theta.names,
 #' @param compute.study.differences a logical value whether study differences will be estimated. Only valid when the number of studies (\code{number.of.studies}) are greater than 1,
 #'                                  when parameters were estimated differently (\code{estimated.parameters.common.for.all=FALSE}), and when estimates are similar across studies (\code{check.study.equality=TRUE})).
 #' @param var.boot a logical value whether bootstrap variances are estimated. See the argument \code{use.bootstrap.variance} in the \code{\link{jprat.wrapper}} function. Default is TRUE.
+#' @param arbitrary ADD DETAILS HERE!
 #' @param num_study number of studies used in analyses. If the real data analysis used three studies called "cohort", "predict", "pharos", then number of studies is 3. i.e., \code{num_study=3}.
 #' @param np number of clinical events, which is the length of the character vector for names of time-to-event outcomes (\code{event.outcome.names}) in \code{\link{jprat.wrapper}} function.
 #' @param count.store Null object to store number of event times, which occurs before \eqn{t_0}.
@@ -3122,6 +3123,7 @@ convert.new.notation.to.old.for.jprat <- function(study.names,
 #'                       : "logit” for proportional odds model or "cloglog" for cox proportional hazards.
 #'                       Default is "logit".
 #' @param use.bootstrap.variance See the argument in the \code{\link{jprat.wrapper}} function.
+#' @param time.points.of.interest ADD DETAILS HERE!!
 #' @param time.points.of.interest.ci a vector of time points at which confidence intervals of
 #'                                  \eqn{\alpha(X,t)} are predicted. These time points are used to be labeled for the plot.
 #' @param label.for.alpha.values.over.time  a vector of specific time points at which the smooth functional parameters \eqn{\alpha(X,t)} will be predicted. These time points are used to be labeled for the plot.
@@ -3129,11 +3131,13 @@ convert.new.notation.to.old.for.jprat <- function(study.names,
 #' @param add.number.at.risk.legend See the argument in the \code{\link{view.all.results}} function.
 #' @param ylabel.for.plots.comparing.studies See the argument in the \code{\link{view.all.results}} function.
 #' @param xlabel.for.plots.comparing.studies See the argument in the \code{\link{view.all.results}} function.
+#' @param plot.confidence.intervals ADD DETAILS HERE!
 #' @param color.labels See the argument in the \code{\link{view.all.results}} function.
 #' @param legend.labels See the argument in the \code{\link{view.all.results}} function.
 #' @param event.comparison.table a list of values corresponding to the event of interest outcomes. Default is a list of nc1, which contains a vector of values 1, 2, 3, 4.
 #' @param functional.covariate.comparisons See the argument in the \code{\link{view.all.results}} function.
 #' @param functional.covariate.comparisons.for.sample.size See the argument in the \code{\link{view.all.results}} function.
+#' @param type1.error ADD DETAILS HERE!
 #' @param type2.error See the argument in the \code{\link{view.all.results}} function.
 #' @param treatment.effect See the argument in the \code{\link{view.all.results}} function.
 #' @param dropout.rate See the argument in the \code{\link{view.all.results}} function.

@@ -85,6 +85,8 @@ view.all.results(
 
 \item{functional.covariate.values.of.interest}{See this argument in the \code{\link{jprat.wrapper}} function.}
 
+\item{number.of.bootstraps}{ADD DETAILS HERE!}
+
 \item{use.functional.beta.intercept}{See this argument in the \code{\link{jprat.wrapper}} function.}
 
 \item{use.functional.event.coefficients}{See this argument in the \code{\link{jprat.wrapper}} function.}
