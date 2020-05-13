@@ -1351,7 +1351,7 @@ ggplot_at_a_over_b <- function(filename,
       )
 
     grDevices::png("NUL")
-    both = rbind(gridExtra::ggplotGrob(main.plot), gridExtra::ggplotGrob(tbl), size="last")
+    both = rbind(ggplot2::ggplotGrob(main.plot), ggplot2::ggplotGrob(tbl), size="last")
     panels <- both$layout$t[grep("panel", both$layout$name)]
     #both$heights[panels] <- list(unit(1,"null"), unit(4, "lines"))  ## unit(4,"lines") adds space between table rows
     both$heights[panels] <- unit.c(unit(1,"null"),unit(4,"lines"))
