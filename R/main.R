@@ -7827,19 +7827,19 @@ gamm.mle.new <- function(num_study,np,lb,num_xx,xks,
         {
           if(random.effect=="none"){## no random effect
             fm <- gam(fmla,data=data.gamm,paraPen=pen.list.full,   ## data.gamm: study, family, Y, X_1, Z0, Z1_1, np, int
-                      family=quasibinomial(link=link.type), ## quasi
+                      family=quasibinomial(link=link.type),
                       verbose=FALSE)#,niterPQL=100)
 
             fm$gam <- fm
           } else if(random.effect=="event"){  ## random effect for event only
             fm <- gamm(fmla,data=data.gamm,paraPen=pen.list.full,
                        family=quasibinomial(link=link.type), ## quasi
-                       random=list(family=~1),verbose=FALSE)#,niterPQL=100)
+                       random=list(family=~1),verbosePQL=FALSE)#,niterPQL=100)
           } else if(random.effect=="study"){  ## random effect for study only
             if(is.null(par_fu)){
               fm <- gamm(fmla,data=data.gamm,paraPen=pen.list.full,
                          family=quasibinomial(link=link.type), ## quasi
-                         random=list(study=~1),verbose=FALSE)#,niterPQL=100)
+                         random=list(study=~1),verbosePQL=FALSE)#,niterPQL=100)
             } else {
               fm <- gam(fmla,data=data.gamm,paraPen=pen.list.full,
                         family=quasibinomial(link=link.type), ## quasi
@@ -7850,12 +7850,12 @@ gamm.mle.new <- function(num_study,np,lb,num_xx,xks,
               ## setup is for random intercept r_si
               fm <- gamm(fmla,data=data.gamm,paraPen=pen.list.full,
                          family=quasibinomial(link=link.type), ## quasi
-                         random=list(int=random.formula),verbose=FALSE)#,niterPQL=100)
+                         random=list(int=random.formula),verbosePQL=FALSE)#,niterPQL=100)
             } else {
               ## setup is for random intercept r_si + u_s
               fm <- gamm(fmla,data=data.gamm,paraPen=pen.list.full,
                          family=quasibinomial(link=link.type),  ## quasi
-                         random=list(study=~1,family=~1),verbose=FALSE)#,niterPQL=100)
+                         random=list(study=~1,family=~1),verbosePQL=FALSE)#,niterPQL=100)
             }
           }
         }, error=function(e){
@@ -7876,12 +7876,12 @@ gamm.mle.new <- function(num_study,np,lb,num_xx,xks,
       } else if(random.effect=="event"){  ## random effect for event only
         fm <- gamm(fmla,data=data.gamm,paraPen=pen.list.full,
                    family=binomial(link=link.type), ## quasi
-                   random=list(family=~1),verbose=FALSE)#,niterPQL=100)
+                   random=list(family=~1),verbosePQL=FALSE)#,niterPQL=100)
       } else if(random.effect=="study"){  ## random effect for study only
         if(is.null(par_fu)){
           fm <- gamm(fmla,data=data.gamm,paraPen=pen.list.full,
                      family=binomial(link=link.type), ## quasi
-                     random=list(study=~1),verbose=FALSE)#,niterPQL=100)
+                     random=list(study=~1),verbosePQL=FALSE)#,niterPQL=100)
         } else {
           fm <- gam(fmla,data=data.gamm,paraPen=pen.list.full,
                     family=binomial(link=link.type), ## quasi
@@ -7892,12 +7892,12 @@ gamm.mle.new <- function(num_study,np,lb,num_xx,xks,
           ## setup is for random intercept r_si ONLY
           fm <- gamm(fmla,data=data.gamm,paraPen=pen.list.full,
                      family=binomial(link=link.type),
-                     random=list(int=random.formula),verbose=FALSE)#,niterPQL=100)
+                     random=list(int=random.formula),verbosePQL=FALSE)#,niterPQL=100)
         } else {
           ## setup is for random intercept r_si + u_s
           fm <- gamm(fmla,data=data.gamm,paraPen=pen.list.full,
                      family=binomial(link=link.type),
-                     random=list(study=~1,family=~1),verbose=FALSE)#,niterPQL=100)
+                     random=list(study=~1,family=~1),verbosePQL=FALSE)#,niterPQL=100)
         }
       }
     }
@@ -7941,7 +7941,7 @@ gamm.mle.new <- function(num_study,np,lb,num_xx,xks,
         # ## PQL fails to converge
         # fm <- gamm(fmla,data=data.gamm,
         #            family=quasibinomial(link=link.type),
-        #            random=list(family=~1),verbose=FALSE)
+        #            random=list(family=~1),verbosePQL=FALSE)
 
       }
       ## end of if
