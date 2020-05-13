@@ -11261,25 +11261,6 @@ make.langbehn.optimization <- function(event.variable,delta.variable,cag.variabl
   }
 }
 
-get.langbehn.model <- function(data.use,event.name,delta.name){
-  data.tmp <- data.use
-  ## use complete cases
-  data.tmp <- data.tmp[complete.cases(data.tmp),]
-
-  event.variable <- data.tmp[,event.name]
-  delta.variable <- data.tmp[,delta.name]
-  cag.variable <- data.tmp[,"CAG"]
-
-  ## create function to optimize
-  optimizer <- make.langbehn.optimization(event.variable,delta.variable,cag.variable)
-
-  ## fit the model
-  theta_init <- c(21.54,9.556,0.146,35.55,17.72,0.3269)
-  optim.fit <- optim(theta_init,optimizer,hessian=TRUE)
-  return(list(parameter.estimates=parameter.estimates,
-              variance.estimates=variance.estimates))
-}
-
 
 
 #########################################
