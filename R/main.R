@@ -1164,8 +1164,11 @@ boot.compare.studies <- function(arbitrary, ## False
 #'
 #' @return This function returns all analysis results including plots and tables.
 #'
+#' @import grDevices
 #' @import ggplot2
 #' @import gtable
+#' @import grid
+#' @import gridExtra
 #' @export
 #'
 ## @examples
@@ -1237,74 +1240,79 @@ ggplot_at_a_over_b <- function(filename,
 
 
   ## get legends for label.names : Group A VERSES y
-  g <- ggplot(data=data.plot,aes(x=x,y=y,group=Group))+
-    geom_line(aes(color=Group),size=cex.line) +
-    theme_bw()+ 	## no shaded area
-    theme(legend.key = element_blank()) + ## no boxes around legend labels
-    theme(legend.position = "bottom") +  	 ## legend position
-    theme(legend.title=element_blank())+  ## no legend name
-    theme(legend.text=element_text(size=cex.size))+  ## legend size
-    scale_color_manual(values=color.list)
+  g <- ggplot2::ggplot(data=data.plot,
+                       ggplot2::aes(x=x,y=y,group=Group))+
+    ggplot2::geom_line(ggplot2::aes(color=Group),size=cex.line) +
+    ggplot2::theme_bw()+ 	## no shaded area
+    ggplot2::theme(legend.key = ggplot2::element_blank()) + ## no boxes around legend labels
+    ggplot2::theme(legend.position = "bottom") +  	 ## legend position
+    ggplot2::theme(legend.title=ggplot2::element_blank())+  ## no legend name
+    ggplot2::theme(legend.text=ggplot2::element_text(size=cex.size))+  ## legend size
+    ggplot2::scale_color_manual(values=color.list)
 
   # Extract the first legend - leg1
-  png("NUL")
-  leg1 <- gtable_filter(ggplot_gtable(ggplot_build(g)), "guide-box")
-  dev.off()
+  grDevices::png("NUL")
+  leg1 <- gtable::gtable_filter(ggplot2::ggplot_gtable(ggplot2::ggplot_build(g)), "guide-box")
+  grDevices::dev.off()
 
   if(add.second.legend==TRUE){
-    g2 <- ggplot(data=data.plot) +
-      geom_line(aes(x=x,y=hi,linetype="Upper 95% CI"),size=cex.line) +
-      geom_line(aes(x=x,y=lo,linetype="Lower 95% CI"),size=cex.line) +
-      theme_bw() +  ## no shaded area
-      theme(legend.key = element_blank()) + ## no boxes around legend labels
-      scale_linetype_manual("",values=c(3,2),
+    g2 <- ggplot2::ggplot(data=data.plot) +
+      ggplot2::geom_line(ggplot2::aes(x=x,y=hi,linetype="Upper 95% CI"),size=cex.line) +
+      ggplot2::geom_line(ggplot2::aes(x=x,y=lo,linetype="Lower 95% CI"),size=cex.line) +
+      ggplot2::theme_bw() +  ## no shaded area
+      ggplot2::theme(legend.key = ggplot2::element_blank()) + ## no boxes around legend labels
+      ggplot2::scale_linetype_manual("",values=c(3,2),
                             labels=c("Upper 95% CI","Lower 95% CI")) +
-      theme(legend.text=element_text(size=cex.size))  ## legend size
+      ggplot2::theme(legend.text=ggplot2::element_text(size=cex.size))  ## legend size
 
     ## Extract the second legend
-    png("NUL")
-    leg2 <- gtable_filter(ggplot_gtable(ggplot_build(g2)), "guide-box")
-    dev.off()
+    grDevices::png("NUL")
+    leg2 <- gtable::gtable_filter(ggplot2::ggplot_gtable(ggplot2::ggplot_build(g2)), "guide-box")
+    grDevices::dev.off()
   }
 
   ## main plot
-  main.plot <- ggplot(data=data.plot,aes(x=x,y=y,group=Group)) +
-    geom_line(aes(color=Group),size=cex.line) +
-    theme_bw() +
-    theme(legend.key = element_blank()) + ## no boxes around legend labels
-    theme(legend.position = "top") +  	 ## legend position
-    theme(legend.title=element_blank())+  ## no legend name
-    theme(legend.text=element_text(size=cex.size))+  ## legend size
-    scale_color_manual(values=color.list) +
-    xlab(xlab.use)+
-    ylab(ylab.use)+
-    theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank(),
-          axis.text.x=element_text(size=cex.size),
-          axis.text.y=element_text(size=cex.size),
-          axis.title.x=element_text(size=cex.size),
-          axis.title.y=element_text(size=cex.size,angle=90,
+  main.plot <- ggplot2::ggplot(data=data.plot,
+                               ggplot2::aes(x=x,y=y,group=Group)) +
+    ggplot2::geom_line(ggplot2::aes(color=Group),size=cex.line) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(legend.key = ggplot2::element_blank()) + ## no boxes around legend labels
+    ggplot2::theme(legend.position = "top") +  	 ## legend position
+    ggplot2::theme(legend.title=ggplot2::element_blank())+  ## no legend name
+    ggplot2::theme(legend.text=ggplot2::element_text(size=cex.size))+  ## legend size
+    ggplot2::scale_color_manual(values=color.list) +
+    ggplot2::xlab(xlab.use)+
+    ggplot2::ylab(ylab.use)+
+    ggplot2::theme(panel.grid.major=ggplot2::element_blank(),
+                   panel.grid.minor=ggplot2::element_blank(),
+          axis.text.x=ggplot2::element_text(size=cex.size),
+          axis.text.y=ggplot2::element_text(size=cex.size),
+          axis.title.x=ggplot2::element_text(size=cex.size),
+          axis.title.y=ggplot2::element_text(size=cex.size,angle=90,
                                     margin=margin.move))
 
 
   if(!is.null(ylim)){
-    main.plot <- main.plot + ylim(ylim)
+    main.plot <- main.plot + ggplot2::ylim(ylim)
   }
 
   if(conf.int==TRUE){
     main.plot <- main.plot +
-      geom_line(data=data.plot,aes(x=x,y=lo,group=Group,color=Group),
+      ggplot2::geom_line(data=data.plot,
+                         ggplot2::aes(x=x,y=lo,group=Group,color=Group),
                 linetype=2,size=cex.line)+
-      geom_line(data=data.plot,aes(x=x,y=hi,group=Group,color=Group),
+      ggplot2::geom_line(data=data.plot,
+                         ggplot2::aes(x=x,y=hi,group=Group,color=Group),
                 linetype=3,size=cex.line)
   }
 
 
   plotNew <- main.plot
   if(add.second.legend==TRUE){
-    png("NUL")
-    plotNew <- arrangeGrob(main.plot, leg2,
+    grDevices::png("NUL")
+    plotNew <- gridExtra::arrangeGrob(main.plot, leg2,
                            widths = unit.c(unit(1, "npc") - leg2$width, leg2$width), nrow = 1) ## Set up a gtable layout to place multiple grobs on a page.
-    dev.off()
+    grDevices::dev.off()
   }
 
 
@@ -1312,7 +1320,7 @@ ggplot_at_a_over_b <- function(filename,
     ## number at risk table
     ##xtick.marks <- as.numeric(ggplot_build(main.plot)$panel$ranges[[1]]$x.labels)
     ## extract x tick marks from ggplot
-    xtick.marks <- as.numeric(ggplot_build(main.plot)$layout$panel_ranges[[1]]$x.labels)
+    xtick.marks <- as.numeric(ggplot2::ggplot_build(main.plot)$layout$panel_ranges[[1]]$x.labels)
     index.b.cut.nrisk <- which(bvalues %in% xtick.marks)
     nrisk.tmp <- nrisk
     nrisk.tmp[,-index.b.cut.nrisk] <- ""  ## empty placeholder for non-shown values
@@ -1323,55 +1331,56 @@ ggplot_at_a_over_b <- function(filename,
     ## reverse order label.names
     nrisk.plot$Group <- factor(nrisk.plot$Group,levels=rev(levels(nrisk.plot$Group)))
 
-    tbl <- ggplot(nrisk.plot,aes(x=x,y=factor(Group),label=y))+
-      geom_text(size=cex.number)+
-      theme_bw()+
-      theme(
+    tbl <- ggplot2::ggplot(nrisk.plot,
+                           ggplot2::aes(x=x,y=factor(Group),label=y))+
+      ggplot2::geom_text(size=cex.number)+
+      ggplot2::theme_bw()+
+      ggplot2::theme(
         legend.position = "none",
-        plot.background = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_blank(),
-        axis.line = element_blank(),
-        axis.text.x = element_blank(),
-        axis.text.y = element_text(size=cex.size, color = 'black'),
-        axis.ticks=element_blank(),
-        axis.title.x = element_blank(),
-        axis.title.y = element_blank(),
-        plot.title = element_blank()
+        plot.background = ggplot2::element_blank(),
+        panel.grid.major = ggplot2::element_blank(),
+        panel.grid.minor = ggplot2::element_blank(),
+        panel.border = ggplot2::element_blank(),
+        axis.line = ggplot2::element_blank(),
+        axis.text.x = ggplot2::element_blank(),
+        axis.text.y = ggplot2::element_text(size=cex.size, color = 'black'),
+        axis.ticks = ggplot2::element_blank(),
+        axis.title.x = ggplot2::element_blank(),
+        axis.title.y = ggplot2::element_blank(),
+        plot.title = ggplot2::element_blank()
       )
 
-    png("NUL")
-    both = rbind(ggplotGrob(main.plot), ggplotGrob(tbl), size="last")
+    grDevices::png("NUL")
+    both = rbind(gridExtra::ggplotGrob(main.plot), gridExtra::ggplotGrob(tbl), size="last")
     panels <- both$layout$t[grep("panel", both$layout$name)]
     #both$heights[panels] <- list(unit(1,"null"), unit(4, "lines"))  ## unit(4,"lines") adds space between table rows
     both$heights[panels] <- unit.c(unit(1,"null"),unit(4,"lines"))
-    both <- gtable_add_rows(both, heights = unit(1,"line"),2)
-    both <- gtable_add_grob(both,
-                            textGrob("Number at risk", hjust=0, x=0,
-                                     gp=gpar(fontsize=cex.size)),
+    both <- gtable::gtable_add_rows(both, heights = unit(1,"line"),2)
+    both <- gtable::gtable_add_grob(both,
+                            grid::textGrob("Number at risk", hjust=0, x=0,
+                                     gp=grid::gpar(fontsize=cex.size)),
                             t=11, l=2, r=4)
-    dev.off()
+    grDevices::dev.off()
     ## Put tables, legends, plots together!
-    png("NUL")
+    grDevices::png("NUL")
     plotNew <- arrangeGrob(leg1, both,
                            heights = unit.c(leg1$height, unit(1, "npc") - leg1$height), ncol = 1)
-    dev.off()
+    grDevices::dev.off()
 
 
     if(add.second.legend==TRUE){
-      png("NUL")
-      plotNew <- arrangeGrob(both, leg2,
+      grDevices::png("NUL")
+      plotNew <- gridExtra::arrangeGrob(both, leg2,
                              widths = unit.c(unit(1, "npc") - leg2$width, leg2$width), nrow = 1)
-      dev.off()
+      grDevices::dev.off()
     }
 
   }
-  postscript(paste(filename,".eps",sep=""))
+  ##postscript(paste(filename,".eps",sep=""))
   #print(paste(filename,".eps",sep=""))
   #x11()
-  grid.draw(plotNew)
-  dev.off()
+  grid::grid.draw(plotNew)
+  ##dev.off()
 
 }
 
