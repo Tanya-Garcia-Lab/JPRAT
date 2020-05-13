@@ -2511,6 +2511,67 @@ clinical.tables <- function(study.names,covariates.use,events.use,my.data,
                             paper.type=c("clinical","statistics")[1],
                             results.to.report=c("mean-sd","quantiles")[1],
                             main.events.use= c("hdage_nobase","mcione","dep2")){
+  ## extract quantiles of a variable
+  get.quantiles <- function(x,digits=1){
+    if(is.factor(x)){
+      x <- as.numeric.factor(x)
+    }
+
+    tmp.out <- quantile(x)
+    out <- paste(round(tmp.out["50%"],digits),
+                 " (",round(tmp.out["25%"],digits),", ",
+                 round(tmp.out["75%"],digits),
+                 ")",sep="")
+    return(out)
+  }
+
+  ## extract mean and standard deviation of a variable
+  get.mean.sd <- function(x,digits=1){
+    if(is.factor(x)){
+      x <- as.numeric.factor(x)
+    }
+
+    tmp.out <- c(mean(x,na.rm=TRUE),sd(x,na.rm=TRUE))
+    tmp.out <- round(tmp.out,digits)
+    out <- paste(tmp.out[1]," (",tmp.out[2],")",sep="")
+    return(out)
+  }
+
+  ## extract total and percentage
+  get.total.percentage <- function(x,digits=1){
+    if(is.factor(x)){
+      x <- as.numeric.factor(x)
+    }
+
+    tmp.out <- c(sum(x,na.rm=TRUE),mean(x,na.rm=TRUE)*100)
+    tmp.out <- round(tmp.out,digits)
+    out <- paste(tmp.out[1]," (",tmp.out[2],")",sep="")
+    return(out)
+  }
+
+
+  ## Compare medians using Kruskal-Wallis Test:
+  ## The null hypothesis is that the medians of all groups are equal,
+  ##  and the alternative hypothesis is that at least one
+  ##  population median of one group is different from the
+  ##  population median of at least one other group.
+  get.kw.test <- function(name,data.use,digits){
+    formula.expression <- paste(name,"study",sep="~")
+    out <- kruskal.test(eval(parse(text=formula.expression)),
+                        data=data.use)
+    pvalue <- round(out$p.value,digits)
+    return(pvalue)
+  }
+
+  get.chisq.test <- function(name,data.use,digits){
+    case.vector <- tapply(data.use[,name],data.use[,"study"],sum,na.rm=TRUE)
+    total.vector <- table(data.use[,"study"])
+
+    out <- prop.test(case.vector,total.vector)
+    pvalue <- round(out$p.value,digits)
+    return(pvalue)
+  }
+
 
   info.covariates <- function(data.use,name,name.use,results.to.report="mean-sd"){
     if(name=="base_age" | name=="CAG" |
@@ -3027,6 +3088,20 @@ compare.events.tables <- function(study.names,
   #################################
   ## create data frame to output ##
   #################################
+  stat.events.table.names <- list(
+    delta.hdage_nobase="\\% Motor-diagnosis occurs by age $t$",
+    delta.mcione="\\% Cognitive Impairment occurs by age $t$",
+    delta.behone="\\% Behavioral abnormality occurs by age $t$",
+    delta.dep2="\\% Mild depression occurs by age $t$",
+    delta.tfcone="\\% Total functional capacity is stage 1 by age $t$",
+    delta.tfctwo="\\% Total functional capacity is stage 2 by age $t$",
+    delta.tfcthree="\\% Total functional capacity is stage 3 by age $t$",
+    delta.mcisd="\\Single-domain mild cognitive impairment occurs by age $t$",
+    delta.mcisd_cat="\\Single-domain mild cognitive impairment occurs by age $t$",
+    delta.mcimd="\\Multi-domain mild cognitive impairment occurs by age $t$",
+    delta.mcimd_cat="\\Multi-domain mild cognitive impairment occurs by age $t$"
+  )
+
   table.names.use <- stat.events.table.names
   delta.names <- unlist(table.names.use[delta.use])
 
@@ -7372,88 +7447,6 @@ print.two.by.two.adjust.pvalues <- function(input,p.adjust.methods){
 
 
 
-
-########################################################################################################
-## summary table for percentage of subjects who experience each event given they have experienced both #
-########################################################################################################
-## Input:
-## study.names: names of the studies used in the analysis
-## covariates.use: name of covariates used in the analysis. This
-##			variable is used to extract the complete cases (i.e., no NA)
-##			from the data.
-## events.use : name of events used in the analysis
-## my.data: data set containing all information
-## time_val: time points to evaluate if event occured by that time
-## main.events.use: This variable is used to extract the complete cases (i.e., no NA)
-##			from the data.  This variable may differ from the events.use.
-## participants.experience.all.events: If TRUE, this means we subset
-##			the data to those participants that experience all events
-##			by the end of the study period (i.e., delta=1).
-##			If FALSE, this means, we include participants who may
-##			not experience all the events (i.e., delta=0).
-compare.events.tables <- function(study.names,
-                                  covariates.use,
-                                  events.use,my.data,
-                                  time_val,
-                                  main.events.use=c("hdage_nobase","mcione"),
-                                  participants.experience.all.events=FALSE){
-
-  #############################################################
-  ## put my.data in one big data frame, with study indicator ##
-  #############################################################
-  ## put my.data in a data frame
-  my.data.all <- merge.all.data(study.names,my.data)
-
-  ##########################################################
-  ## Extract complete cases based on: main.events.use 	##
-  ##########################################################
-  delta.main.events.use <- paste("delta",main.events.use,sep=".")
-  data.sample <- extract.complete.cases(main.events.use,delta.main.events.use,
-                                        covariates.use,
-                                        my.data.all)
-
-  ######################
-  ## define delta.use ##
-  ######################
-  delta.use <- paste("delta",events.use,sep=".")
-
-
-  #################################
-  ## create data frame to output ##
-  #################################
-  table.names.use <- stat.events.table.names
-  delta.names <- unlist(table.names.use[delta.use])
-
-  for(ss in 1:length(study.names)){
-    data.out <- array(NA,dim=c(length(delta.names), length(time_val)),
-                      dimnames=list(delta.names,
-                                    paste("t=",time_val,sep="")))
-    ## get study data
-    index.use <- which(data.sample$study==study.names[ss])
-    data.use <- data.sample[index.use,]
-
-    ## get subset of data for which delta=1 for all events
-    if(participants.experience.all.events==TRUE){
-      data.use <- all.events.occur(data.use,delta.use)
-    }
-
-    ## get data of interest: events and delta.events
-    data.use <- data.use[,c(events.use,delta.use)]
-
-    ## other covariate information
-    for(ii in 1:length(delta.names)){
-      for(tt in 1:length(time_val)){
-        data.out[delta.names[ii],tt] <-  round(mean(data.use[,events.use[ii]]<=time_val[tt])*100,
-                                               digits=2)
-      }
-    }
-
-    ##############################################
-    cat("\n\n ## Study: ",study.names[ss]," ##\n\n")
-    ##############################################
-    myprint(data.out)
-  }
-}
 
 ## function to get subset of data for which delta=1 for all events
 all.events.occur <- function(x,delta.use){
