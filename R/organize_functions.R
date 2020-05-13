@@ -2511,6 +2511,12 @@ clinical.tables <- function(study.names,covariates.use,events.use,my.data,
                             paper.type=c("clinical","statistics")[1],
                             results.to.report=c("mean-sd","quantiles")[1],
                             main.events.use= c("hdage_nobase","mcione","dep2")){
+
+  #######################################################################
+  ## function to convert factor to numeric without loss of information ##
+  #######################################################################
+  as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
+
   ## extract quantiles of a variable
   get.quantiles <- function(x,digits=1){
     if(is.factor(x)){

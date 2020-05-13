@@ -1746,7 +1746,7 @@ compute.number.at.risk.for.HD <- function(study.names,
   ##
   ## zz-CAG : we extract data for specific functional covariate values for each study (ignore nonfunctional covariates)
 
-
+  study <- NULL
   number.at.risk <- array(0,dim=c(number.of.studies,number.of.clinical.events,    ##hdage_nobase
                                   number.of.z.predictions+2,length(x.label.names),
                                   length(time.points.for.prediction)),
@@ -1846,6 +1846,8 @@ compute.number.at.risk.for.HD <- function(study.names,
 
 
       ## only using z-eval covariates (no CAG)
+      CAG <- NULL
+
       number.at.risk[ss,nn,"zz-CAG",,] <- array(0,
                                                 dim=dim(adrop(number.at.risk[ss,nn,"zz-CAG",,,drop=FALSE],drop=c(1,2,3))))
       functional.covariate.values.of.interest.tmp <- convert.cag(functional.covariate.values.for.prediction,xmin,xmax)
