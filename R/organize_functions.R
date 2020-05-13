@@ -4024,6 +4024,69 @@ read.and.merge.data.sets <- function(study.names,
 ###############################################################################
 ## Function to organize and summarize MCI/Behavior data for Control subjects ##
 ###############################################################################
+## function to get cutoffs for mci/behavior data for all studies
+get.cutoffs.mci.behavior <- function(data,cag.cutoff=36,
+                                     interest=c("SDMT","STROOP_COLOR",
+                                                "STROOP_WORD","STROOP_INTERFERENCE"),
+                                     group.categories=NULL){
+
+  ## get controls
+  data.new <- data[which(data$CAG<=cag.cutoff),]
+
+  if(!is.null(group.categories)){
+
+    ###########################################################################
+    ## Categories are determined by different Age-ranges and education level ##
+    ###########################################################################
+    mci.data <- NULL
+    for(rr in 1:nrow(group.categories)){
+      if(!is.na(group.categories[rr,"education"])){
+        data.tmp.index <- which(data.new[,"base_age"] >= group.categories[rr,"age_low"] &
+                                  data.new[,"base_age"] <= group.categories[rr,"age_high"] &
+                                  data.new[,"educ_cat"]==group.categories[rr,"education"])
+      } else {
+        data.tmp.index <- which(data.new[,"base_age"] >= group.categories[rr,"age_low"] &
+                                  data.new[,"base_age"] <= group.categories[rr,"age_high"])
+      }
+      data.tmp <- data.new[data.tmp.index,]
+
+      mean.measures <- apply(data.tmp[,interest],2,mean,na.rm=TRUE)
+      sd.measures <- apply(data.tmp[,interest],2,sd,na.rm=TRUE)
+      sample.size <- length(data.tmp.index)
+
+      mci.data.tmp <- cbind(mean.measures,sd.measures)
+      rownames(mci.data.tmp) <- NULL
+
+      colnames(mci.data.tmp) <- c("mean","sd")
+      mci.data.tmp <- data.frame(COGTEST=interest,
+                                 sample_size=sample.size,
+                                 age_low=group.categories[rr,"age_low"],
+                                 age_high=group.categories[rr,"age_high"],
+                                 education=group.categories[rr,"education"],
+                                 mci.data.tmp,row.names=NULL)
+
+
+      mci.data <- rbind(mci.data,mci.data.tmp)
+    }
+    rownames(mci.data) <- 1:nrow(mci.data)
+  } else {
+    ####################################################
+    ## All participants are used to determine cutoffs ##
+    ####################################################
+    data.tmp <- data.new
+    mean.measures <- apply(data.tmp[,interest],2,mean,na.rm=TRUE)
+    sd.measures <- apply(data.tmp[,interest],2,sd,na.rm=TRUE)
+
+    mci.data.tmp <- cbind(mean.measures,sd.measures)
+    colnames(mci.data.tmp) <- c("mean","sd")
+    mci.data <- mci.data.tmp
+  }
+
+
+  return(mci.data)
+}
+
+
 #' @import xtable
 call.create.mci.behavior.cutoffs.and.summaries <- function(location,
                                                            study.names,type,
@@ -8461,117 +8524,6 @@ read.and.merge.data.sets <- function(study.names,
                                           study,data.to.use,print.clean.data)
   }
   return(my.data)
-}
-
-###############################################################################
-## Function to organize and summarize MCI/Behavior data for Control subjects ##
-###############################################################################
-call.create.mci.behavior.cutoffs.and.summaries <- function(location,
-                                                           study.names,type,
-                                                           baseage.cutoff,
-                                                           cag.at.risk.cutoff,
-                                                           cag.not.at.risk.cutoff,
-                                                           data.to.use,
-                                                           print.clean.data,
-                                                           covariates.use,
-                                                           variables.for.cutoff){
-
-  ######################################
-  ## Print MCI/Behavior data to files ##
-  ######################################
-  call.organize.mci.behavior.data(location,study.names,type)
-
-  if(type=="cognitive"){
-    read.filename <- "_cog_data.csv"
-  } else {
-    read.filename <- "_beh_data.csv"
-  }
-
-  ######################################################
-  ## Read-in data sets and subset to data of interest ##
-  ######################################################
-  my.data <- read.and.merge.data.sets(study.names,
-                                      baseage.cutoff,
-                                      cag.at.risk.cutoff,
-                                      cag.not.at.risk.cutoff,
-                                      location,
-                                      data.to.use,
-                                      print.clean.data,
-                                      read.filename)
-
-  #################################
-  ## Adjust variables for cutoff ##
-  #################################
-  if(is.null(variables.for.cutoff)){
-    variables.for.cutoff <- colnames(my.data[[1]])
-    index.to.remove <- which(variables.for.cutoff=="id")
-    variables.for.cutoff <- variables.for.cutoff[-index.to.remove]
-    variables.for.cutoff <- setdiff(variables.for.cutoff,covariates.use)
-  }
-
-  ########################################
-  cat("\n\n Summary Table of characteristics:\n")
-  #########################################
-  out <- nonconverters.table(study.names,
-                             covariates.use,my.data,results.to.report="mean-sd")
-  myprint(out)
-
-
-  ###############################################
-  ## Make MCI/BEHAVIOR cutoff tables ##
-  ###############################################
-
-  all.data <- merge.all.data(study.names,my.data)
-  all.data <- all.data[complete.cases(all.data[,
-                                               c(covariates.use)]),]
-
-
-
-
-  if(type=="cognitive"){
-    ## We further divide data by age ranges and education level.
-    ## We create all combinations between age-ranges and education levels.
-    age.low <- c(18,30,40,50,60,70,80,90)
-    age.hi  <- c(29,39,49,59,69,79,89,1e10)
-    education <- rep(c(0,1),length(age.low))
-    group.categories <- cbind(cbind(rep(age.low,each=2),rep(age.hi,each=2)),education)
-    colnames(group.categories) <- c("age_low","age_high","education")
-    ## add all data as an option
-    group.categories <- rbind(c(18,1e10,NA),group.categories)
-    filename <- c("data/mci_data.csv")
-  }  else {
-    group.categories <- NULL
-    filename <- c("data/beh_data.csv")
-  }
-
-  cutoff.data <- get.cutoffs.mci.behavior(all.data,
-                                          cag.cutoff=cag.not.at.risk.cutoff,
-                                          interest=variables.for.cutoff,
-                                          group.categories)
-
-  ####################
-  ## Check cut-offs ##
-  ####################
-  new.cutoff <- NULL
-  for(ii in 1:nrow(cutoff.data)){
-    if(type=="cognitive") {
-      new.cutoff <- c(new.cutoff,cutoff.data[ii,"mean"]-1.5 * cutoff.data[ii,"sd"])
-    } else {
-      new.cutoff <- c(new.cutoff,cutoff.data[ii,"mean"]+1.5 * cutoff.data[ii,"sd"])
-    }
-  }
-
-  ## we call it "mci.cutoff" in organize.data.sets()
-  ##   so we need to keep this name.
-  cutoff.data <- cbind(cutoff.data,mci.cutoff=new.cutoff)
-
-  #######################
-  ## write data output ##
-  #######################
-  write.csv(cutoff.data,filename,row.names=TRUE)
-
-
-  print(xtable(cutoff.data))
 }
 
 
