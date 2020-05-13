@@ -2512,6 +2512,41 @@ clinical.tables <- function(study.names,covariates.use,events.use,my.data,
                             results.to.report=c("mean-sd","quantiles")[1],
                             main.events.use= c("hdage_nobase","mcione","dep2")){
 
+  info.covariates <- function(data.use,name,name.use,results.to.report="mean-sd"){
+    if(name=="base_age" | name=="CAG" |
+       name == "SDMT" | name == "STROOP_COLOR" |
+       name == "STROOP_WORD" | name == "STROOP_INTERFERENCE"){
+      if(results.to.report=="quantiles"){
+        ## report quantiles (format for JAMA journal)
+        out <- get.quantiles(as.numeric(data.use[,name]),digits=1)
+      } else {
+        ## report mean and SD (table for statistics paper)
+        out <- get.mean.sd(as.numeric(data.use[,name]),digits=1)
+      }
+    } else if(name=="gender" | name=="educ_cat" ){
+      out <- get.total.percentage(data.use[,name],digits=0)
+    } else if(grepl("delta",name)){
+      out <- get.total.percentage(data.use[,name],digits=0)
+    }
+
+    names(out) <- name.use
+    return(out)
+  }
+
+  pvalues.covariates <- function(data.use,name,name.use){
+    if(name=="base_age" | name=="CAG"){
+      out <- get.kw.test(name,data.use,digits=2)
+    } else if(name=="gender" | name=="educ_cat" | grepl("delta",name)){
+      out <- get.chisq.test(name,data.use,digits=2)
+    }
+
+    names(out) <- name.use
+    return(out)
+  }
+
+
+
+
   #############################################################
   ## put my.data in one big data frame, with study indicator ##
   #############################################################
@@ -2547,8 +2582,91 @@ clinical.tables <- function(study.names,covariates.use,events.use,my.data,
   ## create data frame to output ##
   ################################
   if(paper.type=="statistics"){
+    stat.table.names <- list(base_age="Average age at baseline in years (SD)",
+                             CAG="Average CAG repeat-length (SD)",
+                             gender="\\% Female",
+                             educ_cat="\\% Subjects with $\\geq$ 15 years of education",
+                             delta.hdage_nobase="\\% Experience motor-diagnosis (\\% censoring)",
+                             delta.mcione="\\% Experience cognitive impairment (\\% censoring)",
+                             delta.behone="\\% Experience moderate behavioral abnormality (\\% censoring)",
+                             delta.strcol="\\% Experience STRCOL abnormality (\\% censoring)",
+                             delta.strwrd="\\% Experience STRWRD abnormality (\\% censoring)",
+                             delta.strint="\\% Experience STRINT abnormality (\\% censoring)",
+                             delta.sdmt="\\% Experience SDMT abnormality (\\% censoring)",
+                             delta.hdage_new_nobase="\\% Experience motor-diagnosis, DCL $\\geq$3 (\\% censoring)",
+                             delta.apt2="~~~~~Mild apathy",
+                             delta.irb2="~~~~~Mild irritability",
+                             delta.dep2="\\% Experience mild depression (\\% censoring)",
+                             delta.behall="~~~~~Mild apathy, irritability, and depression"
+    )
+
     table.names.use <- stat.table.names
   } else {
+    table.names <- list(base_age="Age at baseline",
+                        CAG="CAG repeat length",
+                        gender="Female sex",
+                        educ_cat="Higher education",
+                        delta.hdage_nobase="Experience Motor Phenoconversion",
+                        delta.mcione="Experience Cognitive Impairment",
+                        delta.mcione_cat="Experience Cognitive Impairment",
+
+                        delta.mcisd="Experience Single-Domain Cognitive Impairment",
+                        delta.mcisd_cat="Experience Single-Domain Cognitive Impairment",
+
+                        delta.mcimd="Experience Multi-Domain Cognitive Impairment",
+                        delta.mcimd_cat="Experience Multi-Domain Cognitive Impairment",
+
+                        delta.mcisd_nobase="Experience Single-Domain Cognitive Impairment After Baseline",
+                        delta.mcisd_cat_nobase="Experience Single-Domain Cognitive Impairment After Baseline",
+
+                        delta.mcimd_nobase="Experience Multi-Domain Cognitive Impairment After Baseline",
+                        delta.mcimd_cat_nobase="Experience Multi-Domain Cognitive Impairment After Baseline",
+
+
+                        delta.behone="Experience Moderate Behavioral Abnormality",
+                        delta.strcol="~~~~~Below-healthy stroop color naming score",
+                        delta.strcol_cat="~~~~~Below-healthy stroop color naming score",
+
+                        delta.strwrd="~~~~~Below-healthy stroop word naming score",
+                        delta.strwrd_cat="~~~~~Below-healthy stroop word naming score",
+
+                        delta.strint="~~~~~Below-healthy stroop interference score",
+                        delta.strint_cat="~~~~~Below-healthy stroop interference score",
+
+                        delta.sdmt="~~~~~Below-healthy SDMT score",
+                        delta.sdmt_cat="~~~~~Below-healthy SDMT score",
+
+                        delta.mciall="~~~~~Below-healthy on all stroop and SDMT tests",
+                        delta.apt2="~~~~~Mild apathy",
+                        delta.irb2="~~~~~Mild irritability",
+                        delta.dep2="~~~~~Mild depression",
+                        delta.behall="~~~~~Mild apathy, irritability, and depression",
+                        delta.strcol="~~~~~Below-healthy stroop color naming score",
+                        delta.strwrd="~~~~~Below-healthy stroop word naming score",
+                        delta.strint="~~~~~Below-healthy stroop interference score",
+                        delta.sdmt="~~~~~Below-healthy SDMT score",
+                        delta.mciall="~~~~~Below-healthy on all stroop and SDMT tests",
+                        delta.apt2="~~~~~Mild apathy",
+                        delta.irb2="~~~~~Mild irritability",
+                        delta.dep2="~~~~~Mild depression",
+                        delta.behall="~~~~~Mild apathy, irritability, and depression",
+                        ##
+                        delta.aptmci="~~~~~Abnormal apathy",
+                        delta.irbmci="~~~~~Abnormal irritability",
+                        delta.depmci="~~~~~Abnormal depression",
+                        #
+                        SDMT= "SDMT",
+                        STROOP_COLOR = "Stroop Color",
+                        STROOP_WORD = "Stroop Word",
+                        STROOP_INTERFERENCE = "Stroop Interference",
+                        ## total functional capacity
+                        delta.tfcone="Experience Stage 1 TFC",
+                        delta.tfctwo="Experience Stage 2 TFC",
+                        delta.tfcthree="Experience Stage 3 TFC"
+    )
+
+
+
     table.names.use <- table.names
   }
 
@@ -3775,6 +3893,7 @@ get.my.tables.bookchapter <- function(all.data.input,zz.use,s.use.names,delta.na
 ############################################################
 ## Coding to check duplicates between studies in the data ##
 ############################################################
+#' @import data.table
 count.dups <- function(DF){
 
   DT <- data.table::data.table(DF)
@@ -7016,128 +7135,7 @@ extract.complete.cases <- function(main.events.use,delta.main.events.use,covaria
   return(data.sample)
 }
 
-######################################
-## summary table of characteristics ##
-######################################
 
-clinical.tables <- function(study.names,covariates.use,events.use,my.data,
-                            p.adjust.method=c("none","bonferroni","BH")[1],
-                            paper.type=c("clinical","statistics")[1],
-                            results.to.report=c("mean-sd","quantiles")[1],
-                            main.events.use= c("hdage_nobase","mcione","dep2")){
-
-  #############################################################
-  ## put my.data in one big data frame, with study indicator ##
-  #############################################################
-  ## put my.data in a data frame
-  my.data.all <- merge.all.data(study.names,my.data)
-
-  ##########################################################
-  ## Extract complete cases based on: main.events.use 	##
-  ##########################################################
-  delta.main.events.use <- paste("delta",main.events.use,sep=".")
-  data.sample <- extract.complete.cases(main.events.use,
-                                        delta.main.events.use,covariates.use,my.data.all)
-
-  ##########################################
-  ## get all pair-combinations of studies ##
-  ##########################################
-  study.combinations <- combn(study.names,2)
-  names.pairs <- function(x){
-    out <- paste(x,collapse="-")
-    return(out)
-  }
-  colnames(study.combinations) <- apply(study.combinations,2,names.pairs)
-
-  ######################
-  ## define delta.use ##
-  ######################
-  ##delta.use <- colnames(my.data.all)[which(!colnames(my.data.all) %in% covariates.use)]
-  ##delta.use <- delta.use[ grepl("delta",delta.use)]
-  delta.use <- paste("delta",events.use,sep=".")
-
-
-  ################################
-  ## create data frame to output ##
-  ################################
-  if(paper.type=="statistics"){
-    table.names.use <- stat.table.names
-  } else {
-    table.names.use <- table.names
-  }
-
-  cov.use <- c(covariates.use,delta.use)
-  cov.names <- unlist(table.names.use[cov.use])
-
-  if(paper.type=="clinical"){
-    ## clinical paper
-    data.out <- array(NA,dim=c(1+length(cov.names),length(study.names)+ncol(study.combinations)+1),
-                      dimnames=list(c("Sample size", cov.names),c(study.names,"p-value-ALL",
-                                                                  paste("p-value",colnames(study.combinations),sep="-"))))
-  } else {
-    ## statistics paper
-    data.out <- array(NA,dim=c(1+length(cov.names),length(study.names)),
-                      dimnames=list(c("Sample size", cov.names),study.names))
-  }
-
-  for(ss in 1:length(study.names)){
-    index.use <- which(data.sample$study==study.names[ss])
-    data.use <- data.sample[index.use,]
-
-    ## sample size information
-    data.out["Sample size",ss] <- nrow(data.use)
-
-    ## other covariate information
-    for(ii in 1:length(cov.use)){
-      data.out[cov.names[ii],ss] <-
-        info.covariates(data.use,cov.use[ii],cov.names[ii],results.to.report)
-    }
-  }
-
-  ######################
-  ## compute p-values ##
-  ######################
-  if(paper.type=="clinical"){
-    ## tests for all groups
-    for(ii in 1:length(cov.use)){
-      data.out[cov.names[ii],"p-value-ALL"] <- pvalues.covariates(data.use=data.sample,cov.use[ii],cov.names[ii])
-    }
-
-    ## tests for pairs of groups
-    for(ii in 1:length(cov.use)){
-      for(ss in 1:ncol(study.combinations)){
-        data.use <- data.sample[which(data.sample$study%in% study.combinations[,ss]),]
-        data.out[cov.names[ii],paste("p-value",colnames(study.combinations)[ss],sep="-")] <-
-          pvalues.covariates(data.use,cov.use[ii],cov.names[ii])
-      }
-
-      ## adjust p-values for multiple comparisons
-      data.out[cov.names[ii],paste("p-value",colnames(study.combinations),sep="-")] <-
-        p.adjust(data.out[cov.names[ii],paste("p-value",colnames(study.combinations),sep="-")],method=p.adjust.method)
-    }
-  }
-
-  ###########################################################
-  ## Add number of subjects who experience all main events ##
-  ###########################################################
-  data.out <- rbind(data.out,rep(NA,ncol(data.out)))
-  rownames(data.out)[nrow(data.out)] <- "Experience all main events"
-
-  myrowsum <- function(x,y){
-    return(sum(x)==y)
-  }
-
-  for (ss in 1:length(study.names)){
-    index.use <- which(data.sample$study==study.names[ss])
-    data.use <- data.sample[index.use,]
-
-    ## sample size information
-    data.out["Experience all main events",ss] <- sum(apply(data.use[,delta.main.events.use],1,myrowsum,y=length(delta.main.events.use)))
-  }
-
-
-  return(data.out)
-}
 
 
 
