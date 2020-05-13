@@ -11,7 +11,7 @@
 #+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+##
 
 get.functional.alpha.coefficients <-
-  function(axmod,study,common.param.data){
+  function(axmod,study,common.param.data,censoring.high){
     if(axmod=="line"){
       if(common.param.data==TRUE){ # common alpha, beta
         if(censoring.high==FALSE){
@@ -164,6 +164,11 @@ default.simulation.setting <- function(){
     number.of.studies <- 3
   }
 
+
+  ## number.of.studies: number of studies.
+  if(!exists(as.character(substitute(censoring.high)))){
+    censoring.high <- FALSE
+  }
 
   ## Names of the studies
   if(!exists(as.character(substitute(number.of.studies)))){
@@ -636,7 +641,7 @@ default.simulation.setting <- function(){
   for(ss in 1:number.of.studies){
     a0.tmp <- NULL
     for(k in 1:number.of.clinical.events){
-      a0.tmp <- c(a0.tmp,get.functional.alpha.coefficients(functional.alpha.form[[ss]][[k]],ss,simulated.parameters.common.for.all.studies))
+      a0.tmp <- c(a0.tmp,get.functional.alpha.coefficients(functional.alpha.form[[ss]][[k]],ss,simulated.parameters.common.for.all.studies,censoring.high))
     }
     a0[[ss]] <- a0.tmp
   }

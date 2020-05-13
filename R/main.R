@@ -4514,7 +4514,7 @@ get.genetic.knowledge.covariates <- function(who.knows.genetic.information){
   }
 
   if(!is.null(gene.know)){
-    gene.use <- as.vector(outer(gene.know,motor.use,paste,sep="."))
+    gene.use <- as.vector(outer(gene.know,paste,sep="."))
   } else {
     gene.use <- NULL
   }
