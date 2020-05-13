@@ -10,7 +10,7 @@ ggplot_error_bars(
   theta.array.lo = NULL,
   theta.array.hi = NULL,
   index_a,
-  bvalues = time_val,
+  bvalues,
   color.list,
   cex.line = 1.5,
   cex.size = 20,

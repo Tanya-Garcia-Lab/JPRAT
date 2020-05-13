@@ -1180,10 +1180,10 @@ ggplot_at_a_over_b <- function(filename,
                                theta.array.lo=NULL,
                                theta.array.hi=NULL,
                                index_a,
-                               bvalues=time_val,
-                               bvalues.cut=time.cut,
+                               bvalues,#=time_val,
+                               bvalues.cut,#=time.cut,
                                color.list,
-                               nrisk=number.at.risk[index_a,nn,zz,1,],
+                               nrisk,#=number.at.risk[index_a,nn,zz,1,],
                                ## to make y-label closer to y-axis
                                margin.move=unit(c(0,-30,0,0),"mm"),
                                cex.line=1.5,cex.size=20,cex.number=6,
@@ -1237,7 +1237,11 @@ ggplot_at_a_over_b <- function(filename,
     data.plot <- cbind(data.plot,lo=data.lo.plot$y,hi=data.hi.plot$y)
   }
 
-
+  x <- NULL
+  y <- NULL
+  Group <- NULL
+  hi <- NULL
+  lo <- NULL
 
   ## get legends for label.names : Group A VERSES y
   g <- ggplot2::ggplot(data=data.plot,
@@ -1426,7 +1430,7 @@ ggplot_error_bars <- function(filename,
                               theta.array.lo=NULL,
                               theta.array.hi=NULL,
                               index_a,
-                              bvalues=time_val,
+                              bvalues,#=time_val,
                               color.list,
                               cex.line=1.5,cex.size=20,cex.number=6,
                               ylim=NULL,
@@ -1465,6 +1469,11 @@ ggplot_error_bars <- function(filename,
   }
 
 
+  x <- NULL
+  y <- NULL
+  Group <- NULL
+  lo <- NULL
+  hi <- NULL
 
   ## get legends for label.names
   main.plot <- ggplot2::ggplot(data=data.plot,
@@ -2248,7 +2257,7 @@ data.reformatted.for.jprat.analysis<-function(use_real_data,
   #nonfunctional.covariate.value <- c(40)
 
   #tmp.nonfunctional.covariate.values.for.prediction <- get.nonfunctional.covariate.values.for.prediction(nonfunctional.covariate.names,
-  #                                                                                                             functional.beta.intercept,analysis.to.run,nonfunctional.covariate.value.is.0)
+  #                                                                                                             functional.beta.intercept,analysis.to.run,nonfunctional.covariate.value.is.0,paper.type)
   output.list <- list()
   for(ll in 1:length(nonfunctional.covariate.names)){
     tmp <- get.empty.list(nonfunctional.covariate.names[ll])  #[ll]
@@ -4544,30 +4553,6 @@ helper.to.get.nonfunctional.covariate.values.for.prediction <- function(covariat
 
     nonfunctional.covariate.value <- c(1,0)
     is.nonfunctional.covariate.discrete <- FALSE ##TRUE
-  }else if(grepl("DCL",covariate.name)){
-    ######################################
-    ## Diagnostic confidence level (DCL) #
-    ######################################
-    if(!is.null(xval)){
-      if(!is.null(functional.beta.intercept)){
-        nonfunctional.covariate.value  <- model.matrix(~factor(initial.covariate.value))[,-1]
-      } else {
-        nonfunctional.covariate.value  <- model.matrix(~-1+factor(initial.covariate.value))
-      }
-    } else {
-      nonfunctional.covariate.value  <- NULL
-    }
-
-    if(!is.null(functional.beta.intercept)){
-      zz.tmp.length <- 3
-    } else {
-      zz.tmp.length <- 4
-    }
-    nonfunctional.covariate.value <- get.empty.list(paste(x,1:zz.tmp.length,sep=""))
-    for(jj in 1:zz.tmp.length){
-      nonfunctional.covariate.value[[jj]] <- c(0,1)
-    }
-    is.nonfunctional.covariate.discrete <- FALSE ##TRUE
   } else if(grepl("gene.",covariate.name)){
     ###################################
     ## who knows genetic information ##
@@ -4615,7 +4600,8 @@ helper.to.get.nonfunctional.covariate.values.for.prediction <- function(covariat
 get.nonfunctional.covariate.values.for.prediction <- function(nonfunctional.covariate.names,
                                                               functional.beta.intercept,
                                                               analysis.to.run,
-                                                              nonfunctional.covariate.value.is.0){
+                                                              nonfunctional.covariate.value.is.0,
+                                                              paper.type){
 
   output.list <- list()
   is.nonfunctional.covariate.discrete <- NULL
@@ -6473,8 +6459,8 @@ get.all.dim.order <- function(theta.names){
 ## null theta without time component
 
 get.null.theta.no.time <- function(theta.names,
-                                   first.label=num_study,
-                                   first.label.name=paste("ss",1:num_study,sep=""),
+                                   first.label, #=num_study,
+                                   first.label.name, #=paste("ss",1:num_study,sep=""),
                                    np,param.label,
                                    num_xx,la,z.choice){
 
@@ -10722,7 +10708,7 @@ get.predicted.survival <- function(theta.array,
     x <- convert.cag(xx_val.use,xmin=xmin,xmax=xmax)
     cag.uniform <- reverse.cag(xx_choose,xmin=xmin,xmax=xmax)
   } else {
-    x <- xx_val
+    x <- xx_val.use
     cag.uniform <- xx_choose
   }
 
@@ -10766,7 +10752,7 @@ get.slopes <- function(theta.array,
     x <- convert.cag(xx_val.use,xmin=xmin,xmax=xmax)
     cag.uniform <- reverse.cag(xx_choose,xmin=xmin,xmax=xmax)
   } else {
-    x <- xx_val
+    x <- xx_val.use
     cag.uniform <- xx_choose
   }
 
@@ -10875,7 +10861,7 @@ get.sample.size <- function(out.Ft,type1.error,
                             type2.error,
                             treatment.effect,
                             study.names,
-                            event.names=s.names,
+                            event.names,#=s.names,
                             z_lab_names,
                             x_lab_names,
                             time_choice.predicted,

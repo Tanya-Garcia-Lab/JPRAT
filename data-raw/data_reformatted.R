@@ -158,7 +158,7 @@ data.reformatted.for.jprat.analysis<-function(use_real_data,
   #nonfunctional.covariate.value <- c(40)
 
   #tmp.nonfunctional.covariate.values.for.prediction <- get.nonfunctional.covariate.values.for.prediction(nonfunctional.covariate.names,
-  #                                                                                                             functional.beta.intercept,analysis.to.run,nonfunctional.covariate.value.is.0)
+  #                                                                                                             functional.beta.intercept,analysis.to.run,nonfunctional.covariate.value.is.0,paper.type)
   output.list <- list()
   for(ll in 1:length(nonfunctional.covariate.names)){
     tmp <- get.empty.list(nonfunctional.covariate.names[ll])  #[ll]
