@@ -266,11 +266,11 @@ default.simulation.setting <- function(){
   ## estimation assuming censoring depends on z (when Z=binary)
   if(!exists(as.character(substitute(estimation.when.censoring.depends.on.z)))){
     estimation.when.censoring.depends.on.z <- TRUE
-    if(use_real_data==FALSE){
-      if(simulated.z.covariate.distribution!="binom"){
-        estimation.when.censoring.depends.on.z <- FALSE ## we only have it setup for discrete Z
-      }
-    }
+    #if(use_real_data==FALSE){
+    #  if(simulated.z.covariate.distribution!="binom"){
+    #    estimation.when.censoring.depends.on.z <- FALSE ## we only have it setup for discrete Z
+    #  }
+    #}
   }
 
   ## use.bootstrap.variance: compute bootstrap variances?
@@ -354,7 +354,7 @@ default.simulation.setting <- function(){
   xmin <- NULL
   xmax <- NULL
   functional.covariate.values.for.prediction <-
-    get.functional.covariate.values.for.prediction(use_real_data,
+    get.functional.covariate.values.for.prediction(#use_real_data,
                                                    xmin,xmax,functional.covariate.values.of.interest)
 
 
@@ -997,13 +997,7 @@ default.results.setting <- function(#use_real_data,
   }
 
   ## normalize.cag.repeat.values: we scale the CAG repeats to a uniform [0,1] scale
-  if(!exists(as.character(substitute(normalize.cag.repeat.values)))){
-    if(use_real_data==TRUE){
-      normalize.cag.repeat.values <- TRUE
-    } else{
-      normalize.cag.repeat.values <- FALSE
-    }
-  }
+  normalize.cag.repeat.values <- TRUE
 
 
   ## y-label for comparing studies (only used for clinical paper)

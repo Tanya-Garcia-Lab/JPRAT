@@ -38,17 +38,17 @@ appendList <- function (x, val){
 
 
 
-get.functional.covariate.values.for.prediction <- function(use_real_data,
+get.functional.covariate.values.for.prediction <- function(#use_real_data,
                                                            xmin,xmax,functional.covariate.values.of.interest){
 
-  if(use_real_data==FALSE){
-    functional.covariate.values.for.prediction <- seq(0,1,by=0.01)
-  } else {
+  #if(use_real_data==FALSE){
+  #  functional.covariate.values.for.prediction <- seq(0,1,by=0.01)
+  #} else {
     functional.covariate.values.for.prediction.tmp <- seq(0,1,by=0.1)
     functional.covariate.values.for.prediction <- c(functional.covariate.values.for.prediction.tmp,
                                                     reverse.cag(functional.covariate.values.of.interest,xmin=xmin,xmax=xmax))
     functional.covariate.values.for.prediction <- unique(sort(functional.covariate.values.for.prediction))
-  }
+  #}
 
   return(functional.covariate.values.for.prediction)
 }

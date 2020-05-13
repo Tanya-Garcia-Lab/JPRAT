@@ -803,8 +803,8 @@ jprat.wrapper <- function(
   #theta.var.out <- est.var.out$theta.var.out
 
   ## extract beta,alpha,Ft parts
-  #parts.theta.out <- extract.output(theta.out,gamma.param,omega.param)
-  #parts.theta.var.out <- extract.output(theta.var.out,gamma.param,omega.param)
+  #parts.theta.out <- extract.output(theta.out,gamma.param,omega.param,time_val)
+  #parts.theta.var.out <- extract.output(theta.var.out,gamma.param,omega.param,time_val)
 
   #beta.out <- parts.theta.out$beta.out
   #beta.var.out <- parts.theta.var.out$beta.out
@@ -838,7 +838,7 @@ jprat.wrapper <- function(
     combi.out <- combi.out[,combi.colm.names]
 
     ## extract beta,alpha,Ft parts
-    #parts.theta.out <- extract.output(combi.theta.out.all,gamma.param,omega.param)
+    #parts.theta.out <- extract.output(combi.theta.out.all,gamma.param,omega.param,time_val)
 
     #beta.diff.out <- parts.theta.out$beta.out
     #gamma.diff.out <-parts.theta.out$gamma.out

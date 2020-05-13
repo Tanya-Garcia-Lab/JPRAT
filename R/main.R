@@ -137,7 +137,7 @@ all_null_theta <- function(theta.names,
 #'
 #' @param method a character value for which estimation procedure will be used to estimate all parameters of time varying fixed effects with the marginal distribution function: "gamm4" or "new".  Default is "gamm4".
 #' @param compute.study.differences a logical value whether study differences will be estimated. Only valid when the number of studies (\code{number.of.studies}) are greater than 1,
-#'                                  when parameters were estimated differently (\code{estimated.parameters.common.for.all=FALSE}), and when estimates are similar across studies (\code{check.study.equality=TRUE})).
+#'                                  when parameters were estimated differently (\code{estimated.parameters.common.for.all.studies=FALSE}), and when estimates are similar across studies (\code{check.study.equality=TRUE})).
 #' @param var.boot a logical value whether bootstrap variances are estimated. See the argument \code{use.bootstrap.variance} in the \code{\link{jprat.wrapper}} function. Default is TRUE.
 #' @param arbitrary ADD DETAILS HERE!
 #' @param num_study number of studies used in analyses. If the real data analysis used three studies called "cohort", "predict", "pharos", then number of studies is 3. i.e., \code{num_study=3}.
@@ -2715,7 +2715,7 @@ convert.new.notation.to.old.for.jprat <- function(study.names,
   ## check if we need to compute study differences ##
   ###################################################
   compute.study.differences <- run.study.differences(check.study.equality,
-                                                     estimated.parameters.common.for.all,
+                                                     estimated.parameters.common.for.all.studies,
                                                      estimation.default.values,
                                                      number.of.studies)   ## FALSE
 
@@ -3419,7 +3419,7 @@ convert.new.notation.to.old.for.get.results <- function(study.names,
   ## check if we need to compute study differences ##
   ###################################################
   # compute.study.differences <- run.study.differences(check.study.equality,
-  #                                                    estimated.parameters.common.for.all,
+  #                                                    estimated.parameters.common.for.all.studies,
   #                                                    estimation.default.values,
   #                                                    number.of.studies)   ## FALSE
 
@@ -5066,7 +5066,7 @@ get.time.points.for.prediction <- function(time.points.for.prediction,
 ###################################################
 
 run.study.differences <- function(check.study.equality,
-                                  estimated.parameters.common.for.all,
+                                  estimated.parameters.common.for.all.studies,
                                   estimation.default.values,
                                   number.of.studies
 ){
@@ -6346,7 +6346,7 @@ extract.var.est.output <- function(out,
 
 
 
-extract.output <- function(theta.out,gamma.param,omega.param){
+extract.output <- function(theta.out,gamma.param,omega.param,time_val){
   ## beta
   names.tmp <- "beta*"
   index.est <- grepl(names.tmp,theta.out$beta$theta)
@@ -7462,7 +7462,7 @@ get.nas <- function(n,m,ynew,z,x){
 
 
 make.data.set <- function(num_study,time_val,n,nmax,
-                          m,lb,y,x,z,nn,real_data,
+                          m,lb,y,x,z,real_data,
                           gamma.param,omega.param){
 
   names <- paste("ss",1:num_study,sep="")
@@ -7695,6 +7695,7 @@ gamm.mle.new <- function(num_study,np,lb,num_xx,xks,
                          param.label,beta0int,gamma.param,omega.param,
                          spline.constrain,common.param.estimation,
                          par_fu,random.effect,link.type,z.proportions,la){
+  X <- NULL
 
   null.theta <- get.null.theta.no.time(theta.names=c("beta","alphas","Ft"),
                                        first.label=num_study,
@@ -8513,7 +8514,7 @@ gamm4.main <- function(num_study,
 
   ## obtain dataset when y=ynew
   data.org.gamm <- make.data.set(num_study,time_val,n,nmax,
-                                 m,lb,ynew,x,z,nn,real_data,
+                                 m,lb,ynew,x,z,real_data,
                                  gamma.param,omega.param)
 
   ############################
@@ -11799,7 +11800,7 @@ compute.number.events.in.study <- function(
                              c("Kaplan-Meier","JPRAT","Langbehn", "CAP","CAP_new")))
 
 
-
+  study <- NULL
   for(ss in 1:length(study.names)){
     subset.data <- subset(data.out, study==study.names[ss])
     out[ss,"orig.cases",] <-

@@ -67,7 +67,7 @@ jprat.main.estimates(
 \item{method}{a character value for which estimation procedure will be used to estimate all parameters of time varying fixed effects with the marginal distribution function: "gamm4" or "new".  Default is "gamm4".}
 
 \item{compute.study.differences}{a logical value whether study differences will be estimated. Only valid when the number of studies (\code{number.of.studies}) are greater than 1,
-when parameters were estimated differently (\code{estimated.parameters.common.for.all=FALSE}), and when estimates are similar across studies (\code{check.study.equality=TRUE})).}
+when parameters were estimated differently (\code{estimated.parameters.common.for.all.studies=FALSE}), and when estimates are similar across studies (\code{check.study.equality=TRUE})).}
 
 \item{var.boot}{a logical value whether bootstrap variances are estimated. See the argument \code{use.bootstrap.variance} in the \code{\link{jprat.wrapper}} function. Default is TRUE.}
 

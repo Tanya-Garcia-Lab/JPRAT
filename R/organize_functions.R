@@ -2502,6 +2502,12 @@ extract.complete.cases <- function(main.events.use,delta.main.events.use,covaria
   return(data.sample)
 }
 
+#######################################################################
+## function to convert factor to numeric without loss of information ##
+#######################################################################
+as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
+
+
 ######################################
 ## summary table of characteristics ##
 ######################################
@@ -2512,10 +2518,6 @@ clinical.tables <- function(study.names,covariates.use,events.use,my.data,
                             results.to.report=c("mean-sd","quantiles")[1],
                             main.events.use= c("hdage_nobase","mcione","dep2")){
 
-  #######################################################################
-  ## function to convert factor to numeric without loss of information ##
-  #######################################################################
-  as.numeric.factor <- function(x) {as.numeric(levels(x))[x]}
 
   ## extract quantiles of a variable
   get.quantiles <- function(x,digits=1){
@@ -7017,66 +7019,6 @@ organize.data.sets <- function(location,study,use.normative.data){
 
 
 
-###############################################
-## Main functions used to organize real data ##
-###############################################
-
-#############################################
-## function to extract data to be analyzed ##
-#############################################
-data.for.analysis <- function(all.data,baseage.cutoff,
-                              cag.at.risk.cutoff=c(36,50),
-                              cag.not.at.risk.cutoff=30,
-                              study,data.to.use=c("at_risk","not_at_risk","all")[1],
-                              print.clean.data=TRUE){
-
-  ##############################################
-  ## Extract data for which baseline age >=18 ##
-  ##############################################
-  if(study!="enroll"){
-    data.out <- all.data[which(all.data[,"base_age"]>=baseage.cutoff),]
-  } else {
-    data.out <-
-      all.data[which(as.numeric.factor(all.data[,"base_age"])>=baseage.cutoff),]
-  }
-
-
-  ######################
-  ## subjects at risk ##
-  ######################
-  index.cag <- which(data.out[,"CAG"]>=cag.at.risk.cutoff[1] &
-                       data.out[,"CAG"] <=cag.at.risk.cutoff[2])
-  data.at.risk <- data.out[index.cag,]
-
-  ##########################
-  ## subjects not at risk ##
-  ##########################
-  index.not.risk <- which(data.out[,"CAG"]<= cag.not.at.risk.cutoff)
-  data.not.at.risk <- data.out[index.not.risk,]
-
-  ###############
-  ## Data sets ##
-  ###############
-  if(data.to.use=="at_risk"){
-    data.sets <- data.at.risk
-    filename <- c("clean_")
-  } else if(data.to.use=="not_at_risk"){
-    data.sets <- data.not.at.risk
-    filename <- c("clean_norisk_")
-  } else if(data.to.use=="all"){
-    data.sets <- data.out
-    filename <- c("clean_all_")
-  }
-
-  ############################
-  ## write out data at risk ##
-  ############################
-  if(print.clean.data==TRUE){
-    write.table(data.sets,paste(filename,study,".dat",sep=""),row.names=FALSE,col.names=TRUE)
-  }
-
-  return(data.sets)
-}
 
 
 #########################################
