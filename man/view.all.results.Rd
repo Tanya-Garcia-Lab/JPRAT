@@ -229,28 +229,30 @@ write.output=TRUE;
 #######################
 # Run JPRAT algorithm #
 #######################
-jprat.estimat.results<-jprat.wrapper(study.names=study.names,
-                                    data.file.names=data.file.names,
-                                    nonfunctional.covariate.names=nonfunctional.covariate.names,
-                                    functional.covariate.names=functional.covariate.names,
-                                    othercovariate.names=othercovariate.names,
-                                    event.outcome.names=event.outcome.names,
-                                    delta.names=delta.names,
-                                    time.points.for.prediction=time.points.for.prediction,
-                                    time.points.for.conditional.prediction=ime.points.for.conditional.prediction,
-                                    time.points.for.conditional.prediction.toadd=time.points.for.conditional.prediction.toadd,
-                                    nonfunctional.covariate.value=nonfunctional.covariate.value,
-                                    functional.covariate.values.of.interest=functional.covariate.values.of.interest,
-                                    number.of.bootstraps=number.of.bootstraps,
-                                    use.functional.beta.intercept=use.functional.beta.intercept,
-                                    use.functional.event.coefficients=use.functional.event.coefficients,
-                                    use.functional.study.coefficients=use.functional.study.coefficients,
-                                    check.study.equality=check.study.equality,
-                                    estimated.parameters.common.for.all.studies=estimated.parameters.common.for.all.studies,
-                                    what.analyzed.separately=what.analyzed.separately,
-                                    estimation.when.censoring.depends.on.z=estimation.when.censoring.depends.on.z,
-                                    use.bootstrap.variance=use.bootstrap.variance,
-                                    write.output=write.output)
+jprat.estimat.results<-
+  jprat.wrapper(
+  study.names,
+  data.file.names,
+  nonfunctional.covariate.names,
+  functional.covariate.names,
+  othercovariate.names,
+  event.outcome.names,
+  delta.names,
+  time.points.for.prediction,
+  time.points.for.conditional.prediction,
+  time.points.for.conditional.prediction.toadd,
+  nonfunctional.covariate.value,
+  functional.covariate.values.of.interest,
+  number.of.bootstraps,
+  use.functional.beta.intercept,
+  use.functional.event.coefficients,
+  use.functional.study.coefficients,
+  check.study.equality,
+  estimated.parameters.common.for.all.studies,
+  what.analyzed.separately,
+  estimation.when.censoring.depends.on.z,
+  use.bootstrap.variance,
+  write.output)
 
 ###################################
 # To view all results: input data #
