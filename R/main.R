@@ -5457,8 +5457,8 @@ get.truth <- function(combi.study,combi.choice,
                 } else {
                   Ft.true[ss,ii,zz,xx,tt] <-
                     adaptIntegrate(Ft.integrate,
-                                   lower=rep(-1,length(sigma_all)),
-                                   upper=rep(1,length(sigma_all)))$integral  #  adaptive multidimensional integration of  vector-valued integrands over hypercubes: the value of the integral
+                                   lowerLimit=rep(-1,length(sigma_all)),
+                                   upperLimit=rep(1,length(sigma_all)))$integral  #  adaptive multidimensional integration of  vector-valued integrands over hypercubes: the value of the integral
                 }
               }
             }
@@ -8266,12 +8266,12 @@ theta.prediction <- function(num_study,
                 } else {
                   Ft.est[ss,nn,kk,jj] <-
                     adaptIntegrate(Ft.integrate,
-                                   lower=rep(-1,length(sigma_all)),
-                                   upper=rep(1,length(sigma_all)))$integral
+                                   lowerLimit=rep(-1,length(sigma_all)),
+                                   upperLimit=rep(1,length(sigma_all)))$integral
                   dFt.est[ss,nn,kk,jj] <-
                     adaptIntegrate(dFt.integrate,
-                                   lower=rep(-1,length(sigma_all)),
-                                   upper=rep(1,length(sigma_all)))$integral
+                                   lowerLimit=rep(-1,length(sigma_all)),
+                                   upperLimit=rep(1,length(sigma_all)))$integral
                 }
               }
 
