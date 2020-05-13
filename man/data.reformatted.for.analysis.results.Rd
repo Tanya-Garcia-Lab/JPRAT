@@ -24,7 +24,7 @@ data.reformatted.for.analysis.results(
 \item{which.nonfunctional.covariate.comparisons}{See the argument in the \code{\link{view.all.results}} function.}
 }
 \value{
-
+FILL IN HERE!!
 }
 \description{
 data.reformatted.for.analysis.results: This code reform datasets for JPRAT to be able to understand the given datasets to produce results tables and plots.

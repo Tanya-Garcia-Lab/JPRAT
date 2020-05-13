@@ -2303,7 +2303,7 @@ data.reformatted.for.jprat.analysis<-function(use_real_data,
 #' @param legend.names See the argument in the \code{\link{view.all.results}} function.
 #' @param which.nonfunctional.covariate.comparisons See the argument in the \code{\link{view.all.results}} function.
 #'
-#' @return
+#' @return FILL IN HERE!!
 #' @import stats
 #' @export
 #'
@@ -2442,7 +2442,7 @@ data.reformatted.for.analysis.results<-function(study.names, event.outcome.names
 #' @param use.bootstrap.variance See the argument in the \code{\link{jprat.wrapper}} function.
 #' @param clusters.are.families a logical value whether pseudo-values will compute differently when clusters are families (i.e., subjects are different people): Default is FALSE.
 #'
-#' @return
+#' @return FILL IN HERE!!
 #' @export
 #'
 ## @examples
@@ -3138,7 +3138,7 @@ convert.new.notation.to.old.for.jprat <- function(study.names,
 #' @param treatment.effect See the argument in the \code{\link{view.all.results}} function.
 #' @param dropout.rate See the argument in the \code{\link{view.all.results}} function.
 #'
-#' @return
+#' @return FILL IN HERE!!
 #' @export
 #'
 ## @examples
@@ -4004,7 +4004,7 @@ flatten.array <- function(x,dim.order,flatten.name,theta=NULL){
 #' @param xmin See the argument in the \code{\link{convert.new.notation.to.old.for.jprat}} function.
 #' @param xmax See the argument in the \code{\link{convert.new.notation.to.old.for.jprat}} function.
 #'
-#' @return
+#' @return FILL IN HERE!
 #' @export
 #'
 ## @examples
@@ -9734,20 +9734,6 @@ myquantiles <-function(x){
   up <- sort(x)[B*(1-alpha)]
   return(up)
 }
-
-## convert uniform CAG to real CAG
-convert.cag <- function(x,xmin=xmin,xmax=xmax){
-  xorig <- x*(xmax-xmin)+xmin
-  return(xorig)
-}
-
-## convert CAG to uniform CAG
-
-reverse.cag <- function(x,xmin=xmin,xmax=xmax){
-  xnew <- (x-xmin)/(xmax-xmin)
-  return(xnew)
-}
-
 
 
 ## find index name
