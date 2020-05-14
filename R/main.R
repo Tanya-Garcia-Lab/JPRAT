@@ -8349,6 +8349,7 @@ make.Ft.integrate <- function(alphax,betaz,sigmar,sigmau){
 }
 
 #' @import stats
+#' @import mnormt
 make.dFt.integrate <- function(alphax,betaz,sigmar,sigmau){
   if(!is.null(sigmau)){
     Sigma <- diag(c(sigmar^2,sigmau^2))
@@ -8361,10 +8362,10 @@ make.dFt.integrate <- function(alphax,betaz,sigmar,sigmau){
   function(r){
     if(is.null(sigmau)){
       ## 1-dimensional
-      out <- dFt.value.integrand(betaz,alphax,r) * dnorm(r,mean=0,sd=sigmar)
+      out <- dFt.value.integrand(betaz,alphax,r) * stats::dnorm(r,mean=0,sd=sigmar)
     } else {
       ## any dimension
-      out <- dFt.value.integrand(betaz,alphax,sum(r/(1-r^2))) * dmnorm(r/(1-r^2),mean_use,Sigma) *
+      out <- dFt.value.integrand(betaz,alphax,sum(r/(1-r^2))) * mnormt::dmnorm(r/(1-r^2),mean_use,Sigma) *
         ((1+r^2)/(1-r^2)^2)
     }
     return(out)
@@ -8987,10 +8988,18 @@ gamm4.main <- function(num_study,
 ## Useful functions ##
 ######################
 
-make.data.arrays <- function(data.theta.est=data.beta,data.theta.varboot=data.beta.varboot,
-                             cnames=c("ss","np","iter","lb",paste("t",time_val,sep="")),
-                             num_study,np,theta.set=1:lb,theta.set2=1:lb,nsimu,num_time,time_val,
-                             var.est=var.est,theta.interest="lb",s.names,boot.ci){
+make.data.arrays <- function(data.theta.est,#=data.beta,
+                             data.theta.varboot,#=data.beta.varboot,
+                             cnames,#=c("ss","np","iter","lb",paste("t",time_val,sep="")),
+                             num_study,
+                             np,
+                             theta.set,#=1:lb,
+                             theta.set2,#=1:lb,
+                             nsimu,
+                             num_time,
+                             time_val,
+                             var.est,
+                             theta.interest="lb",s.names,boot.ci){
 
   colnames(data.theta.est) <- cnames
 
