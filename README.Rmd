@@ -5,27 +5,33 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set( collapse = TRUE,
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
   comment = "#>",
-  fig.path = "README-")
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
 ```
 
-## Overview
+# JPRAT
+
+<!-- badges: start -->
 The R package `JPRAT` is the Joint Progression of Risk Assessment Tool, which evaluates and compares all outcomes simultaneously across multiple studies and adjusts for outcome dependencies. The JPRAT is an estimation procedure that handles multiple data hierarchy using an additive logistic mixed effect model. This algorithm handles censoring with pseudo-values and functional covariate effects with splines. The description for the detailed estimation procedure is in the following paper:
 
   **Garcia, T. P., Marder, K., and Wang, Y. (2017). Time-varying proportional odds model for mega-analysis of clustered event times, Biostatistics, 20(1), 129-146. \
   Garcia, T.P., Wang, Y., Shoulson, I., Paulsen, J.S. and Marder, K. (2018). Disease progression in Huntington disease: An analysis of multiple longitudinal outcomes. Journal of Huntington's disease, 7, 337-344 **
+<!-- badges: end -->
 
-## Installation 
 
-To install `JPRAT` from GitHub,
-```{r, eval=FALSE}
-devtools::install_github("unkyunglee/JPRAT")
+## Installation
+
+You can install the development version from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("tpgarcia/JPRAT")
 ```
-
-
 ## Usage
 ```{r usage, results="hide",  message=FALSE}
 
