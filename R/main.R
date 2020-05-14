@@ -8338,7 +8338,7 @@ make.Ft.integrate <- function(alphax,betaz,sigmar,sigmau){
   function(r){
     if(is.null(sigmau)){
       ## 1-dimensional
-      out <- Ft.true.value(betaz,alphax,r) * mnormt::dnorm(r,mean=0,sd=sigmar)
+      out <- Ft.true.value(betaz,alphax,r) * stats::dnorm(r,mean=0,sd=sigmar)
     } else {
       ## any dimension
       out <- Ft.true.value(betaz,alphax,sum(r/(1-r^2))) * mnormt::dmnorm(r/(1-r^2),mean_use,Sigma) *
@@ -9312,10 +9312,20 @@ make.Ft.diff.arrays <- function(data.Ft.diff,
 }
 
 
-make.data.diff.arrays <- function(data.theta.est=data.beta.diff,
-                                  cnames=c("combi","np","iter","lb",paste("t",time_val,sep="")),
-                                  num_study,np,theta.set=1:lb,theta.set2=1:lb,nsimu,num_time,time_val,
-                                  var.est=var.est,theta.interest="lb",s.names,combi.study,combi.names){
+make.data.diff.arrays <- function(data.theta.est,#=data.beta.diff,
+                                  cnames,#=c("combi","np","iter","lb",paste("t",time_val,sep="")),
+                                  num_study,
+                                  np,
+                                  theta.set,#=1:lb,
+                                  theta.set2,#=1:lb,
+                                  nsimu,
+                                  num_time,
+                                  time_val,
+                                  var.est,
+                                  theta.interest="lb",
+                                  s.names,
+                                  combi.study,
+                                  combi.names){
 
   colnames(data.theta.est) <- cnames
 
