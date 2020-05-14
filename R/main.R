@@ -8325,6 +8325,7 @@ theta.prediction <- function(num_study,
 
 
 #' @import stats
+#' @import mnormt
 make.Ft.integrate <- function(alphax,betaz,sigmar,sigmau){
   if(!is.null(sigmau)){
     Sigma <- diag(c(sigmar^2,sigmau^2))
@@ -8337,10 +8338,10 @@ make.Ft.integrate <- function(alphax,betaz,sigmar,sigmau){
   function(r){
     if(is.null(sigmau)){
       ## 1-dimensional
-      out <- Ft.true.value(betaz,alphax,r) * dnorm(r,mean=0,sd=sigmar)
+      out <- Ft.true.value(betaz,alphax,r) * mnormt::dnorm(r,mean=0,sd=sigmar)
     } else {
       ## any dimension
-      out <- Ft.true.value(betaz,alphax,sum(r/(1-r^2))) * dmnorm(r/(1-r^2),mean_use,Sigma) *
+      out <- Ft.true.value(betaz,alphax,sum(r/(1-r^2))) * mnormt::dmnorm(r/(1-r^2),mean_use,Sigma) *
         ((1+r^2)/(1-r^2)^2)
     }
     return(out)
@@ -9105,9 +9106,10 @@ make.data.arrays <- function(data.theta.est=data.beta,data.theta.varboot=data.be
 
 
 
+
 make.Ft.arrays <- function(data.Ft,data.Ft.varboot,
                            num_study,np,nsimu,num_time,time_val,num_xx,z.choice,z_lab,s.names,
-                           var.est=var.est,boot.ci){
+                           var.est=var.est,boot.ci,xx_val){
 
   data.Ft.est <- data.Ft
   colnames(data.Ft.est) <- c("ss","np","iter","zz","xx",paste("t",time_val,sep=""))
@@ -9225,7 +9227,7 @@ make.Ft.arrays <- function(data.Ft,data.Ft.varboot,
 
 make.Ft.diff.arrays <- function(data.Ft.diff,
                                 num_study,np,nsimu,num_time,time_val,num_xx,z.choice,z_lab,s.names,
-                                var.est=var.est,combi.study,combi.names){
+                                var.est=var.est,combi.study,combi.names,xx_val){
 
   data.Ft.est <- data.Ft.diff
   colnames(data.Ft.est) <- c("combi","np","iter","zz","xx",paste("t",time_val,sep=""))
