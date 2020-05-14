@@ -479,8 +479,8 @@ jprat.main.estimates<-function(method="gamm4",  ## conditional paramters to esti
       #iters <- iters + 1
     }  else{
       if(real_data==TRUE){
-        cat("Data is not good.")
-        break
+        stop("Data is not good.")
+
       }
     }
   }
@@ -8621,6 +8621,8 @@ gamm4.main <- function(num_study,
                                    z.proportions,la)
           eflag <- gamm.fit$eflag
 
+          if(eflag==-1) break
+
           if(eflag!=-1){
             ###################
             ## store results ##
@@ -8631,8 +8633,6 @@ gamm4.main <- function(num_study,
             alphasest[ss,kk,,tt,,"varest"] <- gamm.fit$alphas.var
             Ftest[ss,kk,,,tt,"est"] <- gamm.fit$Ft.est
             Ftest[ss,kk,,,tt,"varest"] <- gamm.fit$Ft.var
-          } else {
-            break
           }
         }
       }
@@ -8711,6 +8711,8 @@ gamm4.main <- function(num_study,
                                  z.proportions,la)
         eflag <- gamm.fit$eflag
 
+        if(eflag==-1) break
+
         if(eflag!=-1){
           ###################
           ## store results ##
@@ -8721,8 +8723,6 @@ gamm4.main <- function(num_study,
           alphasest[ss,,,tt,,"varest"] <- gamm.fit$alphas.var
           Ftest[ss,,,,tt,"est"] <- gamm.fit$Ft.est
           Ftest[ss,,,,tt,"varest"] <- gamm.fit$Ft.var
-        } else {
-          break
         }
       }
     } else if(analyze.separately=="event"){
@@ -8831,6 +8831,8 @@ gamm4.main <- function(num_study,
                                  z.proportions,la)
         eflag <- gamm.fit$eflag
 
+        if(eflag==-1) break
+
         if(eflag!=-1){
           ###################
           ## store results ##
@@ -8852,8 +8854,6 @@ gamm4.main <- function(num_study,
             Ftest[,kk,,,tt,"est"] <- gamm.fit$Ft.est
             Ftest[,kk,,,tt,"varest"] <- gamm.fit$Ft.var
           }
-        } else {
-          break
         }
       }
     } else if(analyze.separately=="none"){  ## we analyze all studies and events together
@@ -8877,6 +8877,8 @@ gamm4.main <- function(num_study,
                                z.proportions,la)
       eflag <- gamm.fit$eflag
 
+      if(eflag==-1) break
+
       if(eflag!=-1){
         ###################
         ## store results ##
@@ -8898,8 +8900,6 @@ gamm4.main <- function(num_study,
           Ftest[,,,,tt,"est"] <- gamm.fit$Ft.est
           Ftest[,,,,tt,"varest"] <- gamm.fit$Ft.var
         }
-      } else {
-        break
       }
     }
   }
