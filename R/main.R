@@ -5910,7 +5910,7 @@ simu.data <- function(randomeffects.covariates.dependent,
                       real_data,time_val,
                       beta0int,beta,gamma.param,omega.param,
                       n,nmax,m,maxm,la,lb,num_study,np,gtmod,use.random.effects,
-                      gen.cens.depend.z){
+                      gen.cens.depend.z,lb.max){
 
   tol <- 1e-6
 
@@ -5927,6 +5927,7 @@ simu.data <- function(randomeffects.covariates.dependent,
   ymiss_ind<- y
   ytest <- y   ## for testing pseudo-values
 
+  lb.max <- max(lb)
   z <- array(0,dim=c(num_study,nmax,np,lb.max),
              dimnames=list(
                paste("ss",1:num_study,sep=""),
@@ -6197,7 +6198,7 @@ convert.matrix.to.numeric <- function(x){
 
 
 probability.z <- function(zeval.tmp,z.discrete.info,z,
-                          common.param.estimation,n,maxm,study.names,z_lab_names){
+                          common.param.estimation,n,maxm,study.names,z_lab_names,num_study){
 
   if(any(z.discrete.info==TRUE)){
     ## at least one discrete z
