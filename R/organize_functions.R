@@ -2097,6 +2097,28 @@ data.for.analysis <- function(all.data,baseage.cutoff,
 nonconverters.table <- function(study.names,covariates.use,my.data,
                                 results.to.report=c("mean-sd","quantiles")[1]){
 
+  info.covariates <- function(data.use,name,name.use,results.to.report="mean-sd"){
+    if(name=="base_age" | name=="CAG" |
+       name == "SDMT" | name == "STROOP_COLOR" |
+       name == "STROOP_WORD" | name == "STROOP_INTERFERENCE"){
+      if(results.to.report=="quantiles"){
+        ## report quantiles (format for JAMA journal)
+        out <- get.quantiles(as.numeric(data.use[,name]),digits=1)
+      } else {
+        ## report mean and SD (table for statistics paper)
+        out <- get.mean.sd(as.numeric(data.use[,name]),digits=1)
+      }
+    } else if(name=="gender" | name=="educ_cat" ){
+      out <- get.total.percentage(data.use[,name],digits=0)
+    } else if(grepl("delta",name)){
+      out <- get.total.percentage(data.use[,name],digits=0)
+    }
+
+    names(out) <- name.use
+    return(out)
+  }
+
+
   #############################################################
   ## put my.data in one big data frame, with study indicator ##
   #############################################################
@@ -2108,6 +2130,69 @@ nonconverters.table <- function(study.names,covariates.use,my.data,
                                                         c(covariates.use)]),]
 
   ## table.names.use
+  table.names <- list(base_age="Age at baseline",
+                      CAG="CAG repeat length",
+                      gender="Female sex",
+                      educ_cat="Higher education",
+                      delta.hdage_nobase="Experience Motor Phenoconversion",
+                      delta.mcione="Experience Cognitive Impairment",
+                      delta.mcione_cat="Experience Cognitive Impairment",
+
+                      delta.mcisd="Experience Single-Domain Cognitive Impairment",
+                      delta.mcisd_cat="Experience Single-Domain Cognitive Impairment",
+
+                      delta.mcimd="Experience Multi-Domain Cognitive Impairment",
+                      delta.mcimd_cat="Experience Multi-Domain Cognitive Impairment",
+
+                      delta.mcisd_nobase="Experience Single-Domain Cognitive Impairment After Baseline",
+                      delta.mcisd_cat_nobase="Experience Single-Domain Cognitive Impairment After Baseline",
+
+                      delta.mcimd_nobase="Experience Multi-Domain Cognitive Impairment After Baseline",
+                      delta.mcimd_cat_nobase="Experience Multi-Domain Cognitive Impairment After Baseline",
+
+
+                      delta.behone="Experience Moderate Behavioral Abnormality",
+                      delta.strcol="~~~~~Below-healthy stroop color naming score",
+                      delta.strcol_cat="~~~~~Below-healthy stroop color naming score",
+
+                      delta.strwrd="~~~~~Below-healthy stroop word naming score",
+                      delta.strwrd_cat="~~~~~Below-healthy stroop word naming score",
+
+                      delta.strint="~~~~~Below-healthy stroop interference score",
+                      delta.strint_cat="~~~~~Below-healthy stroop interference score",
+
+                      delta.sdmt="~~~~~Below-healthy SDMT score",
+                      delta.sdmt_cat="~~~~~Below-healthy SDMT score",
+
+                      delta.mciall="~~~~~Below-healthy on all stroop and SDMT tests",
+                      delta.apt2="~~~~~Mild apathy",
+                      delta.irb2="~~~~~Mild irritability",
+                      delta.dep2="~~~~~Mild depression",
+                      delta.behall="~~~~~Mild apathy, irritability, and depression",
+                      delta.strcol="~~~~~Below-healthy stroop color naming score",
+                      delta.strwrd="~~~~~Below-healthy stroop word naming score",
+                      delta.strint="~~~~~Below-healthy stroop interference score",
+                      delta.sdmt="~~~~~Below-healthy SDMT score",
+                      delta.mciall="~~~~~Below-healthy on all stroop and SDMT tests",
+                      delta.apt2="~~~~~Mild apathy",
+                      delta.irb2="~~~~~Mild irritability",
+                      delta.dep2="~~~~~Mild depression",
+                      delta.behall="~~~~~Mild apathy, irritability, and depression",
+                      ##
+                      delta.aptmci="~~~~~Abnormal apathy",
+                      delta.irbmci="~~~~~Abnormal irritability",
+                      delta.depmci="~~~~~Abnormal depression",
+                      #
+                      SDMT= "SDMT",
+                      STROOP_COLOR = "Stroop Color",
+                      STROOP_WORD = "Stroop Word",
+                      STROOP_INTERFERENCE = "Stroop Interference",
+                      ## total functional capacity
+                      delta.tfcone="Experience Stage 1 TFC",
+                      delta.tfctwo="Experience Stage 2 TFC",
+                      delta.tfcthree="Experience Stage 3 TFC"
+  )
+
   table.names.use <- table.names
 
 
@@ -5625,51 +5710,6 @@ organize.data.sets <- function(location,study,use.normative.data){
 
 
 
-######################################
-## summary table of nonconverters   ##
-######################################
-
-nonconverters.table <- function(study.names,covariates.use,my.data,
-                                results.to.report=c("mean-sd","quantiles")[1]){
-
-  #############################################################
-  ## put my.data in one big data frame, with study indicator ##
-  #############################################################
-  ## put my.data in a data frame
-  my.data.all <- merge.all.data(study.names,my.data)
-
-  ## Extract complete cases based on covariates ##
-  data.sample <- my.data.all[complete.cases(my.data.all[,
-                                                        c(covariates.use)]),]
-
-  ## table.names.use
-  table.names.use <- table.names
-
-
-  cov.use <- c(covariates.use)
-  cov.names <- unlist(table.names.use[cov.use])
-
-  data.out <- array(NA,dim=c(1+length(cov.names),length(study.names)),
-                    dimnames=list(c("Sample size", cov.names),study.names))
-
-  for(ss in 1:length(study.names)){
-    index.use <- which(data.sample$study==study.names[ss])
-    data.use <- data.sample[index.use,]
-
-    ## sample size information
-    data.out["Sample size",ss] <- nrow(data.use)
-
-    ## other covariate information
-    for(ii in 1:length(cov.use)){
-      data.out[cov.names[ii],ss] <-
-        info.covariates(data.use,cov.use[ii],cov.names[ii],
-                        results.to.report)
-    }
-  }
-
-
-  return(data.out)
-}
 
 
 ##################################################################
