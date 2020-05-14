@@ -6393,12 +6393,12 @@ extract.output <- function(theta.out,gamma.param,omega.param,time_val){
 }
 
 ##df is a list of dataframes
-
+#' @import plyr
 merge.by.columns <- function(df){
   ## extract rownames of each data frame in df
   rownames.df <- lapply(df,rownames)
 
-  out <- cbind(names=unlist(rownames.df),rbind.fill(df))
+  out <- cbind(names=unlist(rownames.df),plyr::rbind.fill(df))
   rownames(out) <- NULL
 
   ## remove extra names variable
