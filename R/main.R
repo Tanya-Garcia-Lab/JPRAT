@@ -9916,14 +9916,15 @@ main.plot.results <- function(filename.set, param.names, out.true, out.mean,
 
 
 #' @importFrom survival survfit
+#' @import graphics
 plot.at.a.over.b <- function(filename,
                              thetat=NULL,
                              estimate,
                              theta.array.lo=NULL,
                              theta.array.hi=NULL,
                              index_a,
-                             bvalues=time_val,
-                             bvalues.cut=time.cut,
+                             bvalues,#=time_val,
+                             bvalues.cut,#=time.cut,
                              color.list,
                              cex.lab=3,cex.axis=3,lwd=5,cex.legend=3,
                              legend.position="topright",ylim=NULL,
@@ -9984,10 +9985,10 @@ plot.at.a.over.b <- function(filename,
 
 
   ## start plot
-  postscript(paste(filename,".eps",sep=""))
+  ##postscript(paste(filename,".eps",sep=""))
   #x11()
-  par(mar=c(5.1, 5.1, 4.1, 2.1))
-  plot(1,type="n",xlab=xlab.use,ylab=ylab.use,
+  graphics::par(mar=c(5.1, 5.1, 4.1, 2.1))
+  graphics::plot(1,type="n",xlab=xlab.use,ylab=ylab.use,
        xlim=xlim,ylim=ylim,cex.axis=cex.axis,cex.lab=cex.lab)
 
   tmp <- 0
@@ -9997,20 +9998,20 @@ plot.at.a.over.b <- function(filename,
     tmp <- tmp+1
 
     if(!is.null(thetat)){
-      lines(bvalues[index.b.cut],thetat[i,index.b.cut],
+      graphics::lines(bvalues[index.b.cut],thetat[i,index.b.cut],
             col=color.list[tmp],lty=1,lwd=lwd)
       tmp <- tmp + 1
     }
 
     ## plot estimate at a over b
-    lines(bvalues[index.b.cut],
+    graphics::lines(bvalues[index.b.cut],
           estimate[i,index.b.cut],col=color.list[tmp],lty=1,lwd=lwd)
 
     ## plot confidence intervals at a over b
     if(conf.int==TRUE){
-      lines(bvalues[index.b.cut],
+      graphics::lines(bvalues[index.b.cut],
             theta.array.lo[i,index.b.cut],col=color.list[tmp],lty=3,lwd=lwd)
-      lines(bvalues[index.b.cut],
+      graphics::lines(bvalues[index.b.cut],
             theta.array.hi[i,index.b.cut],col=color.list[tmp],lty=4,lwd=lwd)
     }
   }
@@ -10026,11 +10027,11 @@ plot.at.a.over.b <- function(filename,
       theta.array.hi.other <- data.extra$theta.array.hi.other
 
       tmp <- tmp + 1
-      lines(bvalues[index.b.cut],estimate.other[i,index.b.cut],col=color.list[tmp],lty=1,lwd=lwd)
+      graphics::lines(bvalues[index.b.cut],estimate.other[i,index.b.cut],col=color.list[tmp],lty=1,lwd=lwd)
       if(conf.int==TRUE){
-        lines(bvalues[index.b.cut],
+        graphics::lines(bvalues[index.b.cut],
               theta.array.lo.other[i,index.b.cut],col=color.list[tmp],lty=3,lwd=lwd)
-        lines(bvalues[index.b.cut],
+        graphics::lines(bvalues[index.b.cut],
               theta.array.hi.other[i,index.b.cut],col=color.list[tmp],lty=4,lwd=lwd)
       }
     }
@@ -10067,7 +10068,7 @@ plot.at.a.over.b <- function(filename,
 
       ## form KM estimate and add estimate to plot
       tmp <-  tmp + 1
-      lines(survfit(Surv(time,delta)~1,data=myKMdata,conf.int=conf.int),col=color.list[tmp],
+      graphics::lines(survfit(Surv(time,delta)~1,data=myKMdata,conf.int=conf.int),col=color.list[tmp],
             fun="event",lwd=lwd)
     }
   }
@@ -10075,14 +10076,14 @@ plot.at.a.over.b <- function(filename,
 
 
   if(!is.null(legend.position)){
-    legend(legend.position,legend=label.names,
+    graphics::legend(legend.position,legend=label.names,
            col=color.list[1:tmp],
            lty=rep(1,length(tmp)),lwd=rep(lwd,length(tmp)),
            bty="n",cex=cex.legend)
   }
 
   if(add.second.legend==TRUE){
-    legend("bottomright",legend=c("Estimate","Upper 95% CI", "Lower 95% CI"),
+    graphics::legend("bottomright",legend=c("Estimate","Upper 95% CI", "Lower 95% CI"),
            col=rep("black",3),
            lty=c(1,4,3),
            lwd=rep(lwd,3),
@@ -10090,7 +10091,7 @@ plot.at.a.over.b <- function(filename,
 
   }
 
-  dev.off()
+  ##dev.off()
 }
 
 
@@ -10099,19 +10100,19 @@ plot.at.a.over.b <- function(filename,
 
 
 ## plot counts
-
+#' @import graphics
 plot.counts <- function(filename,time_val,counts.array,lwd=3,cex.legend=3,cex.axis=3){
   data.count2 <- apply(counts.array,c(2,3),mean)
 
-  postscript(paste(filename,"_counts.eps",sep=""))
-  plot(as.numeric(time_val),as.numeric(data.count2[,1]),col="blue",type="l",lwd=lwd,
+  #postscript(paste(filename,"_counts.eps",sep=""))
+  graphics::plot(as.numeric(time_val),as.numeric(data.count2[,1]),col="blue",type="l",lwd=lwd,
        ylim=c(0,1),ylab="",xlab="",cex.axis=cex.axis)
-  lines(as.numeric(time_val),as.numeric(data.count2[,2]),col="red",lty=1,lwd=lwd)
-  lines(as.numeric(time_val),as.numeric(data.count2[,3]),col="green",lty=1,lwd=lwd)
-  lines(as.numeric(time_val),as.numeric(data.count2[,4]),col="black",lty=1,lwd=lwd)
-  legend("bottomright",legend=c("Y=1","Y=0, delta=1","Y=0, delta=0","Y in (0,1)"),col=c("blue","red","green","black"),
+  graphics::lines(as.numeric(time_val),as.numeric(data.count2[,2]),col="red",lty=1,lwd=lwd)
+  graphics::lines(as.numeric(time_val),as.numeric(data.count2[,3]),col="green",lty=1,lwd=lwd)
+  graphics::lines(as.numeric(time_val),as.numeric(data.count2[,4]),col="black",lty=1,lwd=lwd)
+  graphics::legend("bottomright",legend=c("Y=1","Y=0, delta=1","Y=0, delta=0","Y in (0,1)"),col=c("blue","red","green","black"),
          lty=c(1,1,1,1),lwd=rep(lwd,4),bty="n",cex=cex.legend)
-  dev.off()
+  #dev.off()
 }
 
 ## IAC calculation

@@ -23,6 +23,7 @@ Imports:
  data.table,
  gamm4,
  ggplot2,
+ graphics,
  grDevices,
  grid,
  gridExtra,
