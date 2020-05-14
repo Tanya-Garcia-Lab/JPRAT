@@ -114,6 +114,7 @@
 #' estimated.parameters.common.for.all.studies=FALSE;
 #' use.bootstrap.variance=TRUE ;
 #' estimation.when.censoring.depends.on.z=FALSE ;
+#' estimate.variances = "est";
 #' write.output=TRUE;
 #'
 #' #######################
@@ -142,6 +143,7 @@
 #'   what.analyzed.separately,
 #'   estimation.when.censoring.depends.on.z,
 #'   use.bootstrap.variance,
+#'   estimate.variances,
 #'   write.output)
 #'
 #' ###################################

@@ -24,6 +24,7 @@
 #' @param what.analyzed.separately a character value to determine whether analysis will be performed separately or jointly: the options are "studyevents" (studies and event), "studies", "events", or "none". Default is "studyevents".
 #' @param estimation.when.censoring.depends.on.z a logical value whether the estimation process assumes that a censoring distribution depends on nonfunctional covariates Z. If covariates Z does not follow a binomial distribution, then default is FALSE.
 #' @param use.bootstrap.variance  a logical value whether to compute bootstrap variances. Default is TRUE.
+#' @param estimate.variances FILL IN DETAILS
 #' @param write.output a logical value whether outputs will be saved into data files. Default is TRUE.
 #'
 #' @details The Joint Progression of Risk Assessment Tool (JPRAT) evaluates and compares all outcomes simultaneously
