@@ -26,6 +26,7 @@ jprat.wrapper(
   what.analyzed.separately,
   estimation.when.censoring.depends.on.z,
   use.bootstrap.variance,
+  estimate.variances,
   write.output
 )
 }
@@ -154,6 +155,7 @@ what.analyzed.separately="studyevent";
 estimated.parameters.common.for.all.studies=FALSE;
 use.bootstrap.variance=TRUE ;
 estimation.when.censoring.depends.on.z=FALSE ;
+estimate.variances="est";
 write.output=TRUE;
 
 
@@ -179,6 +181,7 @@ jprat.estimat.results<-jprat.wrapper(study.names=study.names,
   what.analyzed.separately=what.analyzed.separately,
   estimation.when.censoring.depends.on.z=estimation.when.censoring.depends.on.z,
   use.bootstrap.variance=use.bootstrap.variance,
+  estimate.variances=estimate.variances,
   write.output=write.output)
 
 

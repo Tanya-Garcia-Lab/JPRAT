@@ -1217,7 +1217,7 @@ view.all.results <- function(
             # no examples but add documentations#
             #####################################
 
-            ggplot_error_bars(filename=paste("gg_",filename.set,sep=""),
+            ggplot_at_a_over_b(filename=paste("gg_",filename.set,sep=""),
                                estimate=adrop(Ft.array$out.mono.mean[ss,index_a,zz,i,,"est",drop=FALSE],
                                               drop=c(1,3,4,6)),
                                theta.array.lo=adrop(Ft.array$out.mono.mean[ss,index_a,zz,i,,var.lo,drop=FALSE],
@@ -1272,7 +1272,7 @@ view.all.results <- function(
               #                 ylim=ylim.setting["alphat",],
               #                 conf.int=conf.int.use,label.names=label.names)
 
-              ggplot.at.a.over.b(filename=paste("gg_",
+              ggplot_at_a_over_b(filename=paste("gg_",
                                                 filename_new,"alpha_ss_",study.names[ss],
                                                 "_nn_plot_",comp,"_diff_events_x",alphax_lab[tmp],sep=""),
                                  estimate=adrop(alpha.array$out.mean[ss,index_a,i,,la,"est",drop=FALSE],
@@ -1344,7 +1344,7 @@ view.all.results <- function(
               #                  conf.int=conf.int.use,label.names=label.names)
 
 
-              ggplot.at.a.over.b(filename=paste("gg_",
+              ggplot_at_a_over_b(filename=paste("gg_",
                                                 filename_new,"alpha_ss_",study.names[ss],
                                                 "_nn_plot_",comp,"_diff_events_t",alphat_lab[tmp],sep=""),
                                  estimate=adrop(alpha.array.new$out.mean[ss,index_a,i,,la,"est",drop=FALSE],
@@ -1477,7 +1477,7 @@ view.all.results <- function(
           #			add.second.legend=add.second.legend)
 
           ## ggplot version
-          ggplot.at.a.over.b(filename=paste("gg_",filename.use,sep=""),
+          ggplot_at_a_over_b(filename=paste("gg_",filename.use,sep=""),
                              estimate=adrop(Ft.array$out.mono.mean[index_a,nn,zz,i,,"est",drop=FALSE],
                                             drop=c(2,3,4,6)),
                              theta.array.lo=adrop(Ft.array$out.mono.mean[index_a,nn,zz,i,,var.lo,drop=FALSE],

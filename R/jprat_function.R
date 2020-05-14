@@ -101,6 +101,7 @@
 #' estimated.parameters.common.for.all.studies=FALSE;
 #' use.bootstrap.variance=TRUE ;
 #' estimation.when.censoring.depends.on.z=FALSE ;
+#' estimate.variances="est";
 #' write.output=TRUE;
 #'
 #'
@@ -126,6 +127,7 @@
 #'   what.analyzed.separately=what.analyzed.separately,
 #'   estimation.when.censoring.depends.on.z=estimation.when.censoring.depends.on.z,
 #'   use.bootstrap.variance=use.bootstrap.variance,
+#'   estimate.variances=estimate.variances,
 #'   write.output=write.output)
 #'
 #'
@@ -156,6 +158,7 @@ jprat.wrapper <- function(
   what.analyzed.separately,
   estimation.when.censoring.depends.on.z,
   use.bootstrap.variance,
+  estimate.variances,
   write.output
 ){
 
