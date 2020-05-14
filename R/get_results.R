@@ -550,11 +550,11 @@ view.all.results <- function(
   #zeval.tmp  <- old.names$zeval.tmp
 
   ## if parmaeter.plot=TRUE, the following arguments are needed
-  # alphax.ylab <- old.names$alphax.ylab
-  # alphax.xlab <- old.names$alphax.xlab
-  # alphat.ylab <- old.names$alphat.ylab
-  # alphat.xlab <- old.names$alphat.xlab
-  # alphat_lab <- old.names$alphat_lab
+  alphax.ylab <- old.names$alphax.ylab
+  alphax.xlab <- old.names$alphax.xlab
+  alphat.ylab <- old.names$alphat.ylab
+  alphat.xlab <- old.names$alphat.xlab
+  alphat_lab <- old.names$alphat_lab
   # z_tmp.list  <- old.names$z_tmp.list
   # x_tmp.list  <- old.names$x_tmp.list
   # zeval  <- old.names$zeval
@@ -1217,7 +1217,7 @@ view.all.results <- function(
             # no examples but add documentations#
             #####################################
 
-            ggplot.at.a.over.b(filename=paste("gg_",filename.set,sep=""),
+            ggplot_error_bars(filename=paste("gg_",filename.set,sep=""),
                                estimate=adrop(Ft.array$out.mono.mean[ss,index_a,zz,i,,"est",drop=FALSE],
                                               drop=c(1,3,4,6)),
                                theta.array.lo=adrop(Ft.array$out.mono.mean[ss,index_a,zz,i,,var.lo,drop=FALSE],
@@ -2012,7 +2012,7 @@ view.all.results <- function(
                   # no examples but add documentations#
                   #####################################
 
-                  ggplot.error.bars(filename=paste("gg_",filename.set,sep=""),
+                  ggplot_error_bars(filename=paste("gg_",filename.set,sep=""),
                                     estimate=adrop(Ft.predicted.array$out.mean[ss,index_a,zz,i,,tt0,"est",drop=FALSE],
                                                    drop=c(1,3,4,6,7)),
                                     theta.array.lo=adrop(Ft.predicted.array$out.mean[ss,index_a,zz,i,,tt0,var.lo,drop=FALSE],
