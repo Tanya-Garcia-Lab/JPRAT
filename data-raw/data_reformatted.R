@@ -3,6 +3,7 @@ data_predict<-read.csv("data-raw/data_predict.csv")
 data_cohort<-read.csv("data-raw/data_cohort.csv")
 data_pharos<-read.csv("data-raw/data_pharos.csv")
 
+
 ## parameters
 use.real.data=TRUE;
 study.names=c("cohort", "predict", "pharos");
@@ -101,7 +102,8 @@ data.reformatted.for.jprat.analysis<-function(use_real_data,
 
     data.tmp <-read.csv(paste("data-raw/data_",study,".csv",sep=""),
                           header=TRUE)[ , -1]
-    data.sets.as.list[[study]] <- data.tmp
+
+        data.sets.as.list[[study]] <- data.tmp
 
     #cat(" \n pseudo data dimensions, complete cases:",dim(data.tmp))
   }
