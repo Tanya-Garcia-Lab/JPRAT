@@ -11,7 +11,7 @@
 #+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+##
 
 get.functional.alpha.coefficients <-
-  function(axmod,study,common.param.data){
+  function(axmod,study,common.param.data,censoring.high){
     if(axmod=="line"){
       if(common.param.data==TRUE){ # common alpha, beta
         if(censoring.high==FALSE){
@@ -165,6 +165,11 @@ default.simulation.setting <- function(){
   }
 
 
+  ## number.of.studies: number of studies.
+  if(!exists(as.character(substitute(censoring.high)))){
+    censoring.high <- FALSE
+  }
+
   ## Names of the studies
   if(!exists(as.character(substitute(number.of.studies)))){
     study.names <- paste0("study",1:number.of.studies)
@@ -266,11 +271,11 @@ default.simulation.setting <- function(){
   ## estimation assuming censoring depends on z (when Z=binary)
   if(!exists(as.character(substitute(estimation.when.censoring.depends.on.z)))){
     estimation.when.censoring.depends.on.z <- TRUE
-    if(use_real_data==FALSE){
-      if(simulated.z.covariate.distribution!="binom"){
-        estimation.when.censoring.depends.on.z <- FALSE ## we only have it setup for discrete Z
-      }
-    }
+    #if(use_real_data==FALSE){
+    #  if(simulated.z.covariate.distribution!="binom"){
+    #    estimation.when.censoring.depends.on.z <- FALSE ## we only have it setup for discrete Z
+    #  }
+    #}
   }
 
   ## use.bootstrap.variance: compute bootstrap variances?
@@ -354,7 +359,7 @@ default.simulation.setting <- function(){
   xmin <- NULL
   xmax <- NULL
   functional.covariate.values.for.prediction <-
-    get.functional.covariate.values.for.prediction(use_real_data,
+    get.functional.covariate.values.for.prediction(#use_real_data,
                                                    xmin,xmax,functional.covariate.values.of.interest)
 
 
@@ -636,7 +641,7 @@ default.simulation.setting <- function(){
   for(ss in 1:number.of.studies){
     a0.tmp <- NULL
     for(k in 1:number.of.clinical.events){
-      a0.tmp <- c(a0.tmp,get.functional.alpha.coefficients(functional.alpha.form[[ss]][[k]],ss,simulated.parameters.common.for.all.studies))
+      a0.tmp <- c(a0.tmp,get.functional.alpha.coefficients(functional.alpha.form[[ss]][[k]],ss,simulated.parameters.common.for.all.studies,censoring.high))
     }
     a0[[ss]] <- a0.tmp
   }
@@ -997,13 +1002,7 @@ default.results.setting <- function(#use_real_data,
   }
 
   ## normalize.cag.repeat.values: we scale the CAG repeats to a uniform [0,1] scale
-  if(!exists(as.character(substitute(normalize.cag.repeat.values)))){
-    if(use_real_data==TRUE){
-      normalize.cag.repeat.values <- TRUE
-    } else{
-      normalize.cag.repeat.values <- FALSE
-    }
-  }
+  normalize.cag.repeat.values <- TRUE
 
 
   ## y-label for comparing studies (only used for clinical paper)
@@ -1228,7 +1227,7 @@ default.results.setting <- function(#use_real_data,
 #' @return this function returns default parameters setting to run JPRAT on one data set.
 #' @export
 #'
-#' @examples
+## @examples ADD EXAMPLES!
 default.options.for.data.setting <- function(){ #use.bootstrap.variance
 
 

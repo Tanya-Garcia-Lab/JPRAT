@@ -55,8 +55,3 @@ criteria.time.points.for.jprat.analysis:
 This function returns warning message if the criteria are not met for \code{functional.covariate.values.of.interest}, \code{functional.covariate.values.of.interest.ci},
 \code{time.points.of.interest}, \code{time.points.of.interest.ci}, \code{functional.covariate.comparisons} and \code{time.points.for.conditional.prediction}.
 }
-\examples{
-
-
-
-}

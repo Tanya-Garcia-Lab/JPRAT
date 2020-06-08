@@ -10,7 +10,7 @@ ggplot_error_bars(
   theta.array.lo = NULL,
   theta.array.hi = NULL,
   index_a,
-  bvalues = time_val,
+  bvalues,
   color.list,
   cex.line = 1.5,
   cex.size = 20,
@@ -59,8 +59,4 @@ line plots with errors bars for each event occured at specific time points (\cod
 }
 \description{
 ggplot_error_bars: This function plots the line plots with error bars.
-}
-\examples{
-
-
 }

@@ -62,7 +62,7 @@
 #'
 #' @export
 #'
-#' @examples
+## @examples
 #'
 #'
 #'
@@ -137,8 +137,9 @@ all_null_theta <- function(theta.names,
 #'
 #' @param method a character value for which estimation procedure will be used to estimate all parameters of time varying fixed effects with the marginal distribution function: "gamm4" or "new".  Default is "gamm4".
 #' @param compute.study.differences a logical value whether study differences will be estimated. Only valid when the number of studies (\code{number.of.studies}) are greater than 1,
-#'                                  when parameters were estimated differently (\code{estimated.parameters.common.for.all=FALSE}), and when estimates are similar across studies (\code{check.study.equality=TRUE})).
+#'                                  when parameters were estimated differently (\code{estimated.parameters.common.for.all.studies=FALSE}), and when estimates are similar across studies (\code{check.study.equality=TRUE})).
 #' @param var.boot a logical value whether bootstrap variances are estimated. See the argument \code{use.bootstrap.variance} in the \code{\link{jprat.wrapper}} function. Default is TRUE.
+#' @param arbitrary ADD DETAILS HERE!
 #' @param num_study number of studies used in analyses. If the real data analysis used three studies called "cohort", "predict", "pharos", then number of studies is 3. i.e., \code{num_study=3}.
 #' @param np number of clinical events, which is the length of the character vector for names of time-to-event outcomes (\code{event.outcome.names}) in \code{\link{jprat.wrapper}} function.
 #' @param count.store Null object to store number of event times, which occurs before \eqn{t_0}.
@@ -257,7 +258,7 @@ all_null_theta <- function(theta.names,
 #'
 #'
 #'
-#' @examples
+## @examples
 #'
 #'
 #'
@@ -478,8 +479,8 @@ jprat.main.estimates<-function(method="gamm4",  ## conditional paramters to esti
       #iters <- iters + 1
     }  else{
       if(real_data==TRUE){
-        cat("Data is not good.")
-        break
+        stop("Data is not good.")
+
       }
     }
   }
@@ -590,7 +591,7 @@ jprat.main.estimates<-function(method="gamm4",  ## conditional paramters to esti
 #' @export
 #'
 #'
-#' @examples
+## @examples
 #'
 #'
 #'
@@ -770,7 +771,7 @@ gamm4.estimates <- function(arbitrary, num_study, np,
 #'
 #' @export
 #'
-#' @examples
+## @examples
 #'
 boot.compare.studies <- function(arbitrary, ## False
                                  combi.study,
@@ -1163,11 +1164,14 @@ boot.compare.studies <- function(arbitrary, ## False
 #'
 #' @return This function returns all analysis results including plots and tables.
 #'
+#' @import grDevices
 #' @import ggplot2
 #' @import gtable
+#' @import grid
+#' @import gridExtra
 #' @export
 #'
-#' @examples
+## @examples
 #'
 #'
 #'
@@ -1176,10 +1180,10 @@ ggplot_at_a_over_b <- function(filename,
                                theta.array.lo=NULL,
                                theta.array.hi=NULL,
                                index_a,
-                               bvalues=time_val,
-                               bvalues.cut=time.cut,
+                               bvalues,#=time_val,
+                               bvalues.cut,#=time.cut,
                                color.list,
-                               nrisk=number.at.risk[index_a,nn,zz,1,],
+                               nrisk,#=number.at.risk[index_a,nn,zz,1,],
                                ## to make y-label closer to y-axis
                                margin.move=unit(c(0,-30,0,0),"mm"),
                                cex.line=1.5,cex.size=20,cex.number=6,
@@ -1233,77 +1237,86 @@ ggplot_at_a_over_b <- function(filename,
     data.plot <- cbind(data.plot,lo=data.lo.plot$y,hi=data.hi.plot$y)
   }
 
-
+  x <- NULL
+  y <- NULL
+  Group <- NULL
+  hi <- NULL
+  lo <- NULL
 
   ## get legends for label.names : Group A VERSES y
-  g <- ggplot(data=data.plot,aes(x=x,y=y,group=Group))+
-    geom_line(aes(color=Group),size=cex.line) +
-    theme_bw()+ 	## no shaded area
-    theme(legend.key = element_blank()) + ## no boxes around legend labels
-    theme(legend.position = "bottom") +  	 ## legend position
-    theme(legend.title=element_blank())+  ## no legend name
-    theme(legend.text=element_text(size=cex.size))+  ## legend size
-    scale_color_manual(values=color.list)
+  g <- ggplot2::ggplot(data=data.plot,
+                       ggplot2::aes(x=x,y=y,group=Group))+
+    ggplot2::geom_line(ggplot2::aes(color=Group),size=cex.line) +
+    ggplot2::theme_bw()+ 	## no shaded area
+    ggplot2::theme(legend.key = ggplot2::element_blank()) + ## no boxes around legend labels
+    ggplot2::theme(legend.position = "bottom") +  	 ## legend position
+    ggplot2::theme(legend.title=ggplot2::element_blank())+  ## no legend name
+    ggplot2::theme(legend.text=ggplot2::element_text(size=cex.size))+  ## legend size
+    ggplot2::scale_color_manual(values=color.list)
 
   # Extract the first legend - leg1
-  png("NUL")
-  leg1 <- gtable_filter(ggplot_gtable(ggplot_build(g)), "guide-box")
-  dev.off()
+  grDevices::png("NUL")
+  leg1 <- gtable::gtable_filter(ggplot2::ggplot_gtable(ggplot2::ggplot_build(g)), "guide-box")
+  grDevices::dev.off()
 
   if(add.second.legend==TRUE){
-    g2 <- ggplot(data=data.plot) +
-      geom_line(aes(x=x,y=hi,linetype="Upper 95% CI"),size=cex.line) +
-      geom_line(aes(x=x,y=lo,linetype="Lower 95% CI"),size=cex.line) +
-      theme_bw() +  ## no shaded area
-      theme(legend.key = element_blank()) + ## no boxes around legend labels
-      scale_linetype_manual("",values=c(3,2),
+    g2 <- ggplot2::ggplot(data=data.plot) +
+      ggplot2::geom_line(ggplot2::aes(x=x,y=hi,linetype="Upper 95% CI"),size=cex.line) +
+      ggplot2::geom_line(ggplot2::aes(x=x,y=lo,linetype="Lower 95% CI"),size=cex.line) +
+      ggplot2::theme_bw() +  ## no shaded area
+      ggplot2::theme(legend.key = ggplot2::element_blank()) + ## no boxes around legend labels
+      ggplot2::scale_linetype_manual("",values=c(3,2),
                             labels=c("Upper 95% CI","Lower 95% CI")) +
-      theme(legend.text=element_text(size=cex.size))  ## legend size
+      ggplot2::theme(legend.text=ggplot2::element_text(size=cex.size))  ## legend size
 
     ## Extract the second legend
-    png("NUL")
-    leg2 <- gtable_filter(ggplot_gtable(ggplot_build(g2)), "guide-box")
-    dev.off()
+    grDevices::png("NUL")
+    leg2 <- gtable::gtable_filter(ggplot2::ggplot_gtable(ggplot2::ggplot_build(g2)), "guide-box")
+    grDevices::dev.off()
   }
 
   ## main plot
-  main.plot <- ggplot(data=data.plot,aes(x=x,y=y,group=Group)) +
-    geom_line(aes(color=Group),size=cex.line) +
-    theme_bw() +
-    theme(legend.key = element_blank()) + ## no boxes around legend labels
-    theme(legend.position = "top") +  	 ## legend position
-    theme(legend.title=element_blank())+  ## no legend name
-    theme(legend.text=element_text(size=cex.size))+  ## legend size
-    scale_color_manual(values=color.list) +
-    xlab(xlab.use)+
-    ylab(ylab.use)+
-    theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank(),
-          axis.text.x=element_text(size=cex.size),
-          axis.text.y=element_text(size=cex.size),
-          axis.title.x=element_text(size=cex.size),
-          axis.title.y=element_text(size=cex.size,angle=90,
+  main.plot <- ggplot2::ggplot(data=data.plot,
+                               ggplot2::aes(x=x,y=y,group=Group)) +
+    ggplot2::geom_line(ggplot2::aes(color=Group),size=cex.line) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(legend.key = ggplot2::element_blank()) + ## no boxes around legend labels
+    ggplot2::theme(legend.position = "top") +  	 ## legend position
+    ggplot2::theme(legend.title=ggplot2::element_blank())+  ## no legend name
+    ggplot2::theme(legend.text=ggplot2::element_text(size=cex.size))+  ## legend size
+    ggplot2::scale_color_manual(values=color.list) +
+    ggplot2::xlab(xlab.use)+
+    ggplot2::ylab(ylab.use)+
+    ggplot2::theme(panel.grid.major=ggplot2::element_blank(),
+                   panel.grid.minor=ggplot2::element_blank(),
+          axis.text.x=ggplot2::element_text(size=cex.size),
+          axis.text.y=ggplot2::element_text(size=cex.size),
+          axis.title.x=ggplot2::element_text(size=cex.size),
+          axis.title.y=ggplot2::element_text(size=cex.size,angle=90,
                                     margin=margin.move))
 
 
   if(!is.null(ylim)){
-    main.plot <- main.plot + ylim(ylim)
+    main.plot <- main.plot + ggplot2::ylim(ylim)
   }
 
   if(conf.int==TRUE){
     main.plot <- main.plot +
-      geom_line(data=data.plot,aes(x=x,y=lo,group=Group,color=Group),
+      ggplot2::geom_line(data=data.plot,
+                         ggplot2::aes(x=x,y=lo,group=Group,color=Group),
                 linetype=2,size=cex.line)+
-      geom_line(data=data.plot,aes(x=x,y=hi,group=Group,color=Group),
+      ggplot2::geom_line(data=data.plot,
+                         ggplot2::aes(x=x,y=hi,group=Group,color=Group),
                 linetype=3,size=cex.line)
   }
 
 
   plotNew <- main.plot
   if(add.second.legend==TRUE){
-    png("NUL")
-    plotNew <- arrangeGrob(main.plot, leg2,
+    grDevices::png("NUL")
+    plotNew <- gridExtra::arrangeGrob(main.plot, leg2,
                            widths = unit.c(unit(1, "npc") - leg2$width, leg2$width), nrow = 1) ## Set up a gtable layout to place multiple grobs on a page.
-    dev.off()
+    grDevices::dev.off()
   }
 
 
@@ -1311,7 +1324,7 @@ ggplot_at_a_over_b <- function(filename,
     ## number at risk table
     ##xtick.marks <- as.numeric(ggplot_build(main.plot)$panel$ranges[[1]]$x.labels)
     ## extract x tick marks from ggplot
-    xtick.marks <- as.numeric(ggplot_build(main.plot)$layout$panel_ranges[[1]]$x.labels)
+    xtick.marks <- as.numeric(ggplot2::ggplot_build(main.plot)$layout$panel_ranges[[1]]$x.labels)
     index.b.cut.nrisk <- which(bvalues %in% xtick.marks)
     nrisk.tmp <- nrisk
     nrisk.tmp[,-index.b.cut.nrisk] <- ""  ## empty placeholder for non-shown values
@@ -1322,55 +1335,56 @@ ggplot_at_a_over_b <- function(filename,
     ## reverse order label.names
     nrisk.plot$Group <- factor(nrisk.plot$Group,levels=rev(levels(nrisk.plot$Group)))
 
-    tbl <- ggplot(nrisk.plot,aes(x=x,y=factor(Group),label=y))+
-      geom_text(size=cex.number)+
-      theme_bw()+
-      theme(
+    tbl <- ggplot2::ggplot(nrisk.plot,
+                           ggplot2::aes(x=x,y=factor(Group),label=y))+
+      ggplot2::geom_text(size=cex.number)+
+      ggplot2::theme_bw()+
+      ggplot2::theme(
         legend.position = "none",
-        plot.background = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_blank(),
-        axis.line = element_blank(),
-        axis.text.x = element_blank(),
-        axis.text.y = element_text(size=cex.size, color = 'black'),
-        axis.ticks=element_blank(),
-        axis.title.x = element_blank(),
-        axis.title.y = element_blank(),
-        plot.title = element_blank()
+        plot.background = ggplot2::element_blank(),
+        panel.grid.major = ggplot2::element_blank(),
+        panel.grid.minor = ggplot2::element_blank(),
+        panel.border = ggplot2::element_blank(),
+        axis.line = ggplot2::element_blank(),
+        axis.text.x = ggplot2::element_blank(),
+        axis.text.y = ggplot2::element_text(size=cex.size, color = 'black'),
+        axis.ticks = ggplot2::element_blank(),
+        axis.title.x = ggplot2::element_blank(),
+        axis.title.y = ggplot2::element_blank(),
+        plot.title = ggplot2::element_blank()
       )
 
-    png("NUL")
-    both = rbind(ggplotGrob(main.plot), ggplotGrob(tbl), size="last")
+    grDevices::png("NUL")
+    both = rbind(ggplot2::ggplotGrob(main.plot), ggplot2::ggplotGrob(tbl), size="last")
     panels <- both$layout$t[grep("panel", both$layout$name)]
     #both$heights[panels] <- list(unit(1,"null"), unit(4, "lines"))  ## unit(4,"lines") adds space between table rows
     both$heights[panels] <- unit.c(unit(1,"null"),unit(4,"lines"))
-    both <- gtable_add_rows(both, heights = unit(1,"line"),2)
-    both <- gtable_add_grob(both,
-                            textGrob("Number at risk", hjust=0, x=0,
-                                     gp=gpar(fontsize=cex.size)),
+    both <- gtable::gtable_add_rows(both, heights = unit(1,"line"),2)
+    both <- gtable::gtable_add_grob(both,
+                            grid::textGrob("Number at risk", hjust=0, x=0,
+                                     gp=grid::gpar(fontsize=cex.size)),
                             t=11, l=2, r=4)
-    dev.off()
+    grDevices::dev.off()
     ## Put tables, legends, plots together!
-    png("NUL")
+    grDevices::png("NUL")
     plotNew <- arrangeGrob(leg1, both,
                            heights = unit.c(leg1$height, unit(1, "npc") - leg1$height), ncol = 1)
-    dev.off()
+    grDevices::dev.off()
 
 
     if(add.second.legend==TRUE){
-      png("NUL")
-      plotNew <- arrangeGrob(both, leg2,
+      grDevices::png("NUL")
+      plotNew <- gridExtra::arrangeGrob(both, leg2,
                              widths = unit.c(unit(1, "npc") - leg2$width, leg2$width), nrow = 1)
-      dev.off()
+      grDevices::dev.off()
     }
 
   }
-  postscript(paste(filename,".eps",sep=""))
+  ##postscript(paste(filename,".eps",sep=""))
   #print(paste(filename,".eps",sep=""))
   #x11()
-  grid.draw(plotNew)
-  dev.off()
+  grid::grid.draw(plotNew)
+  ##dev.off()
 
 }
 
@@ -1408,7 +1422,7 @@ ggplot_at_a_over_b <- function(filename,
 #'
 #' @export
 #'
-#' @examples
+## @examples
 #'
 #'
 ggplot_error_bars <- function(filename,
@@ -1416,7 +1430,7 @@ ggplot_error_bars <- function(filename,
                               theta.array.lo=NULL,
                               theta.array.hi=NULL,
                               index_a,
-                              bvalues=time_val,
+                              bvalues,#=time_val,
                               color.list,
                               cex.line=1.5,cex.size=20,cex.number=6,
                               ylim=NULL,
@@ -1455,38 +1469,46 @@ ggplot_error_bars <- function(filename,
   }
 
 
+  x <- NULL
+  y <- NULL
+  Group <- NULL
+  lo <- NULL
+  hi <- NULL
 
   ## get legends for label.names
-  main.plot <- ggplot(data=data.plot,aes(x=x,y=y,group=Group,fill=Group,color=Group))+
-    geom_errorbar(aes(ymin=lo, ymax=hi), width=1,size=cex.line,
-                  position=position_dodge(.9)) +
-    geom_point(size=4,shape=19,position=position_dodge(.9))+
-    theme_bw()+ 	## no shaded area
-    theme(legend.key = element_blank()) + ## no boxes around legend labels
-    theme(legend.position = "top") +  	 ## legend position
-    theme(legend.title=element_blank())+  ## no legend name
-    theme(legend.text=element_text(size=cex.size))+  ## legend size
-    scale_color_manual(values=color.list)+
-    xlab(xlab.use)+
-    ylab(ylab.use)+
-    theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank(),
-          axis.text.x=element_text(size=cex.size),
-          axis.text.y=element_text(size=cex.size),
-          axis.title.x=element_text(size=cex.size),
-          axis.title.y=element_text(size=cex.size,angle=90))+
-    scale_x_discrete(limits=bvalues,breaks=bvalues,
+  main.plot <- ggplot2::ggplot(data=data.plot,
+                               ggplot2::aes(x=x,y=y,group=Group,fill=Group,color=Group))+
+    ggplot2::geom_errorbar(ggplot2::aes(ymin=lo, ymax=hi), width=1,size=cex.line,
+                  position=ggplot2::position_dodge(.9)) +
+    ggplot2::geom_point(size=4,shape=19,
+                        position=ggplot2::position_dodge(.9))+
+    ggplot2::theme_bw()+ 	## no shaded area
+    ggplot2::theme(legend.key = ggplot2::element_blank()) + ## no boxes around legend labels
+    ggplot2::theme(legend.position = "top") +  	 ## legend position
+    ggplot2::theme(legend.title=ggplot2::element_blank())+  ## no legend name
+    ggplot2::theme(legend.text=ggplot2::element_text(size=cex.size))+  ## legend size
+    ggplot2::scale_color_manual(values=color.list)+
+    ggplot2::xlab(xlab.use)+
+    ggplot2::ylab(ylab.use)+
+    ggplot2::theme(panel.grid.major=ggplot2::element_blank(),
+                   panel.grid.minor=ggplot2::element_blank(),
+          axis.text.x=ggplot2::element_text(size=cex.size),
+          axis.text.y=ggplot2::element_text(size=cex.size),
+          axis.title.x=ggplot2::element_text(size=cex.size),
+          axis.title.y=ggplot2::element_text(size=cex.size,angle=90))+
+    ggplot2::scale_x_discrete(limits=bvalues,breaks=bvalues,
                      labels=bvalues)
 
   if(!is.null(ylim)){
-    main.plot <- main.plot + ylim(ylim)
+    main.plot <- main.plot + ggplot2::ylim(ylim)
   }
 
 
-  postscript(paste(filename,".eps",sep=""))
+  ##postscript(paste(filename,".eps",sep=""))
   #print(paste(filename,".eps",sep=""))
   #x11()
-  grid.draw(main.plot)
-  dev.off()
+  grid::grid.draw(main.plot)
+  ##dev.off()
 
 }
 
@@ -1535,7 +1557,7 @@ ggplot_error_bars <- function(filename,
 #'                    covarites values (\code{xx_choose}, \code{zz_choose}) and the clinical events of interest for all studies.}
 #' @export
 #'
-#' @examples
+## @examples
 #'
 #'
 get.cis <- function(out,flatten.name,
@@ -1646,7 +1668,7 @@ get.cis <- function(out,flatten.name,
 #' @import survival
 #' @export
 #'
-#' @examples
+## @examples
 #'
 #'
 compute.number.at.risk.for.HD <- function(study.names,
@@ -1733,7 +1755,7 @@ compute.number.at.risk.for.HD <- function(study.names,
   ##
   ## zz-CAG : we extract data for specific functional covariate values for each study (ignore nonfunctional covariates)
 
-
+  study <- NULL
   number.at.risk <- array(0,dim=c(number.of.studies,number.of.clinical.events,    ##hdage_nobase
                                   number.of.z.predictions+2,length(x.label.names),
                                   length(time.points.for.prediction)),
@@ -1833,6 +1855,8 @@ compute.number.at.risk.for.HD <- function(study.names,
 
 
       ## only using z-eval covariates (no CAG)
+      CAG <- NULL
+
       number.at.risk[ss,nn,"zz-CAG",,] <- array(0,
                                                 dim=dim(adrop(number.at.risk[ss,nn,"zz-CAG",,,drop=FALSE],drop=c(1,2,3))))
       functional.covariate.values.of.interest.tmp <- convert.cag(functional.covariate.values.for.prediction,xmin,xmax)
@@ -1906,7 +1930,7 @@ compute.number.at.risk.for.HD <- function(study.names,
 #'
 #' @export
 #'
-#' @examples
+## @examples
 #'
 #'
 #'
@@ -2233,7 +2257,7 @@ data.reformatted.for.jprat.analysis<-function(use_real_data,
   #nonfunctional.covariate.value <- c(40)
 
   #tmp.nonfunctional.covariate.values.for.prediction <- get.nonfunctional.covariate.values.for.prediction(nonfunctional.covariate.names,
-  #                                                                                                             functional.beta.intercept,analysis.to.run,nonfunctional.covariate.value.is.0)
+  #                                                                                                             functional.beta.intercept,analysis.to.run,nonfunctional.covariate.value.is.0,paper.type)
   output.list <- list()
   for(ll in 1:length(nonfunctional.covariate.names)){
     tmp <- get.empty.list(nonfunctional.covariate.names[ll])  #[ll]
@@ -2303,11 +2327,11 @@ data.reformatted.for.jprat.analysis<-function(use_real_data,
 #' @param legend.names See the argument in the \code{\link{view.all.results}} function.
 #' @param which.nonfunctional.covariate.comparisons See the argument in the \code{\link{view.all.results}} function.
 #'
-#' @return
+#' @return FILL IN HERE!!
 #' @import stats
 #' @export
 #'
-#' @examples
+## @examples
 #'
 data.reformatted.for.analysis.results<-function(study.names, event.outcome.names=NULL,
                                                 color.names,
@@ -2442,10 +2466,10 @@ data.reformatted.for.analysis.results<-function(study.names, event.outcome.names
 #' @param use.bootstrap.variance See the argument in the \code{\link{jprat.wrapper}} function.
 #' @param clusters.are.families a logical value whether pseudo-values will compute differently when clusters are families (i.e., subjects are different people): Default is FALSE.
 #'
-#' @return
+#' @return FILL IN HERE!!
 #' @export
 #'
-#' @examples
+## @examples
 #'
 convert.new.notation.to.old.for.jprat <- function(study.names,
                                                   data.sets.as.list,
@@ -2700,7 +2724,7 @@ convert.new.notation.to.old.for.jprat <- function(study.names,
   ## check if we need to compute study differences ##
   ###################################################
   compute.study.differences <- run.study.differences(check.study.equality,
-                                                     estimated.parameters.common.for.all,
+                                                     estimated.parameters.common.for.all.studies,
                                                      estimation.default.values,
                                                      number.of.studies)   ## FALSE
 
@@ -3122,6 +3146,7 @@ convert.new.notation.to.old.for.jprat <- function(study.names,
 #'                       : "logit” for proportional odds model or "cloglog" for cox proportional hazards.
 #'                       Default is "logit".
 #' @param use.bootstrap.variance See the argument in the \code{\link{jprat.wrapper}} function.
+#' @param time.points.of.interest ADD DETAILS HERE!!
 #' @param time.points.of.interest.ci a vector of time points at which confidence intervals of
 #'                                  \eqn{\alpha(X,t)} are predicted. These time points are used to be labeled for the plot.
 #' @param label.for.alpha.values.over.time  a vector of specific time points at which the smooth functional parameters \eqn{\alpha(X,t)} will be predicted. These time points are used to be labeled for the plot.
@@ -3129,19 +3154,21 @@ convert.new.notation.to.old.for.jprat <- function(study.names,
 #' @param add.number.at.risk.legend See the argument in the \code{\link{view.all.results}} function.
 #' @param ylabel.for.plots.comparing.studies See the argument in the \code{\link{view.all.results}} function.
 #' @param xlabel.for.plots.comparing.studies See the argument in the \code{\link{view.all.results}} function.
+#' @param plot.confidence.intervals ADD DETAILS HERE!
 #' @param color.labels See the argument in the \code{\link{view.all.results}} function.
 #' @param legend.labels See the argument in the \code{\link{view.all.results}} function.
 #' @param event.comparison.table a list of values corresponding to the event of interest outcomes. Default is a list of nc1, which contains a vector of values 1, 2, 3, 4.
 #' @param functional.covariate.comparisons See the argument in the \code{\link{view.all.results}} function.
 #' @param functional.covariate.comparisons.for.sample.size See the argument in the \code{\link{view.all.results}} function.
+#' @param type1.error ADD DETAILS HERE!
 #' @param type2.error See the argument in the \code{\link{view.all.results}} function.
 #' @param treatment.effect See the argument in the \code{\link{view.all.results}} function.
 #' @param dropout.rate See the argument in the \code{\link{view.all.results}} function.
 #'
-#' @return
+#' @return FILL IN HERE!!
 #' @export
 #'
-#' @examples
+## @examples
 #'
 convert.new.notation.to.old.for.get.results <- function(study.names,
                                                         #data.sets.as.list,
@@ -3401,7 +3428,7 @@ convert.new.notation.to.old.for.get.results <- function(study.names,
   ## check if we need to compute study differences ##
   ###################################################
   # compute.study.differences <- run.study.differences(check.study.equality,
-  #                                                    estimated.parameters.common.for.all,
+  #                                                    estimated.parameters.common.for.all.studies,
   #                                                    estimation.default.values,
   #                                                    number.of.studies)   ## FALSE
 
@@ -4004,10 +4031,10 @@ flatten.array <- function(x,dim.order,flatten.name,theta=NULL){
 #' @param xmin See the argument in the \code{\link{convert.new.notation.to.old.for.jprat}} function.
 #' @param xmax See the argument in the \code{\link{convert.new.notation.to.old.for.jprat}} function.
 #'
-#' @return
+#' @return FILL IN HERE!
 #' @export
 #'
-#' @examples
+## @examples
 #'
 convert.cag <- function(x,xmin=xmin,xmax=xmax){
   xorig <- x*(xmax-xmin)+xmin
@@ -4496,7 +4523,7 @@ get.genetic.knowledge.covariates <- function(who.knows.genetic.information){
   }
 
   if(!is.null(gene.know)){
-    gene.use <- as.vector(outer(gene.know,motor.use,paste,sep="."))
+    gene.use <- as.vector(outer(gene.know,paste,sep="."))
   } else {
     gene.use <- NULL
   }
@@ -4525,30 +4552,6 @@ helper.to.get.nonfunctional.covariate.values.for.prediction <- function(covariat
     ####################################
 
     nonfunctional.covariate.value <- c(1,0)
-    is.nonfunctional.covariate.discrete <- FALSE ##TRUE
-  }else if(grepl("DCL",covariate.name)){
-    ######################################
-    ## Diagnostic confidence level (DCL) #
-    ######################################
-    if(!is.null(xval)){
-      if(!is.null(functional.beta.intercept)){
-        nonfunctional.covariate.value  <- model.matrix(~factor(initial.covariate.value))[,-1]
-      } else {
-        nonfunctional.covariate.value  <- model.matrix(~-1+factor(initial.covariate.value))
-      }
-    } else {
-      nonfunctional.covariate.value  <- NULL
-    }
-
-    if(!is.null(functional.beta.intercept)){
-      zz.tmp.length <- 3
-    } else {
-      zz.tmp.length <- 4
-    }
-    nonfunctional.covariate.value <- get.empty.list(paste(x,1:zz.tmp.length,sep=""))
-    for(jj in 1:zz.tmp.length){
-      nonfunctional.covariate.value[[jj]] <- c(0,1)
-    }
     is.nonfunctional.covariate.discrete <- FALSE ##TRUE
   } else if(grepl("gene.",covariate.name)){
     ###################################
@@ -4597,7 +4600,8 @@ helper.to.get.nonfunctional.covariate.values.for.prediction <- function(covariat
 get.nonfunctional.covariate.values.for.prediction <- function(nonfunctional.covariate.names,
                                                               functional.beta.intercept,
                                                               analysis.to.run,
-                                                              nonfunctional.covariate.value.is.0){
+                                                              nonfunctional.covariate.value.is.0,
+                                                              paper.type){
 
   output.list <- list()
   is.nonfunctional.covariate.discrete <- NULL
@@ -5048,7 +5052,7 @@ get.time.points.for.prediction <- function(time.points.for.prediction,
 ###################################################
 
 run.study.differences <- function(check.study.equality,
-                                  estimated.parameters.common.for.all,
+                                  estimated.parameters.common.for.all.studies,
                                   estimation.default.values,
                                   number.of.studies
 ){
@@ -5441,8 +5445,8 @@ get.truth <- function(combi.study,combi.choice,
                 } else {
                   Ft.true[ss,ii,zz,xx,tt] <-
                     adaptIntegrate(Ft.integrate,
-                                   lower=rep(-1,length(sigma_all)),
-                                   upper=rep(1,length(sigma_all)))$integral  #  adaptive multidimensional integration of  vector-valued integrands over hypercubes: the value of the integral
+                                   lowerLimit=rep(-1,length(sigma_all)),
+                                   upperLimit=rep(1,length(sigma_all)))$integral  #  adaptive multidimensional integration of  vector-valued integrands over hypercubes: the value of the integral
                 }
               }
             }
@@ -5906,7 +5910,7 @@ simu.data <- function(randomeffects.covariates.dependent,
                       real_data,time_val,
                       beta0int,beta,gamma.param,omega.param,
                       n,nmax,m,maxm,la,lb,num_study,np,gtmod,use.random.effects,
-                      gen.cens.depend.z){
+                      gen.cens.depend.z,lb.max){
 
   tol <- 1e-6
 
@@ -5923,6 +5927,7 @@ simu.data <- function(randomeffects.covariates.dependent,
   ymiss_ind<- y
   ytest <- y   ## for testing pseudo-values
 
+  lb.max <- max(lb)
   z <- array(0,dim=c(num_study,nmax,np,lb.max),
              dimnames=list(
                paste("ss",1:num_study,sep=""),
@@ -6193,7 +6198,7 @@ convert.matrix.to.numeric <- function(x){
 
 
 probability.z <- function(zeval.tmp,z.discrete.info,z,
-                          common.param.estimation,n,maxm,study.names,z_lab_names){
+                          common.param.estimation,n,maxm,study.names,z_lab_names,num_study){
 
   if(any(z.discrete.info==TRUE)){
     ## at least one discrete z
@@ -6328,7 +6333,7 @@ extract.var.est.output <- function(out,
 
 
 
-extract.output <- function(theta.out,gamma.param,omega.param){
+extract.output <- function(theta.out,gamma.param,omega.param,time_val){
   ## beta
   names.tmp <- "beta*"
   index.est <- grepl(names.tmp,theta.out$beta$theta)
@@ -6389,12 +6394,12 @@ extract.output <- function(theta.out,gamma.param,omega.param){
 }
 
 ##df is a list of dataframes
-
+#' @import plyr
 merge.by.columns <- function(df){
   ## extract rownames of each data frame in df
   rownames.df <- lapply(df,rownames)
 
-  out <- cbind(names=unlist(rownames.df),rbind.fill(df))
+  out <- cbind(names=unlist(rownames.df),plyr::rbind.fill(df))
   rownames(out) <- NULL
 
   ## remove extra names variable
@@ -6455,8 +6460,8 @@ get.all.dim.order <- function(theta.names){
 ## null theta without time component
 
 get.null.theta.no.time <- function(theta.names,
-                                   first.label=num_study,
-                                   first.label.name=paste("ss",1:num_study,sep=""),
+                                   first.label, #=num_study,
+                                   first.label.name, #=paste("ss",1:num_study,sep=""),
                                    np,param.label,
                                    num_xx,la,z.choice){
 
@@ -7059,10 +7064,23 @@ get.kmjack <- function(arbitrary,num_study,n,nmax,maxm,num_time,time_val,
         storage.mode(ynew) <- "double"
         storage.mode(ynew_orig) <- "double"
 
-        out <- .Fortran("kmjack", arbitrary,num_time,n.use,m.use,maxm,
-                        time_val,p,m0_qvs,
-                        y.use,ymiss_ind.use,s.use,q.use,delta.use,
-                        ynew=ynew,ynew_orig=ynew_orig, PACKAGE ="HDConverters")
+        out <- .Fortran("kmjack",
+                        arbitrary,
+                        num_time,
+                        n.use,
+                        m.use,
+                        maxm,
+                        time_val,
+                        p,
+                        m0_qvs,
+                        y.use,
+                        ymiss_ind.use,
+                        s.use,
+                        q.use,
+                        delta.use,
+                        ynew=ynew,
+                        ynew_orig=ynew_orig,
+                        PACKAGE ="JPRAT")
         ynew_out[ss,,index.use,] <- out$ynew
         ynew_out_orig[ss,,index.use,] <- out$ynew_orig
       } else {
@@ -7119,10 +7137,23 @@ get.kmjack <- function(arbitrary,num_study,n,nmax,maxm,num_time,time_val,
             storage.mode(ynew) <- "double"
             storage.mode(ynew_orig) <- "double"
 
-            out <- .Fortran("kmjack",arbitrary,num_time,n.use,m.use,maxm,
-                            time_val,p,m0_qvs,
-                            y.use,ymiss_ind.use,s.use,q.use,delta.use,
-                            ynew=ynew,ynew_orig=ynew_orig, PACKAGE ="HDConverters")
+            out <- .Fortran("kmjack",
+                            arbitrary,
+                            num_time,
+                            n.use,
+                            m.use,
+                            maxm,
+                            time_val,
+                            p,
+                            m0_qvs,
+                            y.use,
+                            ymiss_ind.use,
+                            s.use,
+                            q.use,
+                            delta.use,
+                            ynew=ynew,
+                            ynew_orig=ynew_orig,
+                            PACKAGE ="JPRAT")
 
             ynew_out[ss,,index.use,ee] <- out$ynew[,,ee,drop=FALSE]
             ynew_out_orig[ss,,index.use,ee] <- out$ynew_orig[,,ee,drop=FALSE]
@@ -7179,9 +7210,23 @@ get.kmjack <- function(arbitrary,num_study,n,nmax,maxm,num_time,time_val,
       storage.mode(ynew) <- "double"
       storage.mode(ynew_orig) <- "double"
 
-      out <- .Fortran("kmjack", arbitrary,num_time,n.all,m.all,maxm,time_val,p,m0_qvs,
-                      y.all,ymiss_ind.all,s.all,q.all,delta.all,
-                      ynew=ynew,ynew_orig=ynew_orig, PACKAGE="HDConverters",)  ## code from fortran
+      out <- .Fortran("kmjack",
+                      arbitrary,
+                      num_time,
+                      n.all,
+                      m.all,
+                      maxm,
+                      time_val,
+                      p,
+                      m0_qvs,
+                      y.all,
+                      ymiss_ind.all,
+                      s.all,
+                      q.all,
+                      delta.all,
+                      ynew=ynew,
+                      ynew_orig=ynew_orig,
+                      PACKAGE="JPRAT")  ## code from fortran
 
       ##tmp <- 0
       for(ss in 1:num_study){
@@ -7244,9 +7289,23 @@ get.kmjack <- function(arbitrary,num_study,n,nmax,maxm,num_time,time_val,
           storage.mode(ynew) <- "double"
           storage.mode(ynew_orig) <- "double"
 
-          out <- .Fortran("kmjack", arbitrary,num_time,n.use,m.use,maxm,time_val,p,m0_qvs,
-                          y.use,ymiss_ind.use,s.use,q.use,delta.use,
-                          ynew=ynew,ynew_orig=ynew_orig, PACKAGE="HDConverters")
+          out <- .Fortran("kmjack",
+                          arbitrary,
+                          num_time,
+                          n.use,
+                          m.use,
+                          maxm,
+                          time_val,
+                          p,
+                          m0_qvs,
+                          y.use,
+                          ymiss_ind.use,
+                          s.use,
+                          q.use,
+                          delta.use,
+                          ynew=ynew,
+                          ynew_orig=ynew_orig,
+                          PACKAGE="JPRAT")
 
           for(ss in 1:num_study){
             index.match.left <- index.all[[ss]] %in% index.use
@@ -7324,7 +7383,7 @@ get.count <- function(num_study,n,m,maxm,time_val,num_time,ynew,delta){
     out <- .Fortran("get_count_new",n[ss],m[ss,1:n[ss]],maxm,num_time,
                     adrop(ynew[ss,,1:n[ss],,drop=FALSE],drop=1),
                     adrop(delta[ss,1:n[ss],,drop=FALSE],drop=1),  ### array to vector
-                    count_new=count_new, PACKAGE ="HDConverters")
+                    count_new=count_new, PACKAGE ="JPRAT")
     count_new_out[ss,,] <- out$count_new
   }
 
@@ -7332,7 +7391,7 @@ get.count <- function(num_study,n,m,maxm,time_val,num_time,ynew,delta){
 }
 
 
-#'#' @useDynLib JPRAT
+#' @useDynLib JPRAT
 get.count.outside <- function(num_study,n,m,maxm,time_val,num_time,ynew,delta){
   ## storage for f90
   storage.mode(n) <- "integer"
@@ -7359,7 +7418,7 @@ get.count.outside <- function(num_study,n,m,maxm,time_val,num_time,ynew,delta){
 
     out <- .Fortran("get_count_outside",n[ss],m[ss,1:n[ss]],maxm,num_time,
                     adrop(ynew[ss,,1:n[ss],,drop=FALSE],drop=1),
-                    adrop(delta[ss,1:n[ss],,drop=FALSE],drop=1),count_new=count_new, PACKAGE ="HDConverters")
+                    adrop(delta[ss,1:n[ss],,drop=FALSE],drop=1),count_new=count_new, PACKAGE ="JPRAT")
     count_new_out[ss,,] <- out$count_new
   }
 
@@ -7390,7 +7449,7 @@ get.nas <- function(n,m,ynew,z,x){
 
 
 make.data.set <- function(num_study,time_val,n,nmax,
-                          m,lb,y,x,z,nn,real_data,
+                          m,lb,y,x,z,real_data,
                           gamma.param,omega.param){
 
   names <- paste("ss",1:num_study,sep="")
@@ -7623,6 +7682,7 @@ gamm.mle.new <- function(num_study,np,lb,num_xx,xks,
                          param.label,beta0int,gamma.param,omega.param,
                          spline.constrain,common.param.estimation,
                          par_fu,random.effect,link.type,z.proportions,la){
+  X <- NULL
 
   null.theta <- get.null.theta.no.time(theta.names=c("beta","alphas","Ft"),
                                        first.label=num_study,
@@ -7757,19 +7817,19 @@ gamm.mle.new <- function(num_study,np,lb,num_xx,xks,
         {
           if(random.effect=="none"){## no random effect
             fm <- gam(fmla,data=data.gamm,paraPen=pen.list.full,   ## data.gamm: study, family, Y, X_1, Z0, Z1_1, np, int
-                      family=quasibinomial(link=link.type), ## quasi
+                      family=quasibinomial(link=link.type),
                       verbose=FALSE)#,niterPQL=100)
 
             fm$gam <- fm
           } else if(random.effect=="event"){  ## random effect for event only
             fm <- gamm(fmla,data=data.gamm,paraPen=pen.list.full,
                        family=quasibinomial(link=link.type), ## quasi
-                       random=list(family=~1),verbose=FALSE)#,niterPQL=100)
+                       random=list(family=~1),verbosePQL=FALSE)#,niterPQL=100)
           } else if(random.effect=="study"){  ## random effect for study only
             if(is.null(par_fu)){
               fm <- gamm(fmla,data=data.gamm,paraPen=pen.list.full,
                          family=quasibinomial(link=link.type), ## quasi
-                         random=list(study=~1),verbose=FALSE)#,niterPQL=100)
+                         random=list(study=~1),verbosePQL=FALSE)#,niterPQL=100)
             } else {
               fm <- gam(fmla,data=data.gamm,paraPen=pen.list.full,
                         family=quasibinomial(link=link.type), ## quasi
@@ -7780,12 +7840,12 @@ gamm.mle.new <- function(num_study,np,lb,num_xx,xks,
               ## setup is for random intercept r_si
               fm <- gamm(fmla,data=data.gamm,paraPen=pen.list.full,
                          family=quasibinomial(link=link.type), ## quasi
-                         random=list(int=random.formula),verbose=FALSE)#,niterPQL=100)
+                         random=list(int=random.formula),verbosePQL=FALSE)#,niterPQL=100)
             } else {
               ## setup is for random intercept r_si + u_s
               fm <- gamm(fmla,data=data.gamm,paraPen=pen.list.full,
                          family=quasibinomial(link=link.type),  ## quasi
-                         random=list(study=~1,family=~1),verbose=FALSE)#,niterPQL=100)
+                         random=list(study=~1,family=~1),verbosePQL=FALSE)#,niterPQL=100)
             }
           }
         }, error=function(e){
@@ -7806,12 +7866,12 @@ gamm.mle.new <- function(num_study,np,lb,num_xx,xks,
       } else if(random.effect=="event"){  ## random effect for event only
         fm <- gamm(fmla,data=data.gamm,paraPen=pen.list.full,
                    family=binomial(link=link.type), ## quasi
-                   random=list(family=~1),verbose=FALSE)#,niterPQL=100)
+                   random=list(family=~1),verbosePQL=FALSE)#,niterPQL=100)
       } else if(random.effect=="study"){  ## random effect for study only
         if(is.null(par_fu)){
           fm <- gamm(fmla,data=data.gamm,paraPen=pen.list.full,
                      family=binomial(link=link.type), ## quasi
-                     random=list(study=~1),verbose=FALSE)#,niterPQL=100)
+                     random=list(study=~1),verbosePQL=FALSE)#,niterPQL=100)
         } else {
           fm <- gam(fmla,data=data.gamm,paraPen=pen.list.full,
                     family=binomial(link=link.type), ## quasi
@@ -7822,12 +7882,12 @@ gamm.mle.new <- function(num_study,np,lb,num_xx,xks,
           ## setup is for random intercept r_si ONLY
           fm <- gamm(fmla,data=data.gamm,paraPen=pen.list.full,
                      family=binomial(link=link.type),
-                     random=list(int=random.formula),verbose=FALSE)#,niterPQL=100)
+                     random=list(int=random.formula),verbosePQL=FALSE)#,niterPQL=100)
         } else {
           ## setup is for random intercept r_si + u_s
           fm <- gamm(fmla,data=data.gamm,paraPen=pen.list.full,
                      family=binomial(link=link.type),
-                     random=list(study=~1,family=~1),verbose=FALSE)#,niterPQL=100)
+                     random=list(study=~1,family=~1),verbosePQL=FALSE)#,niterPQL=100)
         }
       }
     }
@@ -7871,7 +7931,7 @@ gamm.mle.new <- function(num_study,np,lb,num_xx,xks,
         # ## PQL fails to converge
         # fm <- gamm(fmla,data=data.gamm,
         #            family=quasibinomial(link=link.type),
-        #            random=list(family=~1),verbose=FALSE)
+        #            random=list(family=~1),verbosePQL=FALSE)
 
       }
       ## end of if
@@ -8196,12 +8256,12 @@ theta.prediction <- function(num_study,
                 } else {
                   Ft.est[ss,nn,kk,jj] <-
                     adaptIntegrate(Ft.integrate,
-                                   lower=rep(-1,length(sigma_all)),
-                                   upper=rep(1,length(sigma_all)))$integral
+                                   lowerLimit=rep(-1,length(sigma_all)),
+                                   upperLimit=rep(1,length(sigma_all)))$integral
                   dFt.est[ss,nn,kk,jj] <-
                     adaptIntegrate(dFt.integrate,
-                                   lower=rep(-1,length(sigma_all)),
-                                   upper=rep(1,length(sigma_all)))$integral
+                                   lowerLimit=rep(-1,length(sigma_all)),
+                                   upperLimit=rep(1,length(sigma_all)))$integral
                 }
               }
 
@@ -8266,6 +8326,7 @@ theta.prediction <- function(num_study,
 
 
 #' @import stats
+#' @import mnormt
 make.Ft.integrate <- function(alphax,betaz,sigmar,sigmau){
   if(!is.null(sigmau)){
     Sigma <- diag(c(sigmar^2,sigmau^2))
@@ -8278,10 +8339,10 @@ make.Ft.integrate <- function(alphax,betaz,sigmar,sigmau){
   function(r){
     if(is.null(sigmau)){
       ## 1-dimensional
-      out <- Ft.true.value(betaz,alphax,r) * dnorm(r,mean=0,sd=sigmar)
+      out <- Ft.true.value(betaz,alphax,r) * stats::dnorm(r,mean=0,sd=sigmar)
     } else {
       ## any dimension
-      out <- Ft.true.value(betaz,alphax,sum(r/(1-r^2))) * dmnorm(r/(1-r^2),mean_use,Sigma) *
+      out <- Ft.true.value(betaz,alphax,sum(r/(1-r^2))) * mnormt::dmnorm(r/(1-r^2),mean_use,Sigma) *
         ((1+r^2)/(1-r^2)^2)
     }
     return(out)
@@ -8289,6 +8350,7 @@ make.Ft.integrate <- function(alphax,betaz,sigmar,sigmau){
 }
 
 #' @import stats
+#' @import mnormt
 make.dFt.integrate <- function(alphax,betaz,sigmar,sigmau){
   if(!is.null(sigmau)){
     Sigma <- diag(c(sigmar^2,sigmau^2))
@@ -8301,10 +8363,10 @@ make.dFt.integrate <- function(alphax,betaz,sigmar,sigmau){
   function(r){
     if(is.null(sigmau)){
       ## 1-dimensional
-      out <- dFt.value.integrand(betaz,alphax,r) * dnorm(r,mean=0,sd=sigmar)
+      out <- dFt.value.integrand(betaz,alphax,r) * stats::dnorm(r,mean=0,sd=sigmar)
     } else {
       ## any dimension
-      out <- dFt.value.integrand(betaz,alphax,sum(r/(1-r^2))) * dmnorm(r/(1-r^2),mean_use,Sigma) *
+      out <- dFt.value.integrand(betaz,alphax,sum(r/(1-r^2))) * mnormt::dmnorm(r/(1-r^2),mean_use,Sigma) *
         ((1+r^2)/(1-r^2)^2)
     }
     return(out)
@@ -8441,7 +8503,7 @@ gamm4.main <- function(num_study,
 
   ## obtain dataset when y=ynew
   data.org.gamm <- make.data.set(num_study,time_val,n,nmax,
-                                 m,lb,ynew,x,z,nn,real_data,
+                                 m,lb,ynew,x,z,real_data,
                                  gamma.param,omega.param)
 
   ############################
@@ -8559,6 +8621,8 @@ gamm4.main <- function(num_study,
                                    z.proportions,la)
           eflag <- gamm.fit$eflag
 
+          if(eflag==-1) break
+
           if(eflag!=-1){
             ###################
             ## store results ##
@@ -8569,8 +8633,6 @@ gamm4.main <- function(num_study,
             alphasest[ss,kk,,tt,,"varest"] <- gamm.fit$alphas.var
             Ftest[ss,kk,,,tt,"est"] <- gamm.fit$Ft.est
             Ftest[ss,kk,,,tt,"varest"] <- gamm.fit$Ft.var
-          } else {
-            break
           }
         }
       }
@@ -8649,6 +8711,8 @@ gamm4.main <- function(num_study,
                                  z.proportions,la)
         eflag <- gamm.fit$eflag
 
+        if(eflag==-1) break
+
         if(eflag!=-1){
           ###################
           ## store results ##
@@ -8659,8 +8723,6 @@ gamm4.main <- function(num_study,
           alphasest[ss,,,tt,,"varest"] <- gamm.fit$alphas.var
           Ftest[ss,,,,tt,"est"] <- gamm.fit$Ft.est
           Ftest[ss,,,,tt,"varest"] <- gamm.fit$Ft.var
-        } else {
-          break
         }
       }
     } else if(analyze.separately=="event"){
@@ -8769,6 +8831,8 @@ gamm4.main <- function(num_study,
                                  z.proportions,la)
         eflag <- gamm.fit$eflag
 
+        if(eflag==-1) break
+
         if(eflag!=-1){
           ###################
           ## store results ##
@@ -8790,8 +8854,6 @@ gamm4.main <- function(num_study,
             Ftest[,kk,,,tt,"est"] <- gamm.fit$Ft.est
             Ftest[,kk,,,tt,"varest"] <- gamm.fit$Ft.var
           }
-        } else {
-          break
         }
       }
     } else if(analyze.separately=="none"){  ## we analyze all studies and events together
@@ -8815,6 +8877,8 @@ gamm4.main <- function(num_study,
                                z.proportions,la)
       eflag <- gamm.fit$eflag
 
+      if(eflag==-1) break
+
       if(eflag!=-1){
         ###################
         ## store results ##
@@ -8836,8 +8900,6 @@ gamm4.main <- function(num_study,
           Ftest[,,,,tt,"est"] <- gamm.fit$Ft.est
           Ftest[,,,,tt,"varest"] <- gamm.fit$Ft.var
         }
-      } else {
-        break
       }
     }
   }
@@ -8927,10 +8989,18 @@ gamm4.main <- function(num_study,
 ## Useful functions ##
 ######################
 
-make.data.arrays <- function(data.theta.est=data.beta,data.theta.varboot=data.beta.varboot,
-                             cnames=c("ss","np","iter","lb",paste("t",time_val,sep="")),
-                             num_study,np,theta.set=1:lb,theta.set2=1:lb,nsimu,num_time,time_val,
-                             var.est=var.est,theta.interest="lb",s.names,boot.ci){
+make.data.arrays <- function(data.theta.est,#=data.beta,
+                             data.theta.varboot,#=data.beta.varboot,
+                             cnames,#=c("ss","np","iter","lb",paste("t",time_val,sep="")),
+                             num_study,
+                             np,
+                             theta.set,#=1:lb,
+                             theta.set2,#=1:lb,
+                             nsimu,
+                             num_time,
+                             time_val,
+                             var.est,
+                             theta.interest="lb",s.names,boot.ci){
 
   colnames(data.theta.est) <- cnames
 
@@ -9046,9 +9116,10 @@ make.data.arrays <- function(data.theta.est=data.beta,data.theta.varboot=data.be
 
 
 
+
 make.Ft.arrays <- function(data.Ft,data.Ft.varboot,
                            num_study,np,nsimu,num_time,time_val,num_xx,z.choice,z_lab,s.names,
-                           var.est=var.est,boot.ci){
+                           var.est=var.est,boot.ci,xx_val){
 
   data.Ft.est <- data.Ft
   colnames(data.Ft.est) <- c("ss","np","iter","zz","xx",paste("t",time_val,sep=""))
@@ -9166,7 +9237,7 @@ make.Ft.arrays <- function(data.Ft,data.Ft.varboot,
 
 make.Ft.diff.arrays <- function(data.Ft.diff,
                                 num_study,np,nsimu,num_time,time_val,num_xx,z.choice,z_lab,s.names,
-                                var.est=var.est,combi.study,combi.names){
+                                var.est=var.est,combi.study,combi.names,xx_val){
 
   data.Ft.est <- data.Ft.diff
   colnames(data.Ft.est) <- c("combi","np","iter","zz","xx",paste("t",time_val,sep=""))
@@ -9242,10 +9313,20 @@ make.Ft.diff.arrays <- function(data.Ft.diff,
 }
 
 
-make.data.diff.arrays <- function(data.theta.est=data.beta.diff,
-                                  cnames=c("combi","np","iter","lb",paste("t",time_val,sep="")),
-                                  num_study,np,theta.set=1:lb,theta.set2=1:lb,nsimu,num_time,time_val,
-                                  var.est=var.est,theta.interest="lb",s.names,combi.study,combi.names){
+make.data.diff.arrays <- function(data.theta.est,#=data.beta.diff,
+                                  cnames,#=c("combi","np","iter","lb",paste("t",time_val,sep="")),
+                                  num_study,
+                                  np,
+                                  theta.set,#=1:lb,
+                                  theta.set2,#=1:lb,
+                                  nsimu,
+                                  num_time,
+                                  time_val,
+                                  var.est,
+                                  theta.interest="lb",
+                                  s.names,
+                                  combi.study,
+                                  combi.names){
 
   colnames(data.theta.est) <- cnames
 
@@ -9681,20 +9762,6 @@ myquantiles <-function(x){
   return(up)
 }
 
-## convert uniform CAG to real CAG
-convert.cag <- function(x,xmin=xmin,xmax=xmax){
-  xorig <- x*(xmax-xmin)+xmin
-  return(xorig)
-}
-
-## convert CAG to uniform CAG
-
-reverse.cag <- function(x,xmin=xmin,xmax=xmax){
-  xnew <- (x-xmin)/(xmax-xmin)
-  return(xnew)
-}
-
-
 
 ## find index name
 find.index.remove <- function(x,names.use){
@@ -9850,14 +9917,15 @@ main.plot.results <- function(filename.set, param.names, out.true, out.mean,
 
 
 #' @importFrom survival survfit
+#' @import graphics
 plot.at.a.over.b <- function(filename,
                              thetat=NULL,
                              estimate,
                              theta.array.lo=NULL,
                              theta.array.hi=NULL,
                              index_a,
-                             bvalues=time_val,
-                             bvalues.cut=time.cut,
+                             bvalues,#=time_val,
+                             bvalues.cut,#=time.cut,
                              color.list,
                              cex.lab=3,cex.axis=3,lwd=5,cex.legend=3,
                              legend.position="topright",ylim=NULL,
@@ -9918,10 +9986,10 @@ plot.at.a.over.b <- function(filename,
 
 
   ## start plot
-  postscript(paste(filename,".eps",sep=""))
+  ##postscript(paste(filename,".eps",sep=""))
   #x11()
-  par(mar=c(5.1, 5.1, 4.1, 2.1))
-  plot(1,type="n",xlab=xlab.use,ylab=ylab.use,
+  graphics::par(mar=c(5.1, 5.1, 4.1, 2.1))
+  graphics::plot(1,type="n",xlab=xlab.use,ylab=ylab.use,
        xlim=xlim,ylim=ylim,cex.axis=cex.axis,cex.lab=cex.lab)
 
   tmp <- 0
@@ -9931,20 +9999,20 @@ plot.at.a.over.b <- function(filename,
     tmp <- tmp+1
 
     if(!is.null(thetat)){
-      lines(bvalues[index.b.cut],thetat[i,index.b.cut],
+      graphics::lines(bvalues[index.b.cut],thetat[i,index.b.cut],
             col=color.list[tmp],lty=1,lwd=lwd)
       tmp <- tmp + 1
     }
 
     ## plot estimate at a over b
-    lines(bvalues[index.b.cut],
+    graphics::lines(bvalues[index.b.cut],
           estimate[i,index.b.cut],col=color.list[tmp],lty=1,lwd=lwd)
 
     ## plot confidence intervals at a over b
     if(conf.int==TRUE){
-      lines(bvalues[index.b.cut],
+      graphics::lines(bvalues[index.b.cut],
             theta.array.lo[i,index.b.cut],col=color.list[tmp],lty=3,lwd=lwd)
-      lines(bvalues[index.b.cut],
+      graphics::lines(bvalues[index.b.cut],
             theta.array.hi[i,index.b.cut],col=color.list[tmp],lty=4,lwd=lwd)
     }
   }
@@ -9960,11 +10028,11 @@ plot.at.a.over.b <- function(filename,
       theta.array.hi.other <- data.extra$theta.array.hi.other
 
       tmp <- tmp + 1
-      lines(bvalues[index.b.cut],estimate.other[i,index.b.cut],col=color.list[tmp],lty=1,lwd=lwd)
+      graphics::lines(bvalues[index.b.cut],estimate.other[i,index.b.cut],col=color.list[tmp],lty=1,lwd=lwd)
       if(conf.int==TRUE){
-        lines(bvalues[index.b.cut],
+        graphics::lines(bvalues[index.b.cut],
               theta.array.lo.other[i,index.b.cut],col=color.list[tmp],lty=3,lwd=lwd)
-        lines(bvalues[index.b.cut],
+        graphics::lines(bvalues[index.b.cut],
               theta.array.hi.other[i,index.b.cut],col=color.list[tmp],lty=4,lwd=lwd)
       }
     }
@@ -10001,7 +10069,7 @@ plot.at.a.over.b <- function(filename,
 
       ## form KM estimate and add estimate to plot
       tmp <-  tmp + 1
-      lines(survfit(Surv(time,delta)~1,data=myKMdata,conf.int=conf.int),col=color.list[tmp],
+      graphics::lines(survfit(Surv(time,delta)~1,data=myKMdata,conf.int=conf.int),col=color.list[tmp],
             fun="event",lwd=lwd)
     }
   }
@@ -10009,14 +10077,14 @@ plot.at.a.over.b <- function(filename,
 
 
   if(!is.null(legend.position)){
-    legend(legend.position,legend=label.names,
+    graphics::legend(legend.position,legend=label.names,
            col=color.list[1:tmp],
            lty=rep(1,length(tmp)),lwd=rep(lwd,length(tmp)),
            bty="n",cex=cex.legend)
   }
 
   if(add.second.legend==TRUE){
-    legend("bottomright",legend=c("Estimate","Upper 95% CI", "Lower 95% CI"),
+    graphics::legend("bottomright",legend=c("Estimate","Upper 95% CI", "Lower 95% CI"),
            col=rep("black",3),
            lty=c(1,4,3),
            lwd=rep(lwd,3),
@@ -10024,7 +10092,7 @@ plot.at.a.over.b <- function(filename,
 
   }
 
-  dev.off()
+  ##dev.off()
 }
 
 
@@ -10033,19 +10101,19 @@ plot.at.a.over.b <- function(filename,
 
 
 ## plot counts
-
+#' @import graphics
 plot.counts <- function(filename,time_val,counts.array,lwd=3,cex.legend=3,cex.axis=3){
   data.count2 <- apply(counts.array,c(2,3),mean)
 
-  postscript(paste(filename,"_counts.eps",sep=""))
-  plot(as.numeric(time_val),as.numeric(data.count2[,1]),col="blue",type="l",lwd=lwd,
+  #postscript(paste(filename,"_counts.eps",sep=""))
+  graphics::plot(as.numeric(time_val),as.numeric(data.count2[,1]),col="blue",type="l",lwd=lwd,
        ylim=c(0,1),ylab="",xlab="",cex.axis=cex.axis)
-  lines(as.numeric(time_val),as.numeric(data.count2[,2]),col="red",lty=1,lwd=lwd)
-  lines(as.numeric(time_val),as.numeric(data.count2[,3]),col="green",lty=1,lwd=lwd)
-  lines(as.numeric(time_val),as.numeric(data.count2[,4]),col="black",lty=1,lwd=lwd)
-  legend("bottomright",legend=c("Y=1","Y=0, delta=1","Y=0, delta=0","Y in (0,1)"),col=c("blue","red","green","black"),
+  graphics::lines(as.numeric(time_val),as.numeric(data.count2[,2]),col="red",lty=1,lwd=lwd)
+  graphics::lines(as.numeric(time_val),as.numeric(data.count2[,3]),col="green",lty=1,lwd=lwd)
+  graphics::lines(as.numeric(time_val),as.numeric(data.count2[,4]),col="black",lty=1,lwd=lwd)
+  graphics::legend("bottomright",legend=c("Y=1","Y=0, delta=1","Y=0, delta=0","Y in (0,1)"),col=c("blue","red","green","black"),
          lty=c(1,1,1,1),lwd=rep(lwd,4),bty="n",cex=cex.legend)
-  dev.off()
+  #dev.off()
 }
 
 ## IAC calculation
@@ -10663,7 +10731,7 @@ get.predicted.survival <- function(theta.array,
     x <- convert.cag(xx_val.use,xmin=xmin,xmax=xmax)
     cag.uniform <- reverse.cag(xx_choose,xmin=xmin,xmax=xmax)
   } else {
-    x <- xx_val
+    x <- xx_val.use
     cag.uniform <- xx_choose
   }
 
@@ -10707,7 +10775,7 @@ get.slopes <- function(theta.array,
     x <- convert.cag(xx_val.use,xmin=xmin,xmax=xmax)
     cag.uniform <- reverse.cag(xx_choose,xmin=xmin,xmax=xmax)
   } else {
-    x <- xx_val
+    x <- xx_val.use
     cag.uniform <- xx_choose
   }
 
@@ -10816,7 +10884,7 @@ get.sample.size <- function(out.Ft,type1.error,
                             type2.error,
                             treatment.effect,
                             study.names,
-                            event.names=s.names,
+                            event.names,#=s.names,
                             z_lab_names,
                             x_lab_names,
                             time_choice.predicted,
@@ -11200,25 +11268,6 @@ make.langbehn.optimization <- function(event.variable,delta.variable,cag.variabl
   function(theta){
     langbehn.optimization(event.variable,delta.variable,cag.variable,theta)
   }
-}
-
-get.langbehn.model <- function(data.use,event.name,delta.name){
-  data.tmp <- data.use
-  ## use complete cases
-  data.tmp <- data.tmp[complete.cases(data.tmp),]
-
-  event.variable <- data.tmp[,event.name]
-  delta.variable <- data.tmp[,delta.name]
-  cag.variable <- data.tmp[,"CAG"]
-
-  ## create function to optimize
-  optimizer <- make.langbehn.optimization(event.variable,delta.variable,cag.variable)
-
-  ## fit the model
-  theta_init <- c(21.54,9.556,0.146,35.55,17.72,0.3269)
-  optim.fit <- optim(theta_init,optimizer,hessian=TRUE)
-  return(list(parameter.estimates=parameter.estimates,
-              variance.estimates=variance.estimates))
 }
 
 
@@ -11741,7 +11790,7 @@ compute.number.events.in.study <- function(
                              c("Kaplan-Meier","JPRAT","Langbehn", "CAP","CAP_new")))
 
 
-
+  study <- NULL
   for(ss in 1:length(study.names)){
     subset.data <- subset(data.out, study==study.names[ss])
     out[ss,"orig.cases",] <-

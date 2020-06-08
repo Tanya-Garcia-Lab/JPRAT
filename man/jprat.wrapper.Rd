@@ -26,6 +26,7 @@ jprat.wrapper(
   what.analyzed.separately,
   estimation.when.censoring.depends.on.z,
   use.bootstrap.variance,
+  estimate.variances,
   write.output
 )
 }
@@ -74,6 +75,8 @@ This may get rid of the warning messages.}
 \item{estimation.when.censoring.depends.on.z}{a logical value whether the estimation process assumes that a censoring distribution depends on nonfunctional covariates Z. If covariates Z does not follow a binomial distribution, then default is FALSE.}
 
 \item{use.bootstrap.variance}{a logical value whether to compute bootstrap variances. Default is TRUE.}
+
+\item{estimate.variances}{FILL IN DETAILS}
 
 \item{write.output}{a logical value whether outputs will be saved into data files. Default is TRUE.}
 }
@@ -125,7 +128,6 @@ The Joint Progression of Risk Assessment Tool (JPRAT) evaluates and compares all
 }
 \examples{
 
-library(JPRAT)
 
 ####################################
 # For JPRAT estimation: Input data #
@@ -155,25 +157,34 @@ what.analyzed.separately="studyevent";
 estimated.parameters.common.for.all.studies=FALSE;
 use.bootstrap.variance=TRUE ;
 estimation.when.censoring.depends.on.z=FALSE ;
+estimate.variances="est";
 write.output=TRUE;
 
 
 
-jprat.estimat.results<-jprat.wrapper(study.names=study.names, data.file.names=data.file.names, nonfunctional.covariate.names=nonfunctional.covariate.names,
-                                    functional.covariate.names=functional.covariate.names, othercovariate.names=othercovariate.names, event.outcome.names=event.outcome.names,
-                                    delta.names=delta.names, time.points.for.prediction=time.points.for.prediction,
-                                    time.points.for.conditional.prediction=time.points.for.conditional.prediction,
-                                    time.points.for.conditional.prediction.toadd=time.points.for.conditional.prediction.toadd,
-                                    nonfunctional.covariate.value=nonfunctional.covariate.value,	functional.covariate.values.of.interest=functional.covariate.values.of.interest,
-                                    number.of.bootstraps=number.of.bootstraps, use.functional.beta.intercept=use.functional.beta.intercept,
-                                    use.functional.event.coefficients=use.functional.event.coefficients,
-                                    use.functional.study.coefficients=use.functional.study.coefficients,
-                                    check.study.equality=check.study.equality,
-                                    estimated.parameters.common.for.all.studies=estimated.parameters.common.for.all.studies,
-                                    what.analyzed.separately=what.analyzed.separately,
-                                    estimation.when.censoring.depends.on.z=estimation.when.censoring.depends.on.z,
-                                    use.bootstrap.variance=use.bootstrap.variance,
-                                    write.output=write.output)
+jprat.estimat.results<-jprat.wrapper(study.names=study.names,
+  data.file.names=data.file.names,
+  nonfunctional.covariate.names=nonfunctional.covariate.names,
+  functional.covariate.names=functional.covariate.names,
+  othercovariate.names=othercovariate.names,
+  event.outcome.names=event.outcome.names,
+  delta.names=delta.names,
+  time.points.for.prediction=time.points.for.prediction,
+  time.points.for.conditional.prediction=time.points.for.conditional.prediction,
+  time.points.for.conditional.prediction.toadd=time.points.for.conditional.prediction.toadd,
+  nonfunctional.covariate.value=nonfunctional.covariate.value,
+  functional.covariate.values.of.interest=functional.covariate.values.of.interest,
+  number.of.bootstraps=number.of.bootstraps,
+  use.functional.beta.intercept=use.functional.beta.intercept,
+  use.functional.event.coefficients=use.functional.event.coefficients,
+  use.functional.study.coefficients=use.functional.study.coefficients,
+  check.study.equality=check.study.equality,
+  estimated.parameters.common.for.all.studies=estimated.parameters.common.for.all.studies,
+  what.analyzed.separately=what.analyzed.separately,
+  estimation.when.censoring.depends.on.z=estimation.when.censoring.depends.on.z,
+  use.bootstrap.variance=use.bootstrap.variance,
+  estimate.variances=estimate.variances,
+  write.output=write.output)
 
 
 

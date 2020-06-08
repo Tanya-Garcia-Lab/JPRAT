@@ -4,7 +4,8 @@
 \name{data_cohort}
 \alias{data_cohort}
 \title{Generated data set for the Huntington's disease (HD) study: Cohort(n=430)}
-\format{A dataframe including 430 subjects' longitudinal data with the following 12 variables:
+\format{
+A dataframe including 430 subjects' longitudinal data with the following 12 variables:
 \describe{
   \item{CAG}{CAG repeats length.}
   \item{base_age}{ages at baseline, when subjects visited clinics for the first time.}
@@ -17,7 +18,8 @@
   \item{delta.tfctwo}{censoring indicator whether individuals have experienced reduction of occupational capacity (1 if a person has experienced on reduction of occupational capacity, 0 otherwise).}
   \item{first year}{year when patients visits clinics for the first time.}
   \item{last year}{year when patients stop visiting clinics.}
-}}
+}
+}
 \source{
 see data-raw/data_generation.R
 }

@@ -14,11 +14,8 @@ convert.cag(x, xmin = xmin, xmax = xmax)
 \item{xmax}{See the argument in the \code{\link{convert.new.notation.to.old.for.jprat}} function.}
 }
 \value{
-
+FILL IN HERE!
 }
 \description{
 This function converts the uniformly distributed values (CAG repeats length) on [0,1] to the original values (CAG repeats length from real data).
-}
-\examples{
-
 }

@@ -85,6 +85,8 @@ view.all.results(
 
 \item{functional.covariate.values.of.interest}{See this argument in the \code{\link{jprat.wrapper}} function.}
 
+\item{number.of.bootstraps}{ADD DETAILS HERE!}
+
 \item{use.functional.beta.intercept}{See this argument in the \code{\link{jprat.wrapper}} function.}
 
 \item{use.functional.event.coefficients}{See this argument in the \code{\link{jprat.wrapper}} function.}
@@ -197,7 +199,6 @@ This function returns analysis results including plots and tables.
 The number of risks at each time point will be printed in the plot.
 }
 \examples{
-library(JPRAT)
 ####################################
 ##For JPRAT estimation: Input data #
 ####################################
@@ -225,33 +226,37 @@ what.analyzed.separately="studyevent";
 estimated.parameters.common.for.all.studies=FALSE;
 use.bootstrap.variance=TRUE ;
 estimation.when.censoring.depends.on.z=FALSE ;
+estimate.variances = "est";
 write.output=TRUE;
 
 #######################
 # Run JPRAT algorithm #
 #######################
-jprat.estimat.results<-jprat.wrapper(study.names=study.names,
-                                    data.file.names=data.file.names,
-                                    nonfunctional.covariate.names=nonfunctional.covariate.names,
-                                    functional.covariate.names=functional.covariate.names,
-                                    othercovariate.names=othercovariate.names,
-                                    event.outcome.names=event.outcome.names,
-                                    delta.names=delta.names,
-                                    time.points.for.prediction=time.points.for.prediction,
-                                    time.points.for.conditional.prediction=ime.points.for.conditional.prediction,
-                                    time.points.for.conditional.prediction.toadd=time.points.for.conditional.prediction.toadd,
-                                    nonfunctional.covariate.value=nonfunctional.covariate.value,
-                                    functional.covariate.values.of.interest=functional.covariate.values.of.interest,
-                                    number.of.bootstraps=number.of.bootstraps,
-                                    use.functional.beta.intercept=use.functional.beta.intercept,
-                                    use.functional.event.coefficients=use.functional.event.coefficients,
-                                    use.functional.study.coefficients=use.functional.study.coefficients,
-                                    check.study.equality=check.study.equality,
-                                    estimated.parameters.common.for.all.studies=estimated.parameters.common.for.all.studies,
-                                    what.analyzed.separately=what.analyzed.separately,
-                                    estimation.when.censoring.depends.on.z=estimation.when.censoring.depends.on.z,
-                                    use.bootstrap.variance=use.bootstrap.variance,
-                                    write.output=write.output)
+jprat.estimat.results<-
+  jprat.wrapper(
+  study.names,
+  data.file.names,
+  nonfunctional.covariate.names,
+  functional.covariate.names,
+  othercovariate.names,
+  event.outcome.names,
+  delta.names,
+  time.points.for.prediction,
+  time.points.for.conditional.prediction,
+  time.points.for.conditional.prediction.toadd,
+  nonfunctional.covariate.value,
+  functional.covariate.values.of.interest,
+  number.of.bootstraps,
+  use.functional.beta.intercept,
+  use.functional.event.coefficients,
+  use.functional.study.coefficients,
+  check.study.equality,
+  estimated.parameters.common.for.all.studies,
+  what.analyzed.separately,
+  estimation.when.censoring.depends.on.z,
+  use.bootstrap.variance,
+  estimate.variances,
+  write.output)
 
 ###################################
 # To view all results: input data #
@@ -276,61 +281,70 @@ show.results.description=FALSE;
 ############################
 ## Run results function    #
 ############################
-all.results<-view.all.results(study.names=study.names, data.file.names=data.file.names, nonfunctional.covariate.names=nonfunctional.covariate.names,
-                             functional.covariate.names=functional.covariate.names, othercovariate.names=othercovariate.names,
-                             event.outcome.names=event.outcome.names, delta.names=delta.names,
-                             time.points.for.prediction=time.points.for.prediction, time.points.for.conditional.prediction=time.points.for.conditional.prediction,
-                             time.points.for.conditional.prediction.toadd=time.points.for.conditional.prediction.toadd,
-                             nonfunctional.covariate.value=nonfunctional.covariate.value,
-                             functional.covariate.values.of.interest=functional.covariate.values.of.interest,
-                             number.of.bootstraps=number.of.bootstraps, use.functional.beta.intercept=use.functional.beta.intercept,
-                             use.functional.event.coefficients=use.functional.event.coefficients,
-                             use.functional.study.coefficients=use.functional.study.coefficients,
-                             check.study.equality=check.study.equality, estimated.parameters.common.for.all.studies=estimated.parameters.common.for.all.studies,
-                             what.analyzed.separately=what.analyzed.separately, estimation.when.censoring.depends.on.z=estimation.when.censoring.depend.on.z,
-                             use.bootstrap.variance=use.bootstrap.variance,
-                             #############################
-                             ## To get Results          ##
-                             #############################
-                             functional.covariate.values.of.interest.ci=functional.covariate.values.of.interest.ci,
-                             time.points.of.interest=time.points.of.interest,
-                             time.points.of.interest.ci=time.points.of.interest.ci,
-                             label.for.alpha.values.over.time=NULL,
-                             which.nonfunctional.covariate.comparisons=which.nonfunctional.covariate.comparisons,
-                             color.names=color.names,
-                             legend.names=legend.names,
-                             functional.covariate.comparisons=functional.covariate.comparisons,
-                             functional.covariate.comparisons.for.sample.size=functional.covariate.
-                             comparisons.for.sample.size,
-                             do.plots=do.plots,
-                             plot.confidence.intervals=plot.confidence.intervals,
-                             add.number.at.risk.legend=add.number.at.risk.legend,
-                             ylabel.for.plots.comparing.studies=ylabel.for.plots.comparing.studies,
-                             xlabel.for.plots.comparing.studies=xlabel.for.plots.comparing.studies,
-                             file.name.for.analysis=file.name.for.analysis,
-                             #######################
-                             ## Output from JPRAT ##
-                             #######################
-                             data.truth=data.truth,
-                             data.theta=data.theta,
-                             data.combi=data.combi,
-                             data.count=data.count,
-                             data.count.outside=data.count.outside,
-                             nrisk=nrisk,
-                             data.truth.other=NULL,
-                             data.theta.other=NULL,
-                             nrisk.other=NULL,
-                             data.combi.other=NULL,
-                             s.names.use=NULL,
-                             s.names.other.use=NULL,
-                             show.results.description=show.results.description,
-                             ########################################################
-                             ## for computing sample sizes: users do not consider those arguments ##
-                             ########################################################
-                             type1.error=NULL,
-                             type2.error=NULL,
-                             treatment.effect=NULL,
-                             dropout.rate=NULL)
+all.results<-
+  view.all.results(
+    study.names,
+    data.file.names,
+    nonfunctional.covariate.names,
+    functional.covariate.names,
+    othercovariate.names,
+    event.outcome.names,
+    delta.names,
+    time.points.for.prediction,
+    time.points.for.conditional.prediction,
+    time.points.for.conditional.prediction.toadd,
+    nonfunctional.covariate.value,
+    functional.covariate.values.of.interest,
+    number.of.bootstraps,
+    use.functional.beta.intercept,
+    use.functional.event.coefficients,
+    use.functional.study.coefficients,
+    check.study.equality,
+    estimated.parameters.common.for.all.studies,
+    what.analyzed.separately,
+    estimation.when.censoring.depends.on.z,
+    use.bootstrap.variance,
+    #############################
+    ## To get Results          ##
+    #############################
+    functional.covariate.values.of.interest.ci,
+    time.points.of.interest,
+    time.points.of.interest.ci,
+    label.for.alpha.values.over.time=NULL,
+    which.nonfunctional.covariate.comparisons,
+    color.names,
+    legend.names,
+    functional.covariate.comparisons,
+    functional.covariate.comparisons.for.sample.size,
+    do.plots,
+    plot.confidence.intervals,
+    add.number.at.risk.legend,
+    ylabel.for.plots.comparing.studies,
+    xlabel.for.plots.comparing.studies,
+    file.name.for.analysis,
+    #######################
+    ## Output from JPRAT ##
+    #######################
+    data.truth,
+    data.theta,
+    data.combi,
+    data.count,
+    data.count.outside,
+    nrisk,
+    data.truth.other=NULL,
+    data.theta.other=NULL,
+    nrisk.other=NULL,
+    data.combi.other=NULL,
+    s.names.use=NULL,
+    s.names.other.use=NULL,
+    show.results.description,
+    ########################################################
+    ## for computing sample sizes: users do not consider those arguments ##
+    ########################################################
+    type1.error=NULL,
+    type2.error=NULL,
+    treatment.effect=NULL,
+    dropout.rate=NULL)
 
 
 }

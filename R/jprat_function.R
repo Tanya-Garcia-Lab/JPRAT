@@ -24,6 +24,7 @@
 #' @param what.analyzed.separately a character value to determine whether analysis will be performed separately or jointly: the options are "studyevents" (studies and event), "studies", "events", or "none". Default is "studyevents".
 #' @param estimation.when.censoring.depends.on.z a logical value whether the estimation process assumes that a censoring distribution depends on nonfunctional covariates Z. If covariates Z does not follow a binomial distribution, then default is FALSE.
 #' @param use.bootstrap.variance  a logical value whether to compute bootstrap variances. Default is TRUE.
+#' @param estimate.variances FILL IN DETAILS
 #' @param write.output a logical value whether outputs will be saved into data files. Default is TRUE.
 #'
 #' @details The Joint Progression of Risk Assessment Tool (JPRAT) evaluates and compares all outcomes simultaneously
@@ -72,7 +73,6 @@
 #'
 #' @examples
 #'
-#' library(JPRAT)
 #'
 #' ####################################
 #' # For JPRAT estimation: Input data #
@@ -102,25 +102,34 @@
 #' estimated.parameters.common.for.all.studies=FALSE;
 #' use.bootstrap.variance=TRUE ;
 #' estimation.when.censoring.depends.on.z=FALSE ;
+#' estimate.variances="est";
 #' write.output=TRUE;
 #'
 #'
 #'
-#' jprat.estimat.results<-jprat.wrapper(study.names=study.names, data.file.names=data.file.names, nonfunctional.covariate.names=nonfunctional.covariate.names,
-#'                                     functional.covariate.names=functional.covariate.names, othercovariate.names=othercovariate.names, event.outcome.names=event.outcome.names,
-#'                                     delta.names=delta.names, time.points.for.prediction=time.points.for.prediction,
-#'                                     time.points.for.conditional.prediction=time.points.for.conditional.prediction,
-#'                                     time.points.for.conditional.prediction.toadd=time.points.for.conditional.prediction.toadd,
-#'                                     nonfunctional.covariate.value=nonfunctional.covariate.value,	functional.covariate.values.of.interest=functional.covariate.values.of.interest,
-#'                                     number.of.bootstraps=number.of.bootstraps, use.functional.beta.intercept=use.functional.beta.intercept,
-#'                                     use.functional.event.coefficients=use.functional.event.coefficients,
-#'                                     use.functional.study.coefficients=use.functional.study.coefficients,
-#'                                     check.study.equality=check.study.equality,
-#'                                     estimated.parameters.common.for.all.studies=estimated.parameters.common.for.all.studies,
-#'                                     what.analyzed.separately=what.analyzed.separately,
-#'                                     estimation.when.censoring.depends.on.z=estimation.when.censoring.depends.on.z,
-#'                                     use.bootstrap.variance=use.bootstrap.variance,
-#'                                     write.output=write.output)
+#' jprat.estimat.results<-jprat.wrapper(study.names=study.names,
+#'   data.file.names=data.file.names,
+#'   nonfunctional.covariate.names=nonfunctional.covariate.names,
+#'   functional.covariate.names=functional.covariate.names,
+#'   othercovariate.names=othercovariate.names,
+#'   event.outcome.names=event.outcome.names,
+#'   delta.names=delta.names,
+#'   time.points.for.prediction=time.points.for.prediction,
+#'   time.points.for.conditional.prediction=time.points.for.conditional.prediction,
+#'   time.points.for.conditional.prediction.toadd=time.points.for.conditional.prediction.toadd,
+#'   nonfunctional.covariate.value=nonfunctional.covariate.value,
+#'   functional.covariate.values.of.interest=functional.covariate.values.of.interest,
+#'   number.of.bootstraps=number.of.bootstraps,
+#'   use.functional.beta.intercept=use.functional.beta.intercept,
+#'   use.functional.event.coefficients=use.functional.event.coefficients,
+#'   use.functional.study.coefficients=use.functional.study.coefficients,
+#'   check.study.equality=check.study.equality,
+#'   estimated.parameters.common.for.all.studies=estimated.parameters.common.for.all.studies,
+#'   what.analyzed.separately=what.analyzed.separately,
+#'   estimation.when.censoring.depends.on.z=estimation.when.censoring.depends.on.z,
+#'   use.bootstrap.variance=use.bootstrap.variance,
+#'   estimate.variances=estimate.variances,
+#'   write.output=write.output)
 #'
 #'
 #'
@@ -150,6 +159,7 @@ jprat.wrapper <- function(
   what.analyzed.separately,
   estimation.when.censoring.depends.on.z,
   use.bootstrap.variance,
+  estimate.variances,
   write.output
 ){
 
@@ -797,8 +807,8 @@ jprat.wrapper <- function(
   #theta.var.out <- est.var.out$theta.var.out
 
   ## extract beta,alpha,Ft parts
-  #parts.theta.out <- extract.output(theta.out,gamma.param,omega.param)
-  #parts.theta.var.out <- extract.output(theta.var.out,gamma.param,omega.param)
+  #parts.theta.out <- extract.output(theta.out,gamma.param,omega.param,time_val)
+  #parts.theta.var.out <- extract.output(theta.var.out,gamma.param,omega.param,time_val)
 
   #beta.out <- parts.theta.out$beta.out
   #beta.var.out <- parts.theta.var.out$beta.out
@@ -832,7 +842,7 @@ jprat.wrapper <- function(
     combi.out <- combi.out[,combi.colm.names]
 
     ## extract beta,alpha,Ft parts
-    #parts.theta.out <- extract.output(combi.theta.out.all,gamma.param,omega.param)
+    #parts.theta.out <- extract.output(combi.theta.out.all,gamma.param,omega.param,time_val)
 
     #beta.diff.out <- parts.theta.out$beta.out
     #gamma.diff.out <-parts.theta.out$gamma.out

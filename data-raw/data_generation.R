@@ -1,6 +1,3 @@
-library(usethis)
-library(JPRAT)
-
 ## predict
 data_predict<-read.csv("data-raw/data_predict.csv")
 

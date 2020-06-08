@@ -3,6 +3,7 @@ data_predict<-read.csv("data-raw/data_predict.csv")
 data_cohort<-read.csv("data-raw/data_cohort.csv")
 data_pharos<-read.csv("data-raw/data_pharos.csv")
 
+
 ## parameters
 use.real.data=TRUE;
 study.names=c("cohort", "predict", "pharos");
@@ -38,17 +39,17 @@ appendList <- function (x, val){
 
 
 
-get.functional.covariate.values.for.prediction <- function(use_real_data,
+get.functional.covariate.values.for.prediction <- function(#use_real_data,
                                                            xmin,xmax,functional.covariate.values.of.interest){
 
-  if(use_real_data==FALSE){
-    functional.covariate.values.for.prediction <- seq(0,1,by=0.01)
-  } else {
+  #if(use_real_data==FALSE){
+  #  functional.covariate.values.for.prediction <- seq(0,1,by=0.01)
+  #} else {
     functional.covariate.values.for.prediction.tmp <- seq(0,1,by=0.1)
     functional.covariate.values.for.prediction <- c(functional.covariate.values.for.prediction.tmp,
                                                     reverse.cag(functional.covariate.values.of.interest,xmin=xmin,xmax=xmax))
     functional.covariate.values.for.prediction <- unique(sort(functional.covariate.values.for.prediction))
-  }
+  #}
 
   return(functional.covariate.values.for.prediction)
 }
@@ -101,7 +102,8 @@ data.reformatted.for.jprat.analysis<-function(use_real_data,
 
     data.tmp <-read.csv(paste("data-raw/data_",study,".csv",sep=""),
                           header=TRUE)[ , -1]
-    data.sets.as.list[[study]] <- data.tmp
+
+        data.sets.as.list[[study]] <- data.tmp
 
     #cat(" \n pseudo data dimensions, complete cases:",dim(data.tmp))
   }
@@ -158,7 +160,7 @@ data.reformatted.for.jprat.analysis<-function(use_real_data,
   #nonfunctional.covariate.value <- c(40)
 
   #tmp.nonfunctional.covariate.values.for.prediction <- get.nonfunctional.covariate.values.for.prediction(nonfunctional.covariate.names,
-  #                                                                                                             functional.beta.intercept,analysis.to.run,nonfunctional.covariate.value.is.0)
+  #                                                                                                             functional.beta.intercept,analysis.to.run,nonfunctional.covariate.value.is.0,paper.type)
   output.list <- list()
   for(ll in 1:length(nonfunctional.covariate.names)){
     tmp <- get.empty.list(nonfunctional.covariate.names[ll])  #[ll]

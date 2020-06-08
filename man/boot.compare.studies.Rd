@@ -187,6 +187,3 @@ This function uses bootstrap-based joint confidence interval to determine which 
          (joint model with distinct study parameters, shared study parameter model, separate study model)
          is more suitable.
 }
-\examples{
-
-}

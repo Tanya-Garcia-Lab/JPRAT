@@ -16,10 +16,29 @@ Description: The Joint Progression of Risk Assessment Tool (JPRAT) evaluates and
        multiple data hierarchy using an additive logistic mixed effect model. This algorithm handles censoring with pseudo-values and functional covariate effects with splines. 
 License: GPL-3
 Encoding: UTF-8
-Depends: R (>= 3.0.1), stats, base
-Imports: mgcv, abind, gamm4, zoo, xtable, survival, ggplot2, gtable, cubature, sandwich, splines, grid, gridExtra, plyr,  mnormt
+Depends: R (>= 3.5.0), stats, base
+Imports: 
+ abind,
+ cubature,
+ data.table,
+ gamm4,
+ ggplot2,
+ graphics,
+ grDevices,
+ grid,
+ gridExtra,
+ gtable,
+ lme4,
+ mgcv,
+ mnormt,
+ plyr,
+ sandwich,
+ splines,
+ survival,
+ xtable,
+ zoo           
 LazyData: true
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 Suggests: 
     testthat,
     knitr,

@@ -28,6 +28,7 @@
 #'         For example, we set the values \eqn{x=46, 51} in the analysis.
 #'         We recommend users to choose the same vector of functional covariate values X as in the interested functional covariate values (\code{functional.covariate.values.of.interest})
 #'        to ease estimation procedure in the analysis.
+#' @param number.of.bootstraps ADD DETAILS HERE!
 #' @param time.points.of.interest a vector of specific time points at which the smooth functional parameters \eqn{\alpha(X,t)}
 #'        will be predicted. These time points are used to be labeled for the plot.
 #'        For example, we set the values \eqn{x=46, 56} in the analysis.
@@ -86,7 +87,6 @@
 #' @export
 #'
 #' @examples
-#' library(JPRAT)
 #' ####################################
 #' ##For JPRAT estimation: Input data #
 #' ####################################
@@ -114,33 +114,37 @@
 #' estimated.parameters.common.for.all.studies=FALSE;
 #' use.bootstrap.variance=TRUE ;
 #' estimation.when.censoring.depends.on.z=FALSE ;
+#' estimate.variances = "est";
 #' write.output=TRUE;
 #'
 #' #######################
 #' # Run JPRAT algorithm #
 #' #######################
-#' jprat.estimat.results<-jprat.wrapper(study.names=study.names,
-#'                                     data.file.names=data.file.names,
-#'                                     nonfunctional.covariate.names=nonfunctional.covariate.names,
-#'                                     functional.covariate.names=functional.covariate.names,
-#'                                     othercovariate.names=othercovariate.names,
-#'                                     event.outcome.names=event.outcome.names,
-#'                                     delta.names=delta.names,
-#'                                     time.points.for.prediction=time.points.for.prediction,
-#'                                     time.points.for.conditional.prediction=ime.points.for.conditional.prediction,
-#'                                     time.points.for.conditional.prediction.toadd=time.points.for.conditional.prediction.toadd,
-#'                                     nonfunctional.covariate.value=nonfunctional.covariate.value,
-#'                                     functional.covariate.values.of.interest=functional.covariate.values.of.interest,
-#'                                     number.of.bootstraps=number.of.bootstraps,
-#'                                     use.functional.beta.intercept=use.functional.beta.intercept,
-#'                                     use.functional.event.coefficients=use.functional.event.coefficients,
-#'                                     use.functional.study.coefficients=use.functional.study.coefficients,
-#'                                     check.study.equality=check.study.equality,
-#'                                     estimated.parameters.common.for.all.studies=estimated.parameters.common.for.all.studies,
-#'                                     what.analyzed.separately=what.analyzed.separately,
-#'                                     estimation.when.censoring.depends.on.z=estimation.when.censoring.depends.on.z,
-#'                                     use.bootstrap.variance=use.bootstrap.variance,
-#'                                     write.output=write.output)
+#' jprat.estimat.results<-
+#'   jprat.wrapper(
+#'   study.names,
+#'   data.file.names,
+#'   nonfunctional.covariate.names,
+#'   functional.covariate.names,
+#'   othercovariate.names,
+#'   event.outcome.names,
+#'   delta.names,
+#'   time.points.for.prediction,
+#'   time.points.for.conditional.prediction,
+#'   time.points.for.conditional.prediction.toadd,
+#'   nonfunctional.covariate.value,
+#'   functional.covariate.values.of.interest,
+#'   number.of.bootstraps,
+#'   use.functional.beta.intercept,
+#'   use.functional.event.coefficients,
+#'   use.functional.study.coefficients,
+#'   check.study.equality,
+#'   estimated.parameters.common.for.all.studies,
+#'   what.analyzed.separately,
+#'   estimation.when.censoring.depends.on.z,
+#'   use.bootstrap.variance,
+#'   estimate.variances,
+#'   write.output)
 #'
 #' ###################################
 #' # To view all results: input data #
@@ -165,61 +169,70 @@
 #' ############################
 #' ## Run results function    #
 #' ############################
-#' all.results<-view.all.results(study.names=study.names, data.file.names=data.file.names, nonfunctional.covariate.names=nonfunctional.covariate.names,
-#'                              functional.covariate.names=functional.covariate.names, othercovariate.names=othercovariate.names,
-#'                              event.outcome.names=event.outcome.names, delta.names=delta.names,
-#'                              time.points.for.prediction=time.points.for.prediction, time.points.for.conditional.prediction=time.points.for.conditional.prediction,
-#'                              time.points.for.conditional.prediction.toadd=time.points.for.conditional.prediction.toadd,
-#'                              nonfunctional.covariate.value=nonfunctional.covariate.value,
-#'                              functional.covariate.values.of.interest=functional.covariate.values.of.interest,
-#'                              number.of.bootstraps=number.of.bootstraps, use.functional.beta.intercept=use.functional.beta.intercept,
-#'                              use.functional.event.coefficients=use.functional.event.coefficients,
-#'                              use.functional.study.coefficients=use.functional.study.coefficients,
-#'                              check.study.equality=check.study.equality, estimated.parameters.common.for.all.studies=estimated.parameters.common.for.all.studies,
-#'                              what.analyzed.separately=what.analyzed.separately, estimation.when.censoring.depends.on.z=estimation.when.censoring.depend.on.z,
-#'                              use.bootstrap.variance=use.bootstrap.variance,
-#'                              #############################
-#'                              ## To get Results          ##
-#'                              #############################
-#'                              functional.covariate.values.of.interest.ci=functional.covariate.values.of.interest.ci,
-#'                              time.points.of.interest=time.points.of.interest,
-#'                              time.points.of.interest.ci=time.points.of.interest.ci,
-#'                              label.for.alpha.values.over.time=NULL,
-#'                              which.nonfunctional.covariate.comparisons=which.nonfunctional.covariate.comparisons,
-#'                              color.names=color.names,
-#'                              legend.names=legend.names,
-#'                              functional.covariate.comparisons=functional.covariate.comparisons,
-#'                              functional.covariate.comparisons.for.sample.size=functional.covariate.
-#'                              comparisons.for.sample.size,
-#'                              do.plots=do.plots,
-#'                              plot.confidence.intervals=plot.confidence.intervals,
-#'                              add.number.at.risk.legend=add.number.at.risk.legend,
-#'                              ylabel.for.plots.comparing.studies=ylabel.for.plots.comparing.studies,
-#'                              xlabel.for.plots.comparing.studies=xlabel.for.plots.comparing.studies,
-#'                              file.name.for.analysis=file.name.for.analysis,
-#'                              #######################
-#'                              ## Output from JPRAT ##
-#'                              #######################
-#'                              data.truth=data.truth,
-#'                              data.theta=data.theta,
-#'                              data.combi=data.combi,
-#'                              data.count=data.count,
-#'                              data.count.outside=data.count.outside,
-#'                              nrisk=nrisk,
-#'                              data.truth.other=NULL,
-#'                              data.theta.other=NULL,
-#'                              nrisk.other=NULL,
-#'                              data.combi.other=NULL,
-#'                              s.names.use=NULL,
-#'                              s.names.other.use=NULL,
-#'                              show.results.description=show.results.description,
-#'                              ########################################################
-#'                              ## for computing sample sizes: users do not consider those arguments ##
-#'                              ########################################################
-#'                              type1.error=NULL,
-#'                              type2.error=NULL,
-#'                              treatment.effect=NULL,
-#'                              dropout.rate=NULL)
+#' all.results<-
+#'   view.all.results(
+#'     study.names,
+#'     data.file.names,
+#'     nonfunctional.covariate.names,
+#'     functional.covariate.names,
+#'     othercovariate.names,
+#'     event.outcome.names,
+#'     delta.names,
+#'     time.points.for.prediction,
+#'     time.points.for.conditional.prediction,
+#'     time.points.for.conditional.prediction.toadd,
+#'     nonfunctional.covariate.value,
+#'     functional.covariate.values.of.interest,
+#'     number.of.bootstraps,
+#'     use.functional.beta.intercept,
+#'     use.functional.event.coefficients,
+#'     use.functional.study.coefficients,
+#'     check.study.equality,
+#'     estimated.parameters.common.for.all.studies,
+#'     what.analyzed.separately,
+#'     estimation.when.censoring.depends.on.z,
+#'     use.bootstrap.variance,
+#'     #############################
+#'     ## To get Results          ##
+#'     #############################
+#'     functional.covariate.values.of.interest.ci,
+#'     time.points.of.interest,
+#'     time.points.of.interest.ci,
+#'     label.for.alpha.values.over.time=NULL,
+#'     which.nonfunctional.covariate.comparisons,
+#'     color.names,
+#'     legend.names,
+#'     functional.covariate.comparisons,
+#'     functional.covariate.comparisons.for.sample.size,
+#'     do.plots,
+#'     plot.confidence.intervals,
+#'     add.number.at.risk.legend,
+#'     ylabel.for.plots.comparing.studies,
+#'     xlabel.for.plots.comparing.studies,
+#'     file.name.for.analysis,
+#'     #######################
+#'     ## Output from JPRAT ##
+#'     #######################
+#'     data.truth,
+#'     data.theta,
+#'     data.combi,
+#'     data.count,
+#'     data.count.outside,
+#'     nrisk,
+#'     data.truth.other=NULL,
+#'     data.theta.other=NULL,
+#'     nrisk.other=NULL,
+#'     data.combi.other=NULL,
+#'     s.names.use=NULL,
+#'     s.names.other.use=NULL,
+#'     show.results.description,
+#'     ########################################################
+#'     ## for computing sample sizes: users do not consider those arguments ##
+#'     ########################################################
+#'     type1.error=NULL,
+#'     type2.error=NULL,
+#'     treatment.effect=NULL,
+#'     dropout.rate=NULL)
 #'
 #'
 view.all.results <- function(
@@ -539,11 +552,11 @@ view.all.results <- function(
   #zeval.tmp  <- old.names$zeval.tmp
 
   ## if parmaeter.plot=TRUE, the following arguments are needed
-  # alphax.ylab <- old.names$alphax.ylab
-  # alphax.xlab <- old.names$alphax.xlab
-  # alphat.ylab <- old.names$alphat.ylab
-  # alphat.xlab <- old.names$alphat.xlab
-  # alphat_lab <- old.names$alphat_lab
+  alphax.ylab <- old.names$alphax.ylab
+  alphax.xlab <- old.names$alphax.xlab
+  alphat.ylab <- old.names$alphat.ylab
+  alphat.xlab <- old.names$alphat.xlab
+  alphat_lab <- old.names$alphat_lab
   # z_tmp.list  <- old.names$z_tmp.list
   # x_tmp.list  <- old.names$x_tmp.list
   # zeval  <- old.names$zeval
@@ -1206,7 +1219,7 @@ view.all.results <- function(
             # no examples but add documentations#
             #####################################
 
-            ggplot.at.a.over.b(filename=paste("gg_",filename.set,sep=""),
+            ggplot_at_a_over_b(filename=paste("gg_",filename.set,sep=""),
                                estimate=adrop(Ft.array$out.mono.mean[ss,index_a,zz,i,,"est",drop=FALSE],
                                               drop=c(1,3,4,6)),
                                theta.array.lo=adrop(Ft.array$out.mono.mean[ss,index_a,zz,i,,var.lo,drop=FALSE],
@@ -1261,7 +1274,7 @@ view.all.results <- function(
               #                 ylim=ylim.setting["alphat",],
               #                 conf.int=conf.int.use,label.names=label.names)
 
-              ggplot.at.a.over.b(filename=paste("gg_",
+              ggplot_at_a_over_b(filename=paste("gg_",
                                                 filename_new,"alpha_ss_",study.names[ss],
                                                 "_nn_plot_",comp,"_diff_events_x",alphax_lab[tmp],sep=""),
                                  estimate=adrop(alpha.array$out.mean[ss,index_a,i,,la,"est",drop=FALSE],
@@ -1333,7 +1346,7 @@ view.all.results <- function(
               #                  conf.int=conf.int.use,label.names=label.names)
 
 
-              ggplot.at.a.over.b(filename=paste("gg_",
+              ggplot_at_a_over_b(filename=paste("gg_",
                                                 filename_new,"alpha_ss_",study.names[ss],
                                                 "_nn_plot_",comp,"_diff_events_t",alphat_lab[tmp],sep=""),
                                  estimate=adrop(alpha.array.new$out.mean[ss,index_a,i,,la,"est",drop=FALSE],
@@ -1466,7 +1479,7 @@ view.all.results <- function(
           #			add.second.legend=add.second.legend)
 
           ## ggplot version
-          ggplot.at.a.over.b(filename=paste("gg_",filename.use,sep=""),
+          ggplot_at_a_over_b(filename=paste("gg_",filename.use,sep=""),
                              estimate=adrop(Ft.array$out.mono.mean[index_a,nn,zz,i,,"est",drop=FALSE],
                                             drop=c(2,3,4,6)),
                              theta.array.lo=adrop(Ft.array$out.mono.mean[index_a,nn,zz,i,,var.lo,drop=FALSE],
@@ -2001,7 +2014,7 @@ view.all.results <- function(
                   # no examples but add documentations#
                   #####################################
 
-                  ggplot.error.bars(filename=paste("gg_",filename.set,sep=""),
+                  ggplot_error_bars(filename=paste("gg_",filename.set,sep=""),
                                     estimate=adrop(Ft.predicted.array$out.mean[ss,index_a,zz,i,,tt0,"est",drop=FALSE],
                                                    drop=c(1,3,4,6,7)),
                                     theta.array.lo=adrop(Ft.predicted.array$out.mean[ss,index_a,zz,i,,tt0,var.lo,drop=FALSE],

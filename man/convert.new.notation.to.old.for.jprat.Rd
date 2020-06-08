@@ -91,11 +91,8 @@ If this is FALSE, the only option is  "none" (no variances are estimated). Defau
 \item{clusters.are.families}{a logical value whether pseudo-values will compute differently when clusters are families (i.e., subjects are different people): Default is FALSE.}
 }
 \value{
-
+FILL IN HERE!!
 }
 \description{
 convert.new.notation.to.old.for.jprat: This code converts the new notation into the original code notation for JPRAT analysis.
-}
-\examples{
-
 }
