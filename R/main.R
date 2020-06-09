@@ -2190,18 +2190,16 @@ data.reformatted.for.jprat.analysis<-function(use_real_data,
 
     study.use <- names(tmp.list)[ss]
     #print(study.use)
-    #data.tmp <- data.sets.as.list[[study.use]]
-
-    #study <- study.names[ss]
-    #data.tmp <- read.csv(data[ss], header=TRUE)[ , -1]
-    #data.sets.as.list[[study]] <- data.tmp
 
     data.tmp <- data.sets.as.list[ss]
     study <- study.names[ss]
 
-    data.tmp <-read.csv(paste("data-raw/data_",study,".csv",sep=""),
-                       header=TRUE)[ , -1]
-    data.sets.as.list[[study]] <- data.tmp
+    ## read simulated data files - fake data
+    data.path<-system.file("extdata", paste("data_", study, ".csv", sep="")
+                           ,package = "JPRAT")
+    data.tmp<-read.csv(data.path)
+
+    data.sets.as.list[[study]] <- data.tmp[,-1]
     #cat(" \n pseudo data dimensions, complete cases:",dim(data.tmp))
   }
 
