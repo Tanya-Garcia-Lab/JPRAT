@@ -2190,18 +2190,16 @@ data.reformatted.for.jprat.analysis<-function(use_real_data,
 
     study.use <- names(tmp.list)[ss]
     #print(study.use)
-    #data.tmp <- data.sets.as.list[[study.use]]
-
-    #study <- study.names[ss]
-    #data.tmp <- read.csv(data[ss], header=TRUE)[ , -1]
-    #data.sets.as.list[[study]] <- data.tmp
 
     data.tmp <- data.sets.as.list[ss]
     study <- study.names[ss]
 
-    data.tmp <-read.csv(paste("data-raw/data_",study,".csv",sep=""),
-                       header=TRUE)[ , -1]
-    data.sets.as.list[[study]] <- data.tmp
+    ## read simulated data files - fake data
+    data.path<-system.file("extdata", paste("data_", study, ".csv", sep="")
+                           ,package = "JPRAT")
+    data.tmp<-read.csv(data.path)
+
+    data.sets.as.list[[study]] <- data.tmp[,-1]
     #cat(" \n pseudo data dimensions, complete cases:",dim(data.tmp))
   }
 
@@ -7749,7 +7747,11 @@ gamm.mle.new <- function(num_study,np,lb,num_xx,xks,
           ## set it to 0 by dropping...
           XX.tmp <- paste("study_",ss,"_XX",nn,"_",sep="")
 
-          assign(XX.tmp,sm$X[,-1],envir=globalenv())    ## spline basis
+          pos <- 1
+          envir = as.environment(pos)
+          assign(XX.tmp, sm$X[,-1], envir = envir)    ## spline basis
+          #assign(XX.tmp, sm$X[,-1],envir=globalenv())    ## spline basis
+
           XX.list <- c(XX.list,XX.tmp)
 
           S.tmp <- sm$S[[1]][-1,-1]   ## spline penalty
@@ -7789,7 +7791,11 @@ gamm.mle.new <- function(num_study,np,lb,num_xx,xks,
         ## set it to 0 by dropping...
         XX.tmp <- paste("XX",nn,"_",sep="")
 
-        assign(XX.tmp,sm$X[,-1],envir=globalenv())    ## spline basis
+        pos <- 1
+        envir = as.environment(pos)
+        assign(XX.tmp, sm$X[,-1], envir = envir)    ## spline basis
+        #assign(XX.tmp, sm$X[,-1],envir=globalenv())    ## spline basis
+
         XX.list <- c(XX.list,XX.tmp)
 
         S.tmp <- sm$S[[1]][-1,-1]   ## spline penalty
