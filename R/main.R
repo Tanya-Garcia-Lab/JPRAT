@@ -7747,7 +7747,11 @@ gamm.mle.new <- function(num_study,np,lb,num_xx,xks,
           ## set it to 0 by dropping...
           XX.tmp <- paste("study_",ss,"_XX",nn,"_",sep="")
 
-          assign(XX.tmp,sm$X[,-1],envir=globalenv())    ## spline basis
+          pos <- 1
+          envir = as.environment(pos)
+          assign(XX.tmp, sm$X[,-1], envir = envir)    ## spline basis
+          #assign(XX.tmp, sm$X[,-1],envir=globalenv())    ## spline basis
+
           XX.list <- c(XX.list,XX.tmp)
 
           S.tmp <- sm$S[[1]][-1,-1]   ## spline penalty
@@ -7787,7 +7791,11 @@ gamm.mle.new <- function(num_study,np,lb,num_xx,xks,
         ## set it to 0 by dropping...
         XX.tmp <- paste("XX",nn,"_",sep="")
 
-        assign(XX.tmp,sm$X[,-1],envir=globalenv())    ## spline basis
+        pos <- 1
+        envir = as.environment(pos)
+        assign(XX.tmp, sm$X[,-1], envir = envir)    ## spline basis
+        #assign(XX.tmp, sm$X[,-1],envir=globalenv())    ## spline basis
+
         XX.list <- c(XX.list,XX.tmp)
 
         S.tmp <- sm$S[[1]][-1,-1]   ## spline penalty
