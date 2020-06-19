@@ -262,6 +262,12 @@ all_null_theta <- function(theta.names,
 #'
 #'
 #'
+
+
+#####################################
+# no examples but add documentations#
+#####################################
+
 jprat.main.estimates<-function(method="gamm4",  ## conditional paramters to estimate using gamm4
                                compute.study.differences=FALSE, ## conditional parameter to do boostrap procedure
                                var.boot=TRUE, ## conditional parameter to do boostrap procedure
@@ -593,16 +599,14 @@ jprat.main.estimates<-function(method="gamm4",  ## conditional paramters to esti
 #'
 ## @examples
 #'
-#'
-#'
 gamm4.estimates <- function(arbitrary, num_study, np,
                             count.store,
+                            count.store.outside,
                             data,
                             num_time,
                             time_val,
                             time_choice.predicted,
                             time_choice.predicted.toadd,
-                            count.store.outside,
                             n,nmax,m,maxm,
                             la,lb,xks,truth,
                             num_xx,knot.length,real_data,
@@ -5481,10 +5485,10 @@ get.truth <- function(combi.study,combi.choice,
         if(time.use %in% dimnames(mono.Ftest)$time){
           Ft.predicted.true[,,,,tt,tt0] <-
             (
-              adrop(mono.Ftest[,,,,time.use,drop=FALSE],drop=c(5)) -
-                adrop(mono.Ftest[,,,,paste("t",time_choice.predicted[tt],sep=""),drop=FALSE],
+              abind::adrop(mono.Ftest[,,,,time.use,drop=FALSE],drop=c(5)) -
+                abind::adrop(mono.Ftest[,,,,paste("t",time_choice.predicted[tt],sep=""),drop=FALSE],
                       drop=c(5)))/
-            (1-adrop(mono.Ftest[,,,,paste("t",time_choice.predicted[tt],sep=""),drop=FALSE],		drop=c(5)))
+            (1-abind::adrop(mono.Ftest[,,,,paste("t",time_choice.predicted[tt],sep=""),drop=FALSE],		drop=c(5)))
         }
       }
     }
@@ -5525,7 +5529,7 @@ getF <- function(Ft,p){
   ## Replace NA with last value carried forward ##
   ## - This assumes that Ft should be increasing from the lastest well-observe F(t) value
   ## - The assumption is similar to a Kaplan-Meier curve for the endpoints
-  F <- na.locf(F,na.rm=FALSE)  ## don't remove leading NA's.
+  F <- zoo::na.locf(F,na.rm=FALSE)  ## don't remove leading NA's.
   if(any(is.na(Ft))){
     ## we don't run monotonicity
     return(Ft)
