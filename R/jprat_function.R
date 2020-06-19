@@ -107,7 +107,7 @@
 #'
 #'
 #'
-#' jprat.estimat.results<-jprat.wrapper(study.names=study.names,
+#' jprat.estimate.results<-jprat.wrapper(study.names=study.names,
 #'   data.file.names=data.file.names,
 #'   nonfunctional.covariate.names=nonfunctional.covariate.names,
 #'   functional.covariate.names=functional.covariate.names,

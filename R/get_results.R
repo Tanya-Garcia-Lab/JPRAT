@@ -120,7 +120,7 @@
 #' #######################
 #' # Run JPRAT algorithm #
 #' #######################
-#' jprat.estimat.results<-
+#' jprat.estimate.results<-
 #'   jprat.wrapper(
 #'   study.names,
 #'   data.file.names,
@@ -156,6 +156,7 @@
 #' color.names=c("firebrick1", "darkgreen", "black");
 #' legend.names=c("Motor Diagnosis (DCL=4)", "Cognitive Impairment", "Stage II TFC");
 #' functional.covariate.comparisons=c(46, 51);
+#' functional.covariate.comparisons.for.sample.size=c(45, 51);
 #' do.plots=TRUE;
 #' plot.confidence.intervals=TRUE;
 #' add.number.at.risk.legend=TRUE;
