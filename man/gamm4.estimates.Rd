@@ -9,12 +9,12 @@ gamm4.estimates(
   num_study,
   np,
   count.store,
+  count.store.outside,
   data,
   num_time,
   time_val,
   time_choice.predicted,
   time_choice.predicted.toadd,
-  count.store.outside,
   n,
   nmax,
   m,
@@ -52,6 +52,8 @@ gamm4.estimates(
 
 \item{count.store}{See the argument in the \code{\link{jprat.main.estimates}} function.}
 
+\item{count.store.outside}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+
 \item{data}{See the argument in the \code{\link{jprat.main.estimates}} function.}
 
 \item{num_time}{See the argument in the \code{\link{jprat.main.estimates}} function.}
@@ -61,8 +63,6 @@ gamm4.estimates(
 \item{time_choice.predicted}{See the argument in the \code{\link{all_null_theta}} function.}
 
 \item{time_choice.predicted.toadd}{See the argument in the \code{\link{all_null_theta}} function.}
-
-\item{count.store.outside}{See the argument in the \code{\link{jprat.main.estimates}} function.}
 
 \item{n}{See the argument in the \code{\link{jprat.main.estimates}} function.}
 
