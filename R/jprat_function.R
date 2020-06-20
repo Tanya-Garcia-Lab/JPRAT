@@ -81,7 +81,7 @@
 #' data.file.names=c("cohort", "predict", "pharos");
 #' nonfunctional.covariate.names=c("base_age");
 #' functional.covariate.names="CAG";
-#' othercovariate.names=c("firstyear", "lastyear")
+#' othercovariate.names=c("firstyear", "lastyear");
 #' event.outcome.names=c("hdage_nobase", "mcione", "tfctwo");
 #' delta.names=c("delta.hdage_nobase", "delta.mcione", "delta.tfctwo");
 #' time.points.for.prediction=seq(46, 66, by=5)
@@ -107,7 +107,7 @@
 #'
 #'
 #'
-#' jprat.estimat.results<-jprat.wrapper(study.names=study.names,
+#' jprat.estimate.results<-jprat.wrapper(study.names=study.names,
 #'   data.file.names=data.file.names,
 #'   nonfunctional.covariate.names=nonfunctional.covariate.names,
 #'   functional.covariate.names=functional.covariate.names,
@@ -455,7 +455,7 @@ jprat.wrapper <- function(
 
 
 
-  ##################################33
+  ##################################
   # no examples but add documentations
   ##################################
   null.theta <- all_null_theta(theta.names,
