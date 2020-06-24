@@ -675,7 +675,12 @@ view.all.results <- function(
   }
 
   if(real_data==TRUE){
-    number.at.risk <- get.number.at.risk(nrisk)
+
+
+      #nrisk <- read.table("data-raw/out_nrisk.dat",header=TRUE)
+      nrisk<-system.file("extdata", paste("out_nrisk", study, ".dat", sep="")
+                  ,package = "JPRAT")
+      number.at.risk <- get.number.at.risk(nrisk)
   }
 
 
