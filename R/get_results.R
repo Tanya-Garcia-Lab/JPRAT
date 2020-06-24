@@ -678,7 +678,7 @@ view.all.results <- function(
 
 
       #nrisk <- read.table("data-raw/out_nrisk.dat",header=TRUE)
-      nrisk<-system.file("extdata", "out_nrisk.dat"
+      nrisk<-system.file("extdata","out_nrisk.dat"
                           ,package = "JPRAT")
       number.at.risk <- get.number.at.risk(nrisk)
   }
