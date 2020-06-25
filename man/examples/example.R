@@ -1,6 +1,6 @@
 library(JPRAT)
 
-
+## example 1. for JPRAT
 #Input data for JPRAT estimation procedure
 study.names=c("cohort", "predict", "pharos");
 data.file.names=c("cohort", "predict", "pharos");
@@ -53,6 +53,8 @@ jprat.estimat.results<-
                 estimate.variances=estimate.variances,
                 write.output=write.output)
 
+
+## Example 2. for getting results
 #############################
 # parameters to get results #
 #############################
@@ -89,18 +91,18 @@ num_study<-reformatted.data.for.analysis.results$num_study;
 
 
 ## load results file from JPRAT algorithm
-data.truth <- read.table("data-raw/out_truth_real_output_iseed_1.dat",header=FALSE)
-data.theta <- read.table("data-raw/out_thetaest_real_output_iseed_1.dat",header=FALSE)
+data.truth <- read.table("out_truth_real_output_iseed_1.dat",header=FALSE)
+data.theta <- read.table("out_thetaest_real_output_iseed_1.dat",header=FALSE)
 
 if(num_study > 1){
-  data.combi <- read.table("data-raw/out_combi_real_output_iseed_1.dat",header=FALSE)
+  data.combi <- read.table("out_combi_real_output_iseed_1.dat",header=FALSE)
 } else {
   data.combi <- NULL
 }
 
-data.count <- read.table("data-raw/out_count_real_output_iseed_1.dat",header=FALSE)
-data.count.outside <- read.table("data-raw/out_outside_count_real_output_iseed_1.dat",header=FALSE)
-nrisk <- read.table("data-raw/out_nrisk.dat",header=TRUE)
+data.count <- read.table("out_count_real_output_iseed_1.dat",header=FALSE)
+data.count.outside <- read.table("out_outside_count_real_output_iseed_1.dat",header=FALSE)
+nrisk <- read.table("out_nrisk.dat",header=TRUE)
 
 
 
