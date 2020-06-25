@@ -682,9 +682,10 @@ view.all.results <- function(
       #                    ,package = "JPRAT")
       #nrisk<-JPRAT::nrisk
 
-      filePath<-system.file("extdata","out_nrisk.dat"
+      datapath<-system.file("extdata","out_nrisk.dat"
                             ,package = "JPRAT")
-     nrisk<-read.table(filePath, header=FALSE)
+      nrisk<-read.table(datapath, header=TRUE
+                       )
      number.at.risk <- get.number.at.risk(nrisk)
   }
 
