@@ -677,10 +677,15 @@ view.all.results <- function(
   if(real_data==TRUE){
 
 
-      #nrisk <- read.table("data-raw/out_nrisk.dat",header=TRUE)
-      nrisk<-system.file("extdata","out_nrisk.dat"
-                          ,package = "JPRAT")
-      number.at.risk <- get.number.at.risk(nrisk)
+      #nrisk <- read.table("extdata/out_nrisk.dat",header=TRUE)
+      #nrisk<-system.file("extdata","out_nrisk.dat"
+      #                    ,package = "JPRAT")
+      #nrisk<-JPRAT::nrisk
+
+      filePath<-system.file("extdata","out_nrisk.dat"
+                            ,package = "JPRAT")
+     nrisk<-read.table(filePath, header=FALSE)
+     number.at.risk <- get.number.at.risk(nrisk)
   }
 
 
