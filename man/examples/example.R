@@ -105,7 +105,6 @@ data.count.outside <- read.table("out_outside_count_real_output_iseed_1.dat",hea
 nrisk <- read.table("out_nrisk.dat",header=TRUE)
 
 
-
 ## display all results including tables and plots
 results.out <- view.all.results(
   ############################
