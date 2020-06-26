@@ -86,7 +86,7 @@
 #' @import abind
 #' @export
 #'
-#' @examples see man/example.R
+#' @examples man/examples/example.R
 #'
 #'
 view.all.results <- function(
