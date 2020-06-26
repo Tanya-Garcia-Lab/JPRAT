@@ -231,8 +231,7 @@ write.output=TRUE;
 
 # JPRAT estimation
 
-jprat.estimat.results<-
-  jprat.wrapper(study.names=study.names,
+jprat.estimat.results<-jprat.wrapper(study.names=study.names,
                 data.file.names=data.file.names,
                 nonfunctional.covariate.names=nonfunctional.covariate.names,
                 functional.covariate.names=functional.covariate.names,
@@ -292,19 +291,18 @@ num_study<-reformatted.data.for.analysis.results$num_study;
 
 
 ## load results file from JPRAT algorithm
-data.truth <- read.table("out_truth_real_output_iseed_1.dat",header=FALSE)
-data.theta <- read.table("out_thetaest_real_output_iseed_1.dat",header=FALSE)
+data.truth <- read.table("data-raw/out_truth_real_output_iseed_1.dat",header=FALSE)
+data.theta <- read.table("data-raw/out_thetaest_real_output_iseed_1.dat",header=FALSE)
 
 if(num_study > 1){
-  data.combi <- read.table("out_combi_real_output_iseed_1.dat",header=FALSE)
+  data.combi <- read.table("data-raw/out_combi_real_output_iseed_1.dat",header=FALSE)
 } else {
   data.combi <- NULL
 }
 
-data.count <- read.table("out_count_real_output_iseed_1.dat",header=FALSE)
-data.count.outside <- read.table("out_outside_count_real_output_iseed_1.dat",header=FALSE)
-nrisk <- read.table("out_nrisk.dat",header=TRUE)
-
+data.count <- read.table("data-raw/out_count_real_output_iseed_1.dat",header=FALSE)
+data.count.outside <- read.table("data-raw/out_outside_count_real_output_iseed_1.dat",header=FALSE)
+nrisk <- read.table("data-raw/out_nrisk.dat",header=TRUE)
 
 
 ## display all results including tables and plots
