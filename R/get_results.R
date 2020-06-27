@@ -108,16 +108,15 @@ view.all.results <- function(
   #############################
   ## Input: How to analysis  ##
   #############################
-  number.of.bootstraps, #=100,
+  number.of.bootstraps,
   use.functional.beta.intercept,
   use.functional.event.coefficients,
   use.functional.study.coefficients,
   check.study.equality,
   estimated.parameters.common.for.all.studies,
-  what.analyzed.separately,               #="none",
-  estimation.when.censoring.depends.on.z, #=FALSE,
-  use.bootstrap.variance,                 #=FALSE,
-  #estimate.variances,                     #=TRUE? OR "est"
+  what.analyzed.separately,
+  estimation.when.censoring.depends.on.z,
+  use.bootstrap.variance,
   #############################
   ## To get Results          ##
   #############################
@@ -125,14 +124,12 @@ view.all.results <- function(
   ## For plotting results ##
   ##########################
   functional.covariate.values.of.interest.ci,
-  #functional.covariate.values.for.prediction,
-  #nonfunctional.covariate.comparisons
   time.points.of.interest,
   time.points.of.interest.ci,
   label.for.alpha.values.over.time=NULL,
-  which.nonfunctional.covariate.comparisons, ## return nonfunctional covariate comparison
-  color.names, ## returns color.labels
-  legend.names, ## returns legend.labels
+  which.nonfunctional.covariate.comparisons,
+  color.names,
+  legend.names,
   functional.covariate.comparisons,
   functional.covariate.comparisons.for.sample.size=NULL,
   #############################
@@ -146,7 +143,7 @@ view.all.results <- function(
   add.number.at.risk.legend,
   ylabel.for.plots.comparing.studies,
   xlabel.for.plots.comparing.studies,
-  file.name.for.analysis, #="test", ## figure names
+  file.name.for.analysis,
   #######################
   ## Output from JPRAT ##
   #######################
@@ -160,10 +157,8 @@ view.all.results <- function(
   data.theta.other=NULL,
   nrisk.other=NULL,
   data.combi.other=NULL,
-  #combine.data=FALSE, ## default option?
   s.names.use=NULL,
   s.names.other.use=NULL,
-  #analysis.to.run,
   ########################################################
   ## for computing sample sizes: users do not need them ##
   ########################################################
@@ -176,10 +171,6 @@ view.all.results <- function(
   #####################################
   show.results.description
 ){
-
-
-
-
 
 
   #####################################################################################
@@ -509,9 +500,6 @@ view.all.results <- function(
   # }
 
 
-
-
-
   ####################
   ## Number at risk ##
   ####################
@@ -529,15 +517,6 @@ view.all.results <- function(
 
   if(real_data==TRUE){
 
-
-      #nrisk <- read.table("extdata/out_nrisk.dat",header=TRUE)
-      #nrisk<-system.file("extdata","out_nrisk.dat"
-      #                    ,package = "JPRAT")
-      #nrisk<-JPRAT::nrisk
-
-      #datapath<-system.file("extdata","out_nrisk.dat"
-      #                      ,package = "JPRAT")
-      #nrisk<-read.table("data-raw/out_nrisk.dat", header=TRUE)
      number.at.risk <- get.number.at.risk(nrisk)
   }
 
