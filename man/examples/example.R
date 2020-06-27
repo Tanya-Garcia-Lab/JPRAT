@@ -1,4 +1,3 @@
-donotrun{
 library(JPRAT)
 
 #Input data for JPRAT estimation procedure
@@ -28,24 +27,28 @@ estimation.when.censoring.depends.on.z=FALSE ;
 write.output=TRUE;
 
 # JPRAT estimation
+jprat.estimat.results<-jprat.wrapper(study.names=study.names,
+ data.file.names=data.file.names,
+ nonfunctional.covariate.names=nonfunctional.covariate.names,
+ functional.covariate.names=functional.covariate.names,
+ othercovariate.names=othercovariate.names,
+ event.outcome.names=event.outcome.names,
+ delta.names=delta.names,
+ time.points.for.prediction=time.points.for.prediction,
+ time.points.for.conditional.prediction=time.points.for.conditional.prediction,
+ time.points.for.conditional.prediction.toadd=time.points.for.conditional.prediction.toadd,
+ nonfunctional.covariate.value=nonfunctional.covariate.value,
+ functional.covariate.values.of.interest=functional.covariate.values.of.interest,
+ number.of.bootstraps=number.of.bootstraps,
+ use.functional.beta.intercept=use.functional.beta.intercept,
+ use.functional.event.coefficients=use.functional.event.coefficients,
+ use.functional.study.coefficients=use.functional.study.coefficients,
+ check.study.equality=check.study.equality,
+ estimated.parameters.common.for.all.studies=estimated.parameters.common.for.all.studies,
+ what.analyzed.separately=what.analyzed.separately,
+ estimation.when.censoring.depends.on.z=estimation.when.censoring.depends.on.z,
+ use.bootstrap.variance=use.bootstrap.variance, write.output=write.output)
 
-jprat.estimat.results<-jprat.wrapper(study.names=study.names, data.file.names=data.file.names,                                                    nonfunctional.covariate.names=nonfunctional.covariate.names,
-                                     functional.covariate.names=functional.covariate.names,
-                                     othercovariate.names=othercovariate.names, event.outcome.names=event.outcome.names,
-                                     delta.names=delta.names, time.points.for.prediction=time.points.for.prediction,
-                                     time.points.for.conditional.prediction=time.points.for.conditional.prediction,
-                                     time.points.for.conditional.prediction.toadd=time.points.for.conditional.prediction.toadd,
-                                     nonfunctional.covariate.value=nonfunctional.covariate.value,
-                                     functional.covariate.values.of.interest=functional.covariate.values.of.interest,
-                                     number.of.bootstraps=number.of.bootstraps,
-                                     use.functional.beta.intercept=use.functional.beta.intercept,
-                                     use.functional.event.coefficients=use.functional.event.coefficients,
-                                     use.functional.study.coefficients=use.functional.study.coefficients,
-                                     check.study.equality=check.study.equality,
-                                     estimated.parameters.common.for.all.studies=estimated.parameters.common.for.all.studies,
-                                     what.analyzed.separately=what.analyzed.separately,
-                                     estimation.when.censoring.depends.on.z=estimation.when.censoring.depends.on.z,
-                                     use.bootstrap.variance=use.bootstrap.variance, write.output=write.output)
 
 ##get number at risk table
 study.names=c("cohort", "predict", "pharos");
@@ -60,16 +63,15 @@ estimated.parameters.common.for.all.studies=FALSE;
 
 ##to creat out_nrisk.dat file
 number.at.risk <- compute.number.at.risk.for.HD(study.names,
-                                                data.file.names,
-                                                event.outcome.names,
-                                                nonfunctional.covariate.names,
-                                                functional.covariate.names,
-                                                nonfunctional.covariate.value,
-                                                functional.covariate.values.of.interest,
-                                                time.points.for.prediction,
-                                                estimated.parameters.common.for.all.studies
-                                                )
-
+ data.file.names,
+ event.outcome.names,
+ nonfunctional.covariate.names,
+ functional.covariate.names,
+ nonfunctional.covariate.value,
+ functional.covariate.values.of.interest,
+ time.points.for.prediction,
+ estimated.parameters.common.for.all.studies
+ )
 
 
 
@@ -153,9 +155,9 @@ results.out <- view.all.results(
   use.functional.study.coefficients,
   check.study.equality,
   estimated.parameters.common.for.all.studies,
-  what.analyzed.separately,               #="none",
-  estimation.when.censoring.depends.on.z, #=FALSE,
-  use.bootstrap.variance,                 #=FALSE,
+  what.analyzed.separately,
+  estimation.when.censoring.depends.on.z,
+  use.bootstrap.variance,
   ##########################
   ## For plotting results ##
   ##########################
@@ -163,7 +165,7 @@ results.out <- view.all.results(
   time.points.of.interest,
   time.points.of.interest.ci,
   label.for.alpha.values.over.time=NULL,
-  which.nonfunctional.covariate.comparisons, ## return nonfunctional covariate comparison
+  which.nonfunctional.covariate.comparisons,
   color.names, ## returns color.labels
   legend.names, ## returns legend.labels
   functional.covariate.comparisons,
@@ -208,4 +210,4 @@ results.out <- view.all.results(
   show.results.description
 )
 
-}
+
