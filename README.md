@@ -21,13 +21,13 @@ The R package `JPRAT` is the Joint Progression of Risk Assessment Tool, which ev
 
 You can install the development version from [GitHub](https://github.com/) with:
 
-``` r
+```{r, eval=FALSE}
 # install.packages("devtools")
 devtools::install_github("unkyunglee/JPRAT")
 ```
 ## Usage
 
-```r
+```{r usage, eval=F, message=FALSE}
 
 library(JPRAT)
 
@@ -82,7 +82,7 @@ check.criteria<-criteria.time.points.for.jprat.analysis(study.names,
 We applied the combination of the Cohort, Predict and Pharos studies to JPRAT algorithm.  
 
 
-```r
+```{r analysis_example, message=FALSE, results='hide'}
 library(JPRAT)
 
 
