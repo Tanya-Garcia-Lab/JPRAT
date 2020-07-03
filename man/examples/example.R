@@ -1,6 +1,5 @@
 library(JPRAT)
 
-
 #Input data for JPRAT estimation procedure
 study.names=c("cohort", "predict", "pharos");
 data.file.names=c("cohort", "predict", "pharos");
@@ -25,34 +24,58 @@ what.analyzed.separately="studyevent";
 estimated.parameters.common.for.all.studies=FALSE;
 use.bootstrap.variance=TRUE ;
 estimation.when.censoring.depends.on.z=FALSE ;
-estimate.variances = "est";
 write.output=TRUE;
 
 # JPRAT estimation
+jprat.estimat.results<-jprat.wrapper(study.names=study.names,
+ data.file.names=data.file.names,
+ nonfunctional.covariate.names=nonfunctional.covariate.names,
+ functional.covariate.names=functional.covariate.names,
+ othercovariate.names=othercovariate.names,
+ event.outcome.names=event.outcome.names,
+ delta.names=delta.names,
+ time.points.for.prediction=time.points.for.prediction,
+ time.points.for.conditional.prediction=time.points.for.conditional.prediction,
+ time.points.for.conditional.prediction.toadd=time.points.for.conditional.prediction.toadd,
+ nonfunctional.covariate.value=nonfunctional.covariate.value,
+ functional.covariate.values.of.interest=functional.covariate.values.of.interest,
+ number.of.bootstraps=number.of.bootstraps,
+ use.functional.beta.intercept=use.functional.beta.intercept,
+ use.functional.event.coefficients=use.functional.event.coefficients,
+ use.functional.study.coefficients=use.functional.study.coefficients,
+ check.study.equality=check.study.equality,
+ estimated.parameters.common.for.all.studies=estimated.parameters.common.for.all.studies,
+ what.analyzed.separately=what.analyzed.separately,
+ estimation.when.censoring.depends.on.z=estimation.when.censoring.depends.on.z,
+ use.bootstrap.variance=use.bootstrap.variance, write.output=write.output)
 
-jprat.estimat.results<-
-  jprat.wrapper(study.names=study.names,
-                data.file.names=data.file.names,
-                nonfunctional.covariate.names=nonfunctional.covariate.names,
-                functional.covariate.names=functional.covariate.names,
-                othercovariate.names=othercovariate.names, event.outcome.names=event.outcome.names,
-                delta.names=delta.names, time.points.for.prediction=time.points.for.prediction,
-                time.points.for.conditional.prediction=time.points.for.conditional.prediction,
-                time.points.for.conditional.prediction.toadd=time.points.for.conditional.prediction.toadd,
-                nonfunctional.covariate.value=nonfunctional.covariate.value,
-                functional.covariate.values.of.interest=functional.covariate.values.of.interest,
-                number.of.bootstraps=number.of.bootstraps,
-                use.functional.beta.intercept=use.functional.beta.intercept,
-                use.functional.event.coefficients=use.functional.event.coefficients,
-                use.functional.study.coefficients=use.functional.study.coefficients,
-                check.study.equality=check.study.equality,
-                estimated.parameters.common.for.all.studies=estimated.parameters.common.for.all.studies,
-                what.analyzed.separately=what.analyzed.separately,
-                estimation.when.censoring.depends.on.z=estimation.when.censoring.depends.on.z,
-                use.bootstrap.variance=use.bootstrap.variance,
-                estimate.variances=estimate.variances,
-                write.output=write.output)
 
+##get number at risk table
+study.names=c("cohort", "predict", "pharos");
+data.file.names=c("cohort", "predict", "pharos");
+event.outcome.names=c("hdage_nobase", "mcione", "tfctwo");
+nonfunctional.covariate.names=c("base_age");
+functional.covariate.names="CAG";
+nonfunctional.covariate.value=c(40);
+functional.covariate.values.of.interest=c(46, 48, 50) ;
+time.points.for.prediction=seq(46, 66, by=5);
+estimated.parameters.common.for.all.studies=FALSE;
+
+##to creat out_nrisk.dat file
+number.at.risk <- compute.number.at.risk.for.HD(study.names,
+ data.file.names,
+ event.outcome.names,
+ nonfunctional.covariate.names,
+ functional.covariate.names,
+ nonfunctional.covariate.value,
+ functional.covariate.values.of.interest,
+ time.points.for.prediction,
+ estimated.parameters.common.for.all.studies
+ )
+
+
+
+## To get results
 #############################
 # parameters to get results #
 #############################
@@ -71,12 +94,10 @@ xlabel.for.plots.comparing.studies="Age (years)"
 file.name.for.analysis="test" ## figure names
 show.results.description=FALSE;
 
-## obtain default options
+####################################
+## functions to get default values #
+####################################
 default.options<-default.options.for.data.setting()
-
-## default values
-use_real_data<-default.options$use_real_data
-combine.data<-default.options$combine.data
 
 ## data is reformatted to get analysis results
 reformatted.data.for.analysis.results<-data.reformatted.for.analysis.results(
@@ -84,24 +105,28 @@ reformatted.data.for.analysis.results<-data.reformatted.for.analysis.results(
   color.names, legend.names,
   which.nonfunctional.covariate.comparisons)
 
+## obtain default values
+## default values
+use_real_data<-default.options$use_real_data
+combine.data<-default.options$combine.data
+
 ## datasets are reformatted, so that results plots and tables can be produced;
 num_study<-reformatted.data.for.analysis.results$num_study;
 
-
 ## load results file from JPRAT algorithm
-data.truth <- read.table("data-raw/out_truth_real_output_iseed_1.dat",header=FALSE)
-data.theta <- read.table("data-raw/out_thetaest_real_output_iseed_1.dat",header=FALSE)
+data.truth <- read.table("out_truth_real_output_iseed_1.dat",header=FALSE)
+data.truth <- read.table("out_truth_real_output_iseed_1.dat",header=FALSE)
+data.theta <- read.table("out_thetaest_real_output_iseed_1.dat",header=FALSE)
 
 if(num_study > 1){
-  data.combi <- read.table("data-raw/out_combi_real_output_iseed_1.dat",header=FALSE)
+  data.combi <- read.table("out_combi_real_output_iseed_1.dat",header=FALSE)
 } else {
   data.combi <- NULL
 }
 
-data.count <- read.table("data-raw/out_count_real_output_iseed_1.dat",header=FALSE)
-data.count.outside <- read.table("data-raw/out_outside_count_real_output_iseed_1.dat",header=FALSE)
-nrisk <- read.table("data-raw/out_nrisk.dat",header=TRUE)
-
+data.count <- read.table("out_count_real_output_iseed_1.dat",header=FALSE)
+data.count.outside <- read.table("out_outside_count_real_output_iseed_1.dat",header=FALSE)
+nrisk <- read.table("out_nrisk.dat",header=TRUE)
 
 
 ## display all results including tables and plots
@@ -130,9 +155,9 @@ results.out <- view.all.results(
   use.functional.study.coefficients,
   check.study.equality,
   estimated.parameters.common.for.all.studies,
-  what.analyzed.separately,               #="none",
-  estimation.when.censoring.depends.on.z, #=FALSE,
-  use.bootstrap.variance,                 #=FALSE,
+  what.analyzed.separately,
+  estimation.when.censoring.depends.on.z,
+  use.bootstrap.variance,
   ##########################
   ## For plotting results ##
   ##########################
@@ -140,7 +165,7 @@ results.out <- view.all.results(
   time.points.of.interest,
   time.points.of.interest.ci,
   label.for.alpha.values.over.time=NULL,
-  which.nonfunctional.covariate.comparisons, ## return nonfunctional covariate comparison
+  which.nonfunctional.covariate.comparisons,
   color.names, ## returns color.labels
   legend.names, ## returns legend.labels
   functional.covariate.comparisons,
@@ -184,3 +209,5 @@ results.out <- view.all.results(
   #####################################
   show.results.description
 )
+
+
