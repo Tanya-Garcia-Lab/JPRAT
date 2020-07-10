@@ -350,9 +350,10 @@ jprat.wrapper <- function(
 
 
 
-  ##############################
-  # Generating fixed effects  ##
-  ##############################
+  ################################################
+  # Generating fixed effects for simulated data ##
+  # (not used)                                  ##
+  ################################################
   lb.max <- old.names$lb.max # 1
   par1_fzr <- old.names$par1_fzr # parameter each covar # null
   par2_fzr <- old.names$par2_fzr  # null
@@ -562,9 +563,10 @@ jprat.wrapper <- function(
 
 
 
-  #####################
-  ## get true values ##
-  #####################
+  ######################################################################
+  ## get true values                                                  ##
+  ## (only relevant for simulated data. Otherwise, this is not used)  ##
+  ######################################################################
   ## sigmar may need EDITING if I change the way par2_fr,par_fu is formed.
   truth <-get.truth(combi.study,combi.choice,
     real_data,num_study,np,lb,num_time,
@@ -584,7 +586,7 @@ jprat.wrapper <- function(
   ## set seed ##
   ##############
   set.seed(iseed)
-  print(paste("iseed=",iseed,sep=""))
+  #print(paste("iseed=",iseed,sep=""))
 
   ############################
   ## generate fixed effects ##
@@ -728,8 +730,12 @@ jprat.wrapper <- function(
   betabootci.store<-jprat.out$betabootci.store
   alphasbootci.store<-jprat.out$alphasbootci.store
   Ftbootci.store<-jprat.out$Ftbootci.store
+
+  ## No need to report these.
   count.store<-jprat.out$count.store
   count.store.outside<-jprat.out$count.store.outside
+
+
 
   #+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#++#+#+#+#+#++#+#+#+#+#+
   #+
@@ -743,6 +749,8 @@ jprat.wrapper <- function(
   ###########################
   ## write data for output ##
   ###########################
+
+  if(write.output==TRUE){
   dim.order.all <- get.all.dim.order(theta.names)   ## name of dimension order
   flatten.theta.name <- get.flatten.theta.name(theta.names)
 
@@ -879,7 +887,6 @@ jprat.wrapper <- function(
 
 
 
-  if(write.output==TRUE){
 
 
     write.table(truth.out,paste("out_truth_",filename,sep=""),
@@ -906,6 +913,6 @@ jprat.wrapper <- function(
        combi.out=combi.out,
        count.store=count.store,
        count.store.outside=count.store.outside,
-       Ftest.store=Ftest.store,  ## do we need this?
+       Ftest.store=Ftest.store,
        eflag=eflag)
 }
