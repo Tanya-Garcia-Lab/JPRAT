@@ -6,7 +6,7 @@
 \usage{
 jprat.main.estimates(
   method = "gamm4",
-  compute.study.differences = FALSE,
+  compute.study.differences = compute.study.differences,
   var.boot = TRUE,
   arbitrary,
   num_study,
