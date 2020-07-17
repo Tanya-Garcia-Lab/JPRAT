@@ -269,7 +269,7 @@ all_null_theta <- function(theta.names,
 #####################################
 
 jprat.main.estimates<-function(method="gamm4",  ## conditional paramters to estimate using gamm4
-                               compute.study.differences=FALSE, ## conditional parameter to do boostrap procedure
+                               compute.study.differences=compute.study.differences, ## conditional parameter to do boostrap procedure
                                var.boot=TRUE, ## conditional parameter to do boostrap procedure
                                ########################
                                # For main estimation function
