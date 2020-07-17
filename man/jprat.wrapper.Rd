@@ -76,7 +76,8 @@ This may get rid of the warning messages.}
 
 \item{use.bootstrap.variance}{a logical value whether to compute bootstrap variances. Default is TRUE.}
 
-\item{estimate.variances}{FILL IN DETAILS}
+\item{estimate.variances}{a logical value how variances will be estimated. If this is TRUE, there are two options: "est" (estimated), and "quant" (quantiles from bootstrap);
+If this is FALSE, the only option is  "none" (no variances are estimated). Default is ``est".}
 
 \item{write.output}{a logical value whether outputs will be saved into data files. Default is TRUE.}
 }
