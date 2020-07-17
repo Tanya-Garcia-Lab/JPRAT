@@ -2461,8 +2461,6 @@ data.reformatted.for.analysis.results<-function(study.names, event.outcome.names
 #' @param check.study.equality See the argument in the \code{\link{jprat.wrapper}} function.
 #' @param what.analyzed.separately See the argument in the \code{\link{jprat.wrapper}} function.
 #' @param estimated.parameters.common.for.all.studies See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param estimate.variances  a logical value how variances will be estimated. If this is TRUE, there are two options: "est" (estimated), and "quant" (quantiles from bootstrap);
-#' If this is FALSE, the only option is  "none" (no variances are estimated). Default is ``est".
 #' @param estimation.when.censoring.depends.on.z See the argument in the \code{\link{jprat.wrapper}} function.
 #' @param glm.link.type  a character value for the name of the link function for the additive mixed effect model: "logit” for proportional odds model or "cloglog" for cox proportional hazards. Default is ``logit".
 #' @param use.bootstrap.variance See the argument in the \code{\link{jprat.wrapper}} function.
@@ -2497,7 +2495,7 @@ convert.new.notation.to.old.for.jprat <- function(study.names,
                                                   check.study.equality,
                                                   what.analyzed.separately,
                                                   estimated.parameters.common.for.all.studies,
-                                                  estimate.variances,
+                                                  #estimate.variances,
                                                   estimation.when.censoring.depends.on.z,
                                                   glm.link.type,
                                                   use.bootstrap.variance,
