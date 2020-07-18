@@ -270,7 +270,7 @@ all_null_theta <- function(theta.names,
 
 jprat.main.estimates<-function(method="gamm4",  ## conditional paramters to estimate using gamm4
                                compute.study.differences=compute.study.differences, ## conditional parameter to do boostrap procedure
-                               var.boot=TRUE, ## conditional parameter to do boostrap procedure
+                               var.boot=var.boot, ## conditional parameter to do boostrap procedure
                                ########################
                                # For main estimation function
                                ########################
@@ -2199,9 +2199,11 @@ data.reformatted.for.jprat.analysis<-function(use_real_data,
     study <- study.names[ss]
 
     ## read simulated data files - fake data
-    data.path<-system.file("extdata", paste("data_", study, ".csv", sep="")
-                           ,package = "JPRAT")
-    data.tmp<-read.csv(data.path)
+    #if (use.data.example=TRUE){
+    #data.path<-system.file("extdata", paste("data_", study, ".csv", sep="")
+    #                       ,package = "JPRAT")
+    #data.tmp<-read.csv(data.path)
+    #}
 
     data.sets.as.list[[study]] <- data.tmp[,-1]
     #cat(" \n pseudo data dimensions, complete cases:",dim(data.tmp))

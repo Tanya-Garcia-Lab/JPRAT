@@ -656,7 +656,7 @@ jprat.wrapper <- function(
     #####################################
     jprat.out<-jprat.main.estimates(method="gamm4",  ## conditional paramters to estimate using gamm4
                                     compute.study.differences=compute.study.differences, ## conditional parameter to do boostrap procedure
-                                    var.boot=TRUE, ## conditional parameter to do boostrap procedure
+                                    var.boot=var.boot, ## conditional parameter to do boostrap procedure
                                     ########################
                                     # For main estimation function
                                     ########################
