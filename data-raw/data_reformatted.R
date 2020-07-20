@@ -1,13 +1,15 @@
 ## read data
-data_predict<-read.csv("data-raw/data_predict.csv")
-data_cohort<-read.csv("data-raw/data_cohort.csv")
-data_pharos<-read.csv("data-raw/data_pharos.csv")
+data_predict<-read.csv("data-raw/data_predict.csv")[,-1]
+data_cohort<-read.csv("data-raw/data_cohort.csv")[,-1]
+data_pharos<-read.csv("data-raw/data_pharos.csv")[,-1]
 
 
 ## parameters
 use.real.data=TRUE;
+## study names
 study.names=c("cohort", "predict", "pharos");
-
+## load your data. It should match study.names
+input.data.list<-list(cohort=data_cohort, predict=data_predict, pharos=data_pharos)
 
 time.points.for.prediction=seq(46, 66, by=5)
 use_real_data=TRUE;
@@ -67,7 +69,7 @@ reverse.cag <- function(x,xmin=xmin,xmax=xmax){
 ##
 data.reformatted.for.jprat.analysis<-function(use_real_data,
                                               study.names,
-                                              data.file.names,
+                                              input.data.list,
                                               time.points.for.prediction,
                                               nonfunctional.covariate.names,
                                               functional.covariate.names,
@@ -90,7 +92,7 @@ data.reformatted.for.jprat.analysis<-function(use_real_data,
   data.sets.as.list <- tmp.list
 
   ## combine dataset names
-  data<-data.file.names
+  #data<-data.file.names
 
   for(ss in 1:length(study.names)){
     study.use <- names(tmp.list)[ss]
@@ -99,11 +101,11 @@ data.reformatted.for.jprat.analysis<-function(use_real_data,
 
     study <- study.names[ss]
 
+    data.tmp<-input.data.list[ss]
+    #data.tmp <-read.csv(paste("data-raw/data_",study,".csv",sep=""),
+    #                      header=TRUE)[ , -1]
 
-    data.tmp <-read.csv(paste("data-raw/data_",study,".csv",sep=""),
-                          header=TRUE)[ , -1]
-
-        data.sets.as.list[[study]] <- data.tmp
+    data.sets.as.list[study] <- data.tmp
 
     #cat(" \n pseudo data dimensions, complete cases:",dim(data.tmp))
   }
@@ -201,8 +203,7 @@ data.reformatted.for.jprat.analysis<-function(use_real_data,
   # Generate functional covariate values on [0,1]
   #########################################################
 
-  functional.covariate.values.for.prediction <- get.functional.covariate.values.for.prediction(use.real.data,
-                                                                                               xmin,xmax,functional.covariate.values.of.interest)                           ## make.data.for.analysis$functional.covariate.values.for.prediction	##[0,1] ## seq(0,1, by=0.01)
+  functional.covariate.values.for.prediction <- get.functional.covariate.values.for.prediction( xmin,xmax,functional.covariate.values.of.interest)                           ## make.data.for.analysis$functional.covariate.values.for.prediction	##[0,1] ## seq(0,1, by=0.01)
 
 
 
@@ -218,7 +219,7 @@ data.reformatted.for.jprat.analysis<-function(use_real_data,
 
 data.reformatted<-data.reformatted.for.jprat.analysis(use_real_data,
                                                       study.names,
-                                                      data.file.names,
+                                                      input.data.list,
                                                       time.points.for.prediction,
                                                       nonfunctional.covariate.names,
                                                       functional.covariate.names,
