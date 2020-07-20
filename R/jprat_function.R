@@ -132,12 +132,6 @@
 #'   estimate.variances=estimate.variances,
 #'   write.output=write.output)
 #'
-#'
-#'
-#'
-#'
-#'
-#'
 jprat.wrapper <- function(
   study.names,
   input.data.list, # data.file.names,
@@ -890,8 +884,8 @@ jprat.wrapper <- function(
 
 
 
-    write.table(truth.out,paste("out_truth_",filename,sep=""),
-                col.names=FALSE,row.names=FALSE)
+    #write.table(truth.out,paste("out_truth_",filename,sep=""),
+    #            col.names=FALSE,row.names=FALSE)
 
     write.table(theta.out,
                 paste("out_thetaest_",filename,sep=""), col.names=FALSE, row.names=FALSE)
