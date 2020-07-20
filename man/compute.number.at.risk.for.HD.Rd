@@ -6,7 +6,7 @@
 \usage{
 compute.number.at.risk.for.HD(
   study.names,
-  data.file.names,
+  input.data.list,
   event.outcome.names,
   nonfunctional.covariate.names,
   functional.covariate.names,
@@ -19,7 +19,7 @@ compute.number.at.risk.for.HD(
 \arguments{
 \item{study.names}{See this argument in the \code{\link{jprat.wrapper}} function.}
 
-\item{data.file.names}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{input.data.list}{See this argument in the \code{\link{jprat.wrapper}} function.}
 
 \item{event.outcome.names}{See this argument in the \code{\link{jprat.wrapper}} function.}
 

@@ -1,8 +1,7 @@
-library(JPRAT)
 
 #Input data for JPRAT estimation procedure
 study.names=c("cohort", "predict", "pharos");
-data.file.names=c("cohort", "predict", "pharos");
+input.data.list=list(cohort=data_cohort, predict=data_predict, pharos=data_pharos);
 nonfunctional.covariate.names=c("base_age");
 functional.covariate.names="CAG";
 othercovariate.names=c("firstyear", "lastyear")
@@ -28,7 +27,7 @@ write.output=TRUE;
 
 # JPRAT estimation
 jprat.estimat.results<-jprat.wrapper(study.names=study.names,
- data.file.names=data.file.names,
+                                     input.data.list=input.data.list,
  nonfunctional.covariate.names=nonfunctional.covariate.names,
  functional.covariate.names=functional.covariate.names,
  othercovariate.names=othercovariate.names,
@@ -52,7 +51,7 @@ jprat.estimat.results<-jprat.wrapper(study.names=study.names,
 
 ##get number at risk table
 study.names=c("cohort", "predict", "pharos");
-data.file.names=c("cohort", "predict", "pharos");
+input.data.list=list(cohort=data_cohort, predict=data_predict, pharos=data_pharos);
 event.outcome.names=c("hdage_nobase", "mcione", "tfctwo");
 nonfunctional.covariate.names=c("base_age");
 functional.covariate.names="CAG";
@@ -63,7 +62,7 @@ estimated.parameters.common.for.all.studies=FALSE;
 
 ##to creat out_nrisk.dat file
 number.at.risk <- compute.number.at.risk.for.HD(study.names,
- data.file.names,
+ input.data.list, #data.file.names,
  event.outcome.names,
  nonfunctional.covariate.names,
  functional.covariate.names,
@@ -135,7 +134,8 @@ results.out <- view.all.results(
   # arguments for JPRAT     ##
   ############################
   study.names,
-  data.file.names,
+  #data.file.names,
+  input.data.list,
   nonfunctional.covariate.names,
   functional.covariate.names,
   othercovariate.names,
