@@ -620,7 +620,7 @@ view.all.results <- function(
     time_val,param.label,
     num_xx,la,z.choice,
     time_choice.predicted,time_choice.predicted.toadd,
-    data.truth,
+    #data.truth,
     data.theta,
     data.combi,
     alpha.cut,

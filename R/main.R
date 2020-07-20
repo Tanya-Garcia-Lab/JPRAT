@@ -9549,7 +9549,7 @@ sort.results <- function(
   time_val,param.label,
   num_xx,la,z.choice,
   time_choice.predicted,time_choice.predicted.toadd,
-  data.truth,
+  #data.truth,
   data.theta,
   data.combi,
   alpha.cut,
@@ -9595,15 +9595,15 @@ sort.results <- function(
   ###########
   ## truth ##
   ###########
-  out <- unflatten.organize.data(data.use=data.truth,            ## matrix to array
-                                 time_val,
-                                 time_choice.predicted,
-                                 null.theta.use=null.theta$null.theta,
-                                 dim.order.use=dim.order.all$dim.order)
-  betat <- out$beta
-  alphat <- out$alpha
-  Ft <- out$Ft
-  Ft.predicted <- out$Ft.predicted
+  #out <- unflatten.organize.data(data.use=data.truth,            ## matrix to array
+  #                               time_val,
+  #                               time_choice.predicted,
+  #                               null.theta.use=null.theta$null.theta,
+  #                               dim.order.use=dim.order.all$dim.order)
+  #betat <- out$beta
+  #alphat <- out$alpha
+  #Ft <- out$Ft
+  #Ft.predicted <- out$Ft.predicted
 
   #####################
   ## theta estimates ##
@@ -9679,7 +9679,7 @@ sort.results <- function(
   ######################
   alpha.array.new <- aperm(alpha.array,c("iters","study","event","time","xx","theta","val")) ## permutation  of alpha.array with the following order
   alpha.new.mean <- aperm(alpha.mean,c("study","event","time","xx","theta","val"))
-  alphat.new <- aperm(alphat,c("study","event","time","xx","theta"))
+  #alphat.new <- aperm(alphat,c("study","event","time","xx","theta"))
 
   ##########################
   ## put objects together ##
@@ -9698,11 +9698,11 @@ sort.results <- function(
                           out.mean=alpha.new.mean)
 
 
-  list(betat=betat,
-       alphat=alphat,
-       alphat.new=alphat.new,
-       Ft=Ft,
-       Ft.predicted=Ft.predicted,
+  list(#betat=betat,
+       #alphat=alphat,
+       #alphat.new=alphat.new,
+       #Ft=Ft,
+       #Ft.predicted=Ft.predicted,
        #
        beta.array=beta.array,
        alpha.array=alpha.array,
