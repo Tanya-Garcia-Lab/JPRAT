@@ -903,7 +903,7 @@ jprat.wrapper <- function(
 
 
 
-  list(truth.out=truth.out,
+  list( #truth.out=truth.out,
        theta.out=theta.out,
        combi.out=combi.out,
        count.store=count.store,
