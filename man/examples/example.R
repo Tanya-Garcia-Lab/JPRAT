@@ -1,7 +1,9 @@
 
+## load your data in the list format: should match order of study.names
+input.data.list=list(cohort=data_cohort, predict=data_predict, pharos=data_pharos);
+
 #Input data for JPRAT estimation procedure
 study.names=c("cohort", "predict", "pharos");
-input.data.list=list(cohort=data_cohort, predict=data_predict, pharos=data_pharos);
 nonfunctional.covariate.names=c("base_age");
 functional.covariate.names="CAG";
 othercovariate.names=c("firstyear", "lastyear")
@@ -113,8 +115,7 @@ combine.data<-default.options$combine.data
 num_study<-reformatted.data.for.analysis.results$num_study;
 
 ## load results file from JPRAT algorithm
-data.truth <- read.table("out_truth_real_output_iseed_1.dat",header=FALSE)
-data.truth <- read.table("out_truth_real_output_iseed_1.dat",header=FALSE)
+#data.truth <- read.table("out_truth_real_output_iseed_1.dat",header=FALSE)
 data.theta <- read.table("out_thetaest_real_output_iseed_1.dat",header=FALSE)
 
 if(num_study > 1){
@@ -185,7 +186,7 @@ results.out <- view.all.results(
   #######################
   ## Output from JPRAT ##
   #######################
-  data.truth=data.truth,
+  #data.truth=data.truth,
   data.theta=data.theta,
   data.combi=data.combi,
   data.count=data.count,

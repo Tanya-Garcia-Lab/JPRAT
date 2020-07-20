@@ -147,7 +147,7 @@ view.all.results <- function(
   #######################
   ## Output from JPRAT ##
   #######################
-  data.truth=data.truth,
+  #data.truth=data.truth,
   data.theta=data.theta,
   data.combi=data.combi,
   data.count=data.count,
