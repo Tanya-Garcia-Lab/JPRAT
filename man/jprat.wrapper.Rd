@@ -84,11 +84,6 @@ If this is FALSE, the only option is  "none" (no variances are estimated). Defau
 }
 \value{
 A list of
-         \item{truth.out}{a data frame of true values for all components to be estimated ("beta0", "beta1",  "alpha1", "Ft",
-         "Ft.predicted") at each time point \code{time_val} for clinical events of interest per study.
-         The columns of the data frame include study (names of studies), event (the names of outcome events),
-         theta (names for all components to be estimated), zz (the labels of the nonfunctional covariates Z),
-         xx (the labels of the functional covariates X) and the flatten time points.}
          \item{theta.out}{data frame of the estimated values for all components ("beta0", "beta1",  "alpha1", "Ft", "Ft.predicted")
                           at each iteration for the clinical events of interest per study. The columns of the data frame include iters (iteration number), study(names of studies), event (the names of outcome events), theta (names for all components to be estimated), zz (the labels of the nonfunctional covariates Z),
                           xx (the labels of the functional covariates X), val (all estimated values for theta: "est”, "varest”, "varlo”, "varhi”, "boot_varest”, "boot_varlo”, "boot_varhi”)

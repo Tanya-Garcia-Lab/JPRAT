@@ -184,9 +184,6 @@ Default is nrisk and this file is automatically created.}
 \item{dropout.rate}{a numeric vector of drop-out rates, which is used for sample size calculations. We do not consider this arguments in the analysis. Default is NULL.}
 
 \item{show.results.description}{a logical value whether the description of plots and tables will be produced. Default is FALSE.}
-
-\item{data.truth}{data file for true values of estimates for all components as a result of analysis. Default is data.truth and this file is automatically created if users choose \code{write.output=TRUE}.
-See return value \code{truth.out} in the \code{\link{jprat.wrapper}} function.}
 }
 \value{
 This function returns ggplots.
