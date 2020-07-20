@@ -41,7 +41,6 @@ view.all.results(
   ylabel.for.plots.comparing.studies,
   xlabel.for.plots.comparing.studies,
   file.name.for.analysis,
-  data.truth = data.truth,
   data.theta = data.theta,
   data.combi = data.combi,
   data.count = data.count,
@@ -148,9 +147,6 @@ which will be compared across studies. Currently, we are not interested in sampl
 
 \item{file.name.for.analysis}{a character value, which is used as the part of plot names.}
 
-\item{data.truth}{data file for true values of estimates for all components as a result of analysis. Default is data.truth and this file is automatically created if users choose \code{write.output=TRUE}.
-See return value \code{truth.out} in the \code{\link{jprat.wrapper}} function.}
-
 \item{data.theta}{data file for the estimated values of all components as a result of analysis. Default is data.truth and this file is automatically created if users choose \code{write.output=TRUE}.
 See return value \code{theta.out} in the \code{\link{jprat.wrapper}} function.}
 
@@ -188,6 +184,9 @@ Default is nrisk and this file is automatically created.}
 \item{dropout.rate}{a numeric vector of drop-out rates, which is used for sample size calculations. We do not consider this arguments in the analysis. Default is NULL.}
 
 \item{show.results.description}{a logical value whether the description of plots and tables will be produced. Default is FALSE.}
+
+\item{data.truth}{data file for true values of estimates for all components as a result of analysis. Default is data.truth and this file is automatically created if users choose \code{write.output=TRUE}.
+See return value \code{truth.out} in the \code{\link{jprat.wrapper}} function.}
 }
 \value{
 This function returns ggplots.
@@ -200,9 +199,11 @@ The number of risks at each time point will be printed in the plot.
 }
 \examples{
 
+## load your data in the list format: should match order of study.names
+input.data.list=list(cohort=data_cohort, predict=data_predict, pharos=data_pharos);
+
 #Input data for JPRAT estimation procedure
 study.names=c("cohort", "predict", "pharos");
-input.data.list=list(cohort=data_cohort, predict=data_predict, pharos=data_pharos);
 nonfunctional.covariate.names=c("base_age");
 functional.covariate.names="CAG";
 othercovariate.names=c("firstyear", "lastyear")
@@ -252,7 +253,7 @@ jprat.estimat.results<-jprat.wrapper(study.names=study.names,
 
 ##get number at risk table
 study.names=c("cohort", "predict", "pharos");
-data.file.names=c("cohort", "predict", "pharos");
+input.data.list=list(cohort=data_cohort, predict=data_predict, pharos=data_pharos);
 event.outcome.names=c("hdage_nobase", "mcione", "tfctwo");
 nonfunctional.covariate.names=c("base_age");
 functional.covariate.names="CAG";
@@ -314,8 +315,7 @@ combine.data<-default.options$combine.data
 num_study<-reformatted.data.for.analysis.results$num_study;
 
 ## load results file from JPRAT algorithm
-data.truth <- read.table("out_truth_real_output_iseed_1.dat",header=FALSE)
-data.truth <- read.table("out_truth_real_output_iseed_1.dat",header=FALSE)
+#data.truth <- read.table("out_truth_real_output_iseed_1.dat",header=FALSE)
 data.theta <- read.table("out_thetaest_real_output_iseed_1.dat",header=FALSE)
 
 if(num_study > 1){
@@ -386,7 +386,7 @@ results.out <- view.all.results(
   #######################
   ## Output from JPRAT ##
   #######################
-  data.truth=data.truth,
+  #data.truth=data.truth,
   data.theta=data.theta,
   data.combi=data.combi,
   data.count=data.count,

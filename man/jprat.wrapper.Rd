@@ -187,10 +187,4 @@ jprat.estimate.results<-jprat.wrapper(study.names=study.names,
   estimate.variances=estimate.variances,
   write.output=write.output)
 
-
-
-
-
-
-
 }
