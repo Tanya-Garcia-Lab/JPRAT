@@ -1659,7 +1659,7 @@ get.cis <- function(out,flatten.name,
 #' compute.number.at.risk.for.HD: This function returns number of subjects who are at risk for HD for each study at times.
 #'
 #' @param study.names See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param data.file.names See this argument in the \code{\link{jprat.wrapper}} function.
+#' @param input.data.list See this argument in the \code{\link{jprat.wrapper}} function.
 #' @param event.outcome.names See this argument in the \code{\link{jprat.wrapper}} function.
 #' @param nonfunctional.covariate.names See this argument in the \code{\link{jprat.wrapper}} function.
 #' @param functional.covariate.names See this argument in the \code{\link{jprat.wrapper}} function.
@@ -1677,7 +1677,8 @@ get.cis <- function(out,flatten.name,
 #'
 compute.number.at.risk.for.HD <- function(study.names,
                                           #data.sets.as.list,#
-                                          data.file.names,
+                                          #data.file.names,
+                                          input.data.list,
                                           event.outcome.names,
                                           nonfunctional.covariate.names,
                                           functional.covariate.names,
@@ -1711,7 +1712,8 @@ compute.number.at.risk.for.HD <- function(study.names,
 
   reformatted.datasets<-data.reformatted.for.jprat.analysis(use_real_data,
                                                             study.names,
-                                                            data.file.names,
+                                                            #data.file.names,
+                                                            input.data.list,
                                                             time.points.for.prediction,
                                                             nonfunctional.covariate.names,
                                                             functional.covariate.names,
@@ -1967,7 +1969,8 @@ criteria.time.points.for.jprat.analysis<-function(#data.sets.as.list,
 
   reformatted.datasets<-data.reformatted.for.jprat.analysis(use_real_data=use_real_data,
                                                             study.names,
-                                                            data.file.names,
+                                                            #data.file.names,
+                                                            input.data.list,
                                                             time.points.for.prediction,
                                                             nonfunctional.covariate.names,
                                                             functional.covariate.names,
@@ -2165,7 +2168,7 @@ criteria.time.points.for.jprat.analysis<-function(#data.sets.as.list,
 #' @import utils
 data.reformatted.for.jprat.analysis<-function(use_real_data,
                                               study.names,
-                                              data.file.names,
+                                              input.data.list,
                                               time.points.for.prediction,
                                               nonfunctional.covariate.names,
                                               functional.covariate.names,
@@ -2188,16 +2191,14 @@ data.reformatted.for.jprat.analysis<-function(use_real_data,
   data.sets.as.list <- tmp.list
 
   ## combine dataset names
-  data<-data.file.names
+  #data<-data.file.names
 
   for(ss in 1:length(study.names)){
-
     study.use <- names(tmp.list)[ss]
-    #print(study.use)
-
     data.tmp <- data.sets.as.list[ss]
-    study <- study.names[ss]
 
+    study <- study.names[ss]
+    data.tmp<-input.data.list[ss]
     ## read simulated data files - fake data
     #if (use.data.example=TRUE){
     #data.path<-system.file("extdata", paste("data_", study, ".csv", sep="")
@@ -2205,7 +2206,7 @@ data.reformatted.for.jprat.analysis<-function(use_real_data,
     #data.tmp<-read.csv(data.path)
     #}
 
-    data.sets.as.list[[study]] <- data.tmp[,-1]
+    data.sets.as.list[study] <- data.tmp
     #cat(" \n pseudo data dimensions, complete cases:",dim(data.tmp))
   }
 

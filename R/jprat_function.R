@@ -1,7 +1,8 @@
 #' This function is to call and run JPRAT algorithm.
 #'
 #' @param study.names a character vector of name of studies used in analyses. e.g., c("cohort", "predict", "pharos").
-#' @param data.file.names a character vector of name of data files for all studies, which should be saved as \code{.csv} file. e.g., c("cohort", "predict", "pharos")
+#' @param input.data.list a list of data sets to be analyzed. If you want to use data sets provided by JPRAT,
+#'        use list(cohort=data_cohort, predict=data_predict, pharos=data_pharos), otherwise you need to feed your own data files list(study.name1=data.set1, study.name2=data.set2, study.name3=data.set3). The order of data sets should match study.names.
 #' @param nonfunctional.covariate.names a character vector for the name of the non-functional covariates that is used in the analysis.  e.g., "base_age".
 #' @param functional.covariate.names a character vector for the name of the functional covariates that is used in the analysis.
 #'        e.g., \code{"CAG"}.
@@ -74,12 +75,11 @@
 #'
 #' @examples
 #'
-#'
 #' ####################################
 #' # For JPRAT estimation: Input data #
 #' ####################################
 #' study.names=c("cohort", "predict", "pharos");
-#' data.file.names=c("cohort", "predict", "pharos");
+#' input.data.list=list(cohort=data_cohort, predict=data_predict, pharos=data_pharos);
 #' nonfunctional.covariate.names=c("base_age");
 #' functional.covariate.names="CAG";
 #' othercovariate.names=c("firstyear", "lastyear");
@@ -109,7 +109,7 @@
 #'
 #'
 #' jprat.estimate.results<-jprat.wrapper(study.names=study.names,
-#'   data.file.names=data.file.names,
+#'   input.data.list=input.data.list,
 #'   nonfunctional.covariate.names=nonfunctional.covariate.names,
 #'   functional.covariate.names=functional.covariate.names,
 #'   othercovariate.names=othercovariate.names,
@@ -140,7 +140,7 @@
 #'
 jprat.wrapper <- function(
   study.names,
-  data.file.names,
+  input.data.list, # data.file.names,
   nonfunctional.covariate.names,
   functional.covariate.names,
   othercovariate.names,
@@ -187,7 +187,7 @@ jprat.wrapper <- function(
   ## reformatted.datasets
   reformatted.data<-data.reformatted.for.jprat.analysis(use_real_data,
                                                         study.names,
-                                                        data.file.names,
+                                                        input.data.list,
                                                         time.points.for.prediction,
                                                         nonfunctional.covariate.names,
                                                         functional.covariate.names,

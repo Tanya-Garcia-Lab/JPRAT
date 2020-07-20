@@ -4,7 +4,7 @@
 #' This function returns analysis results including plots and tables.
 #'
 #' @param study.names See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param data.file.names See this argument in the \code{\link{jprat.wrapper}} function.
+#' @param input.data.list See this argument in the \code{\link{jprat.wrapper}} function.
 #' @param nonfunctional.covariate.names See this argument in the \code{\link{jprat.wrapper}} function.
 #' @param functional.covariate.names See this argument in the \code{\link{jprat.wrapper}} function.
 #' @param othercovariate.names See this argument in the \code{\link{jprat.wrapper}} function.
@@ -94,7 +94,7 @@ view.all.results <- function(
   # arguments for JPRAT     ##
   ############################
   study.names,
-  data.file.names,
+  input.data.list,
   nonfunctional.covariate.names,
   functional.covariate.names,
   othercovariate.names,
@@ -197,7 +197,7 @@ view.all.results <- function(
 
   reformatted.data.for.jprat<-data.reformatted.for.jprat.analysis(use_real_data,
                                                                   study.names,
-                                                                  data.file.names,
+                                                                  input.data.list,
                                                                   time.points.for.prediction,
                                                                   nonfunctional.covariate.names,
                                                                   functional.covariate.names,
