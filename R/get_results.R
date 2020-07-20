@@ -54,7 +54,7 @@
 #' @param ylabel.for.plots.comparing.studies a character value for y-label in plots when studies are comparing or event of interests were compared in each study. Default is "Probability".
 #' @param xlabel.for.plots.comparing.studies a character value for x-label in plots when studies are comparing for each event of interest or event of interests were compared in each study. Default is "Age(years)".
 #' @param file.name.for.analysis a character value, which is used as the part of plot names.
-#' @param data.theta data file for the estimated values of all components as a result of analysis. Default is data.truth and this file is automatically created if users choose \code{write.output=TRUE}.
+#' @param data.theta data file for the estimated values of all components as a result of analysis. The result file is automatically created if users choose \code{write.output=TRUE}.
 #'                   See return value \code{theta.out} in the \code{\link{jprat.wrapper}} function.
 #' @param data.combi data file for the difference between the estimated values of all components among studies as a result of analysis.
 #'         Default is data.combi and this file is automatically created if users choose \code{write.output=TRUE}.
@@ -631,11 +631,16 @@ view.all.results <- function(
     x_lab_names
   )
 
-  betat <- my.out$betat
-  alphat <- my.out$alphat
-  alphat.new <- my.out$alphat.new
-  Ft <- my.out$Ft
-  Ft.predicted <- my.out$Ft.predicted
+  #betat <- my.out$betat
+  #alphat <- my.out$alphat
+  #alphat.new <- my.out$alphat.new
+  #Ft <- my.out$Ft
+  #Ft.predicted <- my.out$Ft.predicted
+  betat <-NULL
+  alphat <-NULL
+  alphat.new <-NULL
+  Ft <-NULL
+  Ft.predicted <-NULL
   #
   beta.array <- my.out$beta.array
   alpha.array <- my.out$alpha.array
