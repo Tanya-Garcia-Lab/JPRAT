@@ -6,7 +6,6 @@
 \usage{
 convert.new.notation.to.old.for.get.results(
   study.names,
-  data.sets.as.list,
   time.points.for.prediction,
   time.points.for.conditional.prediction,
   time.points.for.conditional.prediction.toadd,
