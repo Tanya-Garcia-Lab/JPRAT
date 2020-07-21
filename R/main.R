@@ -2435,7 +2435,6 @@ data.reformatted.for.analysis.results<-function(study.names, event.outcome.names
 #' convert.new.notation.to.old.for.jprat: This code converts the new notation into the original code notation for JPRAT analysis.
 #'
 #' @param study.names See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param data.sets.as.list  See the argument in the \code{\link{jprat.wrapper}} function.
 #' @param time.points.for.prediction  See the argument in the \code{\link{jprat.wrapper}} function.
 #' @param time.points.for.conditional.prediction  See the argument in the \code{\link{jprat.wrapper}} function.
 #' @param time.points.for.conditional.prediction.toadd  See the argument in the \code{\link{jprat.wrapper}} function.
@@ -2467,7 +2466,7 @@ data.reformatted.for.analysis.results<-function(study.names, event.outcome.names
 ## @examples
 #'
 convert.new.notation.to.old.for.jprat <- function(study.names,
-                                                  data.sets.as.list,
+                                                  #data.sets.as.list,
                                                   time.points.for.prediction,
                                                   time.points.for.conditional.prediction,
                                                   time.points.for.conditional.prediction.toadd,
