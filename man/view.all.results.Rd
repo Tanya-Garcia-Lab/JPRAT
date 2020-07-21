@@ -147,7 +147,7 @@ which will be compared across studies. Currently, we are not interested in sampl
 
 \item{file.name.for.analysis}{a character value, which is used as the part of plot names.}
 
-\item{data.theta}{data file for the estimated values of all components as a result of analysis. Default is data.truth and this file is automatically created if users choose \code{write.output=TRUE}.
+\item{data.theta}{data file for the estimated values of all components as a result of analysis. The result file is automatically created if users choose \code{write.output=TRUE}.
 See return value \code{theta.out} in the \code{\link{jprat.wrapper}} function.}
 
 \item{data.combi}{data file for the difference between the estimated values of all components among studies as a result of analysis.
