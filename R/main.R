@@ -1657,16 +1657,7 @@ get.cis <- function(out,flatten.name,
 
 
 #' compute.number.at.risk.for.HD: This function returns number of subjects who are at risk for HD for each study at times.
-#'
-#' @param study.names See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param input.data.list See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param event.outcome.names See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param nonfunctional.covariate.names See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param functional.covariate.names See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param nonfunctional.covariate.value See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param functional.covariate.values.of.interest See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param time.points.for.prediction See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param estimated.parameters.common.for.all.studies See this argument in the \code{\link{jprat.wrapper}} function.
+#' @inheritParams jprat.wrapper
 #'
 #' @return a table for the number of subjects whoare at risk for HD for each study at times.(ignores specific covariate values)
 #' @import survival
@@ -1919,7 +1910,7 @@ compute.number.at.risk.for.HD <- function(study.names,
 #' \code{time.points.of.interest}, \code{time.points.of.interest.ci}, \code{functional.covariate.comparisons} and \code{time.points.for.conditional.prediction}.
 #'
 #' @param study.names See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param data.file.names See this argument in the \code{\link{jprat.wrapper}} function.
+#' @param input.data.list See this argument in the \code{\link{jprat.wrapper}} function.
 #' @param time.points.for.prediction See this argument in the \code{\link{jprat.wrapper}} function.
 #' @param nonfunctional.covariate.names See this argument in the \code{\link{jprat.wrapper}} function.
 #' @param functional.covariate.names See this argument in the \code{\link{jprat.wrapper}} function.
@@ -1942,7 +1933,8 @@ compute.number.at.risk.for.HD <- function(study.names,
 #'
 criteria.time.points.for.jprat.analysis<-function(#data.sets.as.list,
   study.names,
-  data.file.names,
+  #data.file.names,
+  input.data.list,
   time.points.for.prediction,
   nonfunctional.covariate.names,
   functional.covariate.names,
@@ -3174,7 +3166,7 @@ convert.new.notation.to.old.for.jprat <- function(study.names,
 ## @examples
 #'
 convert.new.notation.to.old.for.get.results <- function(study.names,
-                                                        #data.sets.as.list,
+                                                        data.sets.as.list,
                                                         time.points.for.prediction,
                                                         time.points.for.conditional.prediction,
                                                         time.points.for.conditional.prediction.toadd,
