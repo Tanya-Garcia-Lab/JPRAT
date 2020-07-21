@@ -6,7 +6,6 @@
 \usage{
 convert.new.notation.to.old.for.jprat(
   study.names,
-  data.sets.as.list,
   time.points.for.prediction,
   time.points.for.conditional.prediction,
   time.points.for.conditional.prediction.toadd,
@@ -35,8 +34,6 @@ convert.new.notation.to.old.for.jprat(
 }
 \arguments{
 \item{study.names}{See the argument in the \code{\link{jprat.wrapper}} function.}
-
-\item{data.sets.as.list}{See the argument in the \code{\link{jprat.wrapper}} function.}
 
 \item{time.points.for.prediction}{See the argument in the \code{\link{jprat.wrapper}} function.}
 
