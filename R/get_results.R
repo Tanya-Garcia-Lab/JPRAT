@@ -59,22 +59,8 @@
 #' @param data.combi data file for the difference between the estimated values of all components among studies as a result of analysis.
 #'         Default is data.combi and this file is automatically created if users choose \code{write.output=TRUE}.
 #'         See return value \code{combi.out} in the \code{\link{jprat.wrapper}} function.
-# #@param data.count data file for counts for binary status of censored, uncensored and missing subjects as a result of analysis.
-# # Default is data.count and this file is automatically created if users choose \code{write.output=TRUE}. See return value \code{count.store} in the \code{\link{jprat.wrapper}} function.
-# # @param data.count.outside  data file for counts for binary status of censored, uncensored outside [0,1] as a result of analysis. Default is \code{data.count.outside} and this file is automatically created if users choose \code{write.output=TRUE}.
-# #                             See return value \code{count.store.outside} in the \code{\link{jprat.wrapper}} function.
 #' @param nrisk data file for the number of subjects who is at risk at the interested the time points defined by users. This is automatically calculated.
 #'              Default is nrisk and this file is automatically created.
-#' @param data.truth.other This is not a users' interest argument. Analysis results from COX model. Use this if the proportional odds model is compared to COX model, which is not considered. Default is NULL.
-#' @param data.theta.other This is not a users' interest argument. Analysis results from COX model. Use this if the proportional odds model is compared to COX model, which is not considered. Default is NULL.
-#' @param nrisk.other This is not a users' interest argument. Analysis results from COX model. Use this if the proportional odds model is compared to COX model, which is not considered. Default is NULL.
-#' @param data.combi.other  This is not a users' interest argument. Analysis results from COX model. Use this if the proportional odds model is compared to COX model, which is not considered. Default is NULL.
-#' @param s.names.use This is not a users' interest argument. Default is NULL.
-#' @param s.names.other.use This is not a users' interest argument. Default is NULL.
-#' @param type1.error type 1 error rate, which is for sample size calculations. We do not consider this arguments in the analysis. Default is NULL.
-#' @param type2.error type 2 error rate, which is for sample size calculations. We do not consider this arguments in the analysis. Default is NULL.
-#' @param treatment.effect a numeric vector of the treatment effects for sample size calculations. We do not consider this arguments in the analysis. We do not consider this arguments in the analysis. Default is NULL.
-#' @param dropout.rate a numeric vector of drop-out rates, which is used for sample size calculations. We do not consider this arguments in the analysis. Default is NULL.
 #' @param show.results.description a logical value whether the description of plots and tables will be produced. Default is FALSE.
 #'
 #' @details The number of risks at each time point will be printed in the plot.
@@ -295,10 +281,10 @@ view.all.results <- function(
                                                            ################################
                                                            ## for computing sample sizes ##
                                                            ################################
-                                                           type1.error=NULL,
-                                                           type2.error=NULL,
-                                                           treatment.effect=NULL,
-                                                           dropout.rate=NULL
+                                                           #type1.error=NULL,
+                                                           #type2.error=NULL,
+                                                           #treatment.effect=NULL,
+                                                           #dropout.rate=NULL
   )
 
 
