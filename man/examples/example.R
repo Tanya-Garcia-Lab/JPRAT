@@ -192,19 +192,6 @@ results.out <- view.all.results(
   #data.count=data.count,
   #data.count.outside=data.count.outside,
   nrisk=nrisk,
-  # data.truth.other=NULL,
-  # data.theta.other=NULL,
-  # nrisk.other=NULL,
-  # data.combi.other=NULL,
-  # s.names.use=NULL,
-  # s.names.other.use=NULL,
-  # ########################################################
-  # ## for computing sample sizes: users do not need them ##
-  # ########################################################
-  # type1.error=NULL,
-  # type2.error=NULL,
-  # treatment.effect=NULL,
-  # dropout.rate=NULL,
   #####################################
   ## Do we show results description? ##
   #####################################
