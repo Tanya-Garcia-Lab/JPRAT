@@ -39,11 +39,7 @@ convert.new.notation.to.old.for.get.results(
   legend.labels,
   event.comparison.table,
   functional.covariate.comparisons,
-  functional.covariate.comparisons.for.sample.size,
-  type1.error,
-  type2.error,
-  treatment.effect,
-  dropout.rate
+  functional.covariate.comparisons.for.sample.size
 )
 }
 \arguments{
@@ -119,14 +115,6 @@ Default is "logit".}
 \item{functional.covariate.comparisons}{See the argument in the \code{\link{view.all.results}} function.}
 
 \item{functional.covariate.comparisons.for.sample.size}{See the argument in the \code{\link{view.all.results}} function.}
-
-\item{type1.error}{ADD DETAILS HERE!}
-
-\item{type2.error}{See the argument in the \code{\link{view.all.results}} function.}
-
-\item{treatment.effect}{See the argument in the \code{\link{view.all.results}} function.}
-
-\item{dropout.rate}{See the argument in the \code{\link{view.all.results}} function.}
 }
 \value{
 FILL IN HERE!!

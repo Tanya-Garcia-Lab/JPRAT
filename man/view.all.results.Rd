@@ -44,16 +44,6 @@ view.all.results(
   data.theta = data.theta,
   data.combi = data.combi,
   nrisk = nrisk,
-  data.truth.other = NULL,
-  data.theta.other = NULL,
-  nrisk.other = NULL,
-  data.combi.other = NULL,
-  s.names.use = NULL,
-  s.names.other.use = NULL,
-  type1.error = NULL,
-  type2.error = NULL,
-  treatment.effect = NULL,
-  dropout.rate = NULL,
   show.results.description
 )
 }
@@ -154,26 +144,6 @@ See return value \code{combi.out} in the \code{\link{jprat.wrapper}} function.}
 
 \item{nrisk}{data file for the number of subjects who is at risk at the interested the time points defined by users. This is automatically calculated.
 Default is nrisk and this file is automatically created.}
-
-\item{data.truth.other}{This is not a users' interest argument. Analysis results from COX model. Use this if the proportional odds model is compared to COX model, which is not considered. Default is NULL.}
-
-\item{data.theta.other}{This is not a users' interest argument. Analysis results from COX model. Use this if the proportional odds model is compared to COX model, which is not considered. Default is NULL.}
-
-\item{nrisk.other}{This is not a users' interest argument. Analysis results from COX model. Use this if the proportional odds model is compared to COX model, which is not considered. Default is NULL.}
-
-\item{data.combi.other}{This is not a users' interest argument. Analysis results from COX model. Use this if the proportional odds model is compared to COX model, which is not considered. Default is NULL.}
-
-\item{s.names.use}{This is not a users' interest argument. Default is NULL.}
-
-\item{s.names.other.use}{This is not a users' interest argument. Default is NULL.}
-
-\item{type1.error}{type 1 error rate, which is for sample size calculations. We do not consider this arguments in the analysis. Default is NULL.}
-
-\item{type2.error}{type 2 error rate, which is for sample size calculations. We do not consider this arguments in the analysis. Default is NULL.}
-
-\item{treatment.effect}{a numeric vector of the treatment effects for sample size calculations. We do not consider this arguments in the analysis. We do not consider this arguments in the analysis. Default is NULL.}
-
-\item{dropout.rate}{a numeric vector of drop-out rates, which is used for sample size calculations. We do not consider this arguments in the analysis. Default is NULL.}
 
 \item{show.results.description}{a logical value whether the description of plots and tables will be produced. Default is FALSE.}
 }
@@ -381,19 +351,6 @@ results.out <- view.all.results(
   #data.count=data.count,
   #data.count.outside=data.count.outside,
   nrisk=nrisk,
-  data.truth.other=NULL,
-  data.theta.other=NULL,
-  nrisk.other=NULL,
-  data.combi.other=NULL,
-  s.names.use=NULL,
-  s.names.other.use=NULL,
-  ########################################################
-  ## for computing sample sizes: users do not need them ##
-  ########################################################
-  type1.error=NULL,
-  type2.error=NULL,
-  treatment.effect=NULL,
-  dropout.rate=NULL,
   #####################################
   ## Do we show results description? ##
   #####################################
