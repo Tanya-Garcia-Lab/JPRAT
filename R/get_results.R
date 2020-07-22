@@ -277,7 +277,7 @@ view.all.results <- function(
                                                            functional.covariate.comparisons.for.sample.size,
                                                            add.number.at.risk.legend=add.number.at.risk.legend,
                                                            ylabel.for.plots.comparing.studies=ylabel.for.plots.comparing.studies,
-                                                           xlabel.for.plots.comparing.studies=xlabel.for.plots.comparing.studies,
+                                                           xlabel.for.plots.comparing.studies=xlabel.for.plots.comparing.studies
                                                            ################################
                                                            ## for computing sample sizes ##
                                                            ################################
@@ -925,18 +925,19 @@ view.all.results <- function(
     ####################################
     extra <- paste("_plot_", comp, sep="")
 
-    if(!is.null(data.theta.other) & combine.data==FALSE){
-      ## PLOT proportional odds and proportional hazards
-      if(plot.KM==TRUE){
-        color.list  <- c("blue","red","black")
-        label.names  <-  c("Proportional Odds","Proportional Hazards","Kaplan-Meier")
-        ##add.second.legend <- TRUE
-      } else{
-        color.list <- c("blue","black")
-        label.names <-  c("Proportional Odds","Kaplan-Meier")
-        ##add.second.legend <- TRUE
-      }
-    } else {
+    # if(!is.null(data.theta.other) & combine.data==FALSE){
+    #   ## PLOT proportional odds and proportional hazards
+    #   if(plot.KM==TRUE){
+    #     color.list  <- c("blue","red","black")
+    #     label.names  <-  c("Proportional Odds","Proportional Hazards","Kaplan-Meier")
+    #     ##add.second.legend <- TRUE
+    #   } else{
+    #     color.list <- c("blue","black")
+    #     label.names <-  c("Proportional Odds","Kaplan-Meier")
+    #     ##add.second.legend <- TRUE
+    #   }
+    # }
+    #else {
       ## ONLY plot proportional odds
       if(plot.KM==TRUE){
         color.list  <- c("blue","black")
@@ -947,7 +948,7 @@ view.all.results <- function(
         label.names <-  c("Proportional Odds")
         ##add.second.legend <- TRUE
       }
-    }
+    #}
 
     ## update color list and label names
     plot.info$color.list=color.list

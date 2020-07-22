@@ -3155,10 +3155,10 @@ convert.new.notation.to.old.for.jprat <- function(study.names,
 #' @param event.comparison.table a list of values corresponding to the event of interest outcomes. Default is a list of nc1, which contains a vector of values 1, 2, 3, 4.
 #' @param functional.covariate.comparisons See the argument in the \code{\link{view.all.results}} function.
 #' @param functional.covariate.comparisons.for.sample.size See the argument in the \code{\link{view.all.results}} function.
-#' @param type1.error ADD DETAILS HERE!
-#' @param type2.error See the argument in the \code{\link{view.all.results}} function.
-#' @param treatment.effect See the argument in the \code{\link{view.all.results}} function.
-#' @param dropout.rate See the argument in the \code{\link{view.all.results}} function.
+## @param type1.error ADD DETAILS HERE!
+## @param type2.error See the argument in the \code{\link{view.all.results}} function.
+## @param treatment.effect See the argument in the \code{\link{view.all.results}} function.
+## @param dropout.rate See the argument in the \code{\link{view.all.results}} function.
 #'
 #' @return FILL IN HERE!!
 #' @export
@@ -3214,14 +3214,14 @@ convert.new.notation.to.old.for.get.results <- function(study.names,
                                                         legend.labels,
                                                         event.comparison.table,
                                                         functional.covariate.comparisons,
-                                                        functional.covariate.comparisons.for.sample.size,
+                                                        functional.covariate.comparisons.for.sample.size
                                                         ################################
                                                         ## for computing sample sizes ##
                                                         ################################
-                                                        type1.error,
-                                                        type2.error,
-                                                        treatment.effect,
-                                                        dropout.rate
+                                                        #type1.error,
+                                                        #type2.error,
+                                                        #treatment.effect,
+                                                        #dropout.rate
 
 ){
 
@@ -3656,10 +3656,10 @@ convert.new.notation.to.old.for.get.results <- function(study.names,
   ##
 
   ## Null
-  type1.error <- type1.error
-  type2.error <- type2.error
-  treatment.effect <- treatment.effect
-  dropout.rate <- dropout.rate
+  #type1.error <- type1.error
+  #type2.error <- type2.error
+  #treatment.effect <- treatment.effect
+  #dropout.rate <- dropout.rate
 
   #z_file_labels <- results.default.values$z_file_labels
   #plot.nadaraya.watson <- results.default.values$plot.nadaraya.watson
