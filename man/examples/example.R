@@ -124,8 +124,8 @@ if(num_study > 1){
   data.combi <- NULL
 }
 
-data.count <- read.table("out_count_real_output_iseed_1.dat",header=FALSE)
-data.count.outside <- read.table("out_outside_count_real_output_iseed_1.dat",header=FALSE)
+#data.count <- read.table("out_count_real_output_iseed_1.dat",header=FALSE)
+#data.count.outside <- read.table("out_outside_count_real_output_iseed_1.dat",header=FALSE)
 nrisk <- read.table("out_nrisk.dat",header=TRUE)
 
 
@@ -189,8 +189,8 @@ results.out <- view.all.results(
   #data.truth=data.truth,
   data.theta=data.theta,
   data.combi=data.combi,
-  data.count=data.count,
-  data.count.outside=data.count.outside,
+  #data.count=data.count,
+  #data.count.outside=data.count.outside,
   nrisk=nrisk,
   data.truth.other=NULL,
   data.theta.other=NULL,

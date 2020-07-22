@@ -94,13 +94,6 @@ A list of
                           event (the names of outcome events), theta (names for all components to be estimated), zz (the labels of the nonfunctional covariates Z), xx (the labels of the functional covariates X),
                           val (all estimated values for theta: "est", "varest", "varlo", "varhi", "boot_varest", "boot_varlo",
                           "boot_varhi") and the flatten time points.}
-         \item{count.store}{a data frame for the rate of event times for uncensored, censored, uncensored but zero, and other cases,
-                            which depends on the binary status of the event for each subject: "zero" (censored), "one" (uncensored), or "others" (missing).
-                            The event times are counted at all time points (\code{time_val}) for all studies.}
-         \item{count.store.outside}{a data frame of the rate of event times for uncensored and censored,
-                                    which depends on the binary status of the event for each subject, which are outside [0,1]:
-                                    "zero" (censored), "one" (uncensored).  The event times are counted at all time points (\code{time_val})
-                                    for all studies.}
          \item{Ftest.store}{array of values for the estimated monotone marginal distributions \eqn{F_{es}(t|X, Z)} (\code{Ftest} in the \code{\link{gamm4.estimates}} function
                             and \code{Ft.var.boot} in the \code{\link{boot.compare.studies}} function) at each iteration. See the argument \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function
                             for the dimensions of the array.}

@@ -43,8 +43,6 @@ view.all.results(
   file.name.for.analysis,
   data.theta = data.theta,
   data.combi = data.combi,
-  data.count = data.count,
-  data.count.outside = data.count.outside,
   nrisk = nrisk,
   data.truth.other = NULL,
   data.theta.other = NULL,
@@ -153,12 +151,6 @@ See return value \code{theta.out} in the \code{\link{jprat.wrapper}} function.}
 \item{data.combi}{data file for the difference between the estimated values of all components among studies as a result of analysis.
 Default is data.combi and this file is automatically created if users choose \code{write.output=TRUE}.
 See return value \code{combi.out} in the \code{\link{jprat.wrapper}} function.}
-
-\item{data.count}{data file for counts for binary status of censored, uncensored and missing subjects as a result of analysis.
-Default is data.count and this file is automatically created if users choose \code{write.output=TRUE}. See return value \code{count.store} in the \code{\link{jprat.wrapper}} function.}
-
-\item{data.count.outside}{data file for counts for binary status of censored, uncensored outside [0,1] as a result of analysis. Default is \code{data.count.outside} and this file is automatically created if users choose \code{write.output=TRUE}.
-See return value \code{count.store.outside} in the \code{\link{jprat.wrapper}} function.}
 
 \item{nrisk}{data file for the number of subjects who is at risk at the interested the time points defined by users. This is automatically calculated.
 Default is nrisk and this file is automatically created.}
@@ -321,8 +313,8 @@ if(num_study > 1){
   data.combi <- NULL
 }
 
-data.count <- read.table("out_count_real_output_iseed_1.dat",header=FALSE)
-data.count.outside <- read.table("out_outside_count_real_output_iseed_1.dat",header=FALSE)
+#data.count <- read.table("out_count_real_output_iseed_1.dat",header=FALSE)
+#data.count.outside <- read.table("out_outside_count_real_output_iseed_1.dat",header=FALSE)
 nrisk <- read.table("out_nrisk.dat",header=TRUE)
 
 
@@ -386,8 +378,8 @@ results.out <- view.all.results(
   #data.truth=data.truth,
   data.theta=data.theta,
   data.combi=data.combi,
-  data.count=data.count,
-  data.count.outside=data.count.outside,
+  #data.count=data.count,
+  #data.count.outside=data.count.outside,
   nrisk=nrisk,
   data.truth.other=NULL,
   data.theta.other=NULL,
