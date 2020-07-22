@@ -59,10 +59,10 @@
 #' @param data.combi data file for the difference between the estimated values of all components among studies as a result of analysis.
 #'         Default is data.combi and this file is automatically created if users choose \code{write.output=TRUE}.
 #'         See return value \code{combi.out} in the \code{\link{jprat.wrapper}} function.
-#' @param data.count data file for counts for binary status of censored, uncensored and missing subjects as a result of analysis.
-#' Default is data.count and this file is automatically created if users choose \code{write.output=TRUE}. See return value \code{count.store} in the \code{\link{jprat.wrapper}} function.
-#' @param data.count.outside  data file for counts for binary status of censored, uncensored outside [0,1] as a result of analysis. Default is \code{data.count.outside} and this file is automatically created if users choose \code{write.output=TRUE}.
-#'                             See return value \code{count.store.outside} in the \code{\link{jprat.wrapper}} function.
+# #@param data.count data file for counts for binary status of censored, uncensored and missing subjects as a result of analysis.
+# # Default is data.count and this file is automatically created if users choose \code{write.output=TRUE}. See return value \code{count.store} in the \code{\link{jprat.wrapper}} function.
+# # @param data.count.outside  data file for counts for binary status of censored, uncensored outside [0,1] as a result of analysis. Default is \code{data.count.outside} and this file is automatically created if users choose \code{write.output=TRUE}.
+# #                             See return value \code{count.store.outside} in the \code{\link{jprat.wrapper}} function.
 #' @param nrisk data file for the number of subjects who is at risk at the interested the time points defined by users. This is automatically calculated.
 #'              Default is nrisk and this file is automatically created.
 #' @param data.truth.other This is not a users' interest argument. Analysis results from COX model. Use this if the proportional odds model is compared to COX model, which is not considered. Default is NULL.
@@ -148,8 +148,8 @@ view.all.results <- function(
   #data.truth=data.truth,
   data.theta=data.theta,
   data.combi=data.combi,
-  data.count=data.count,
-  data.count.outside=data.count.outside,
+  #data.count=data.count,
+  #data.count.outside=data.count.outside,
   nrisk=nrisk,
   data.truth.other=NULL,
   data.theta.other=NULL,
@@ -563,48 +563,48 @@ view.all.results <- function(
   ############
   ## counts ##
   ############
+  #
+  #   #if(1==0){ ## for testing
+  #   colnames(data.count) <- c("study","time","y1","y0_nocens","y0_cens","yother")
+  #   counts.array <- array(0,dim=c(nsimu,num_study,num_time,4),
+  #                         dimnames=list(
+  #                           paste("iter",1:nsimu,sep=""),
+  #                           paste("ss",1:num_study,sep=""),
+  #                           paste("t",time_val,sep=""),
+  #                           c("y1","y0_nocens","y0_cens","yother")))
+  #
+  #   for(ss in 1:num_study){
+  #     for(t in 1:num_time){
+  #       index <- intersect(which(data.count$study==ss),
+  #                          which(data.count$time==as.numeric(time_val[t])))
+  #       counts.array[,ss,t,] <- as.matrix(data.count[index,c("y1","y0_nocens",
+  #                                                            "y0_cens","yother")])
+  #     }
+  #   }
+  #   #}
 
-  #if(1==0){ ## for testing
-  colnames(data.count) <- c("study","time","y1","y0_nocens","y0_cens","yother")
-  counts.array <- array(0,dim=c(nsimu,num_study,num_time,4),
-                        dimnames=list(
-                          paste("iter",1:nsimu,sep=""),
-                          paste("ss",1:num_study,sep=""),
-                          paste("t",time_val,sep=""),
-                          c("y1","y0_nocens","y0_cens","yother")))
 
-  for(ss in 1:num_study){
-    for(t in 1:num_time){
-      index <- intersect(which(data.count$study==ss),
-                         which(data.count$time==as.numeric(time_val[t])))
-      counts.array[,ss,t,] <- as.matrix(data.count[index,c("y1","y0_nocens",
-                                                           "y0_cens","yother")])
-    }
-  }
-  #}
-
-
-  ####################
-  ## counts outside ##
-  ####################
-  ##if(1==0){ ## for testing
-  colnames(data.count.outside) <- c("study","time","zero","ones")
-  counts.outside.array <- array(0,dim=c(nsimu,num_study,num_time,2),
-                                dimnames=list(
-                                  paste("iter",1:nsimu,sep=""),
-                                  paste("ss",1:num_study,sep=""),
-                                  paste("t",time_val,sep=""),
-                                  c("zero","ones")))
-
-  for(ss in 1:num_study){
-    for(t in 1:num_time){
-      index <- intersect(which(data.count.outside$study==ss),
-                         which(data.count.outside$time==as.numeric(time_val[t])))
-      counts.outside.array[,ss,t,] <-
-        as.matrix(data.count.outside[index,c("zero","ones")])
-    }
-  }
-  #} ## end test
+  # ####################
+  # ## counts outside ##
+  # ####################
+  # ##if(1==0){ ## for testing
+  # colnames(data.count.outside) <- c("study","time","zero","ones")
+  # counts.outside.array <- array(0,dim=c(nsimu,num_study,num_time,2),
+  #                               dimnames=list(
+  #                                 paste("iter",1:nsimu,sep=""),
+  #                                 paste("ss",1:num_study,sep=""),
+  #                                 paste("t",time_val,sep=""),
+  #                                 c("zero","ones")))
+  #
+  # for(ss in 1:num_study){
+  #   for(t in 1:num_time){
+  #     index <- intersect(which(data.count.outside$study==ss),
+  #                        which(data.count.outside$time==as.numeric(time_val[t])))
+  #     counts.outside.array[,ss,t,] <-
+  #       as.matrix(data.count.outside[index,c("zero","ones")])
+  #   }
+  # }
+  # #} ## end test
 
 
 
@@ -1467,15 +1467,15 @@ view.all.results <- function(
 
 
 
-  #####################
-  ## plot the counts ##
-  #####################
-  if(1==0){ ## for testing
-    for(ss in 1:num_study){
-      plot.counts(paste("ss_",study.names[ss],"_",filename_new,"beta",sep=""),time_val,
-                  adrop(counts.array[,ss,,,drop=FALSE],drop=2))
-    }
-  }
+  # #####################
+  # ## plot the counts ##
+  # #####################
+  # if(1==0){ ## for testing
+  #   for(ss in 1:num_study){
+  #     plot.counts(paste("ss_",study.names[ss],"_",filename_new,"beta",sep=""),time_val,
+  #                 adrop(counts.array[,ss,,,drop=FALSE],drop=2))
+  #   }
+  # }
 
 
 
@@ -1484,46 +1484,46 @@ view.all.results <- function(
   ## Print results ##
   ###################
 
-  ###################
-  ## count results ##
-  ###################
-  if(1==0){ ## for testing
+  # ###################
+  # ## count results ##
+  # ###################
+  # if(1==0){ ## for testing
+  #
+  #   if(show.results.description==TRUE){
+  #
+  #     ########################################
+  #     cat("\n\n ## Counting results \n\n")  ##
+  #     ########################################
+  #
+  #   }
+  #
+  #   for(ss in 1:num_study){
+  #     cat("\n\n ## Study ",study.names[ss],"## \n\n")
+  #     print(xtable(apply(adrop(counts.array[,ss,,,drop=FALSE],drop=2),c(2,3),mean),
+  #                  digits=digits.tmp))
+  #   }
+  # }
 
-    if(show.results.description==TRUE){
 
-      ########################################
-      cat("\n\n ## Counting results \n\n")  ##
-      ########################################
-
-    }
-
-    for(ss in 1:num_study){
-      cat("\n\n ## Study ",study.names[ss],"## \n\n")
-      print(xtable(apply(adrop(counts.array[,ss,,,drop=FALSE],drop=2),c(2,3),mean),
-                   digits=digits.tmp))
-    }
-  }
-
-
-  ###########################
-  ## count outside results ##
-  ###########################
-  if(1==0){ ## for testing
-
-    if(show.results.description==TRUE){
-
-      ############################################################
-      cat("\n\n ## Counting Pseudo-values outside [0,1] \n\n")
-      ############################################################
-
-    }
-
-    for(ss in 1:num_study){
-      cat("\n\n ## Study ",study.names[ss],"## \n\n")
-      print(xtable(apply(adrop(counts.outside.array[,ss,,,drop=FALSE],drop=2),c(2,3),mean),
-                   digits=digits.tmp))
-    }
-  } ## end test
+  # ###########################
+  # ## count outside results ##
+  # ###########################
+  # if(1==0){ ## for testing
+  #
+  #   if(show.results.description==TRUE){
+  #
+  #     ############################################################
+  #     cat("\n\n ## Counting Pseudo-values outside [0,1] \n\n")
+  #     ############################################################
+  #
+  #   }
+  #
+  #   for(ss in 1:num_study){
+  #     cat("\n\n ## Study ",study.names[ss],"## \n\n")
+  #     print(xtable(apply(adrop(counts.outside.array[,ss,,,drop=FALSE],drop=2),c(2,3),mean),
+  #                  digits=digits.tmp))
+  #   }
+  # } ## end test
 
 
   ########################
