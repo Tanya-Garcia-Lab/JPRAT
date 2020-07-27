@@ -1678,7 +1678,8 @@ compute.number.at.risk.for.HD <- function(study.names,
                                           #nonfunctional.covariate.values.for.prediction,#
                                           #functional.covariate.values.for.prediction,#
                                           time.points.for.prediction,
-                                          estimated.parameters.common.for.all.studies
+                                          estimated.parameters.common.for.all.studies,
+                                          write.output
                                           #xmin,#
                                           #xmax,#
                                           #use_real_data#
@@ -1891,16 +1892,21 @@ compute.number.at.risk.for.HD <- function(study.names,
   ##########################
   ## store number at risk ##
   ##########################
-  flatten.nrisk <- flatten.array(number.at.risk,
-                                 dim.order=names(dimnames(number.at.risk)),
-                                 flatten.name="time",
-                                 theta="zz")
-  flatten.nrisk <- flatten.nrisk[,-which(colnames(flatten.nrisk)=="theta")]
+  if(write.output=TRUE){
 
-  write.table(flatten.nrisk,
-              "out_nrisk.dat",col.names=TRUE,row.names=FALSE,na="0")
+    flatten.nrisk <- flatten.array(number.at.risk,
+                                   dim.order=names(dimnames(number.at.risk)),
+                                   flatten.name="time",
+                                   theta="zz")
+    flatten.nrisk <- flatten.nrisk[,-which(colnames(flatten.nrisk)=="theta")]
 
+    write.table(flatten.nrisk,
+                  "out_nrisk.dat",col.names=TRUE, row.names=FALSE,na="0")
+    return(number.at.risk
+  }else{
   return(number.at.risk)
+  }
+  #return(number.at.risk)
 }
 
 
