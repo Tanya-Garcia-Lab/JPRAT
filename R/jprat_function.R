@@ -713,6 +713,16 @@ jprat.wrapper <- function(
   }##end while loop
 
   eflag<-jprat.out$eflag
+
+  #output of jprat.out
+  # betaest.store=betaest.store,
+  # alphasest.store=alphasest.store,
+  # Ftest.store=Ftest.store,
+  # Ftest.predicted.store=Ftest.predicted.store,
+  # betabootci.store=betabootci.store,
+  # alphasbootci.store=alphasbootci.store,
+  # Ftbootci.store=Ftbootci.store
+
   betaest.store<-jprat.out$betaest.store
   alphasest.store<-jprat.out$alphasest.store
   Ftest.store<-jprat.out$Ftest.store
@@ -898,7 +908,7 @@ jprat.wrapper <- function(
 
 
 
-  list( #truth.out=truth.out,
+  list(#truth.out=truth.out,
        theta.out=theta.out,
        combi.out=combi.out,
        #count.store=count.store,

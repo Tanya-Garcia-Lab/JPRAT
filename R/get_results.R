@@ -597,7 +597,7 @@ view.all.results <- function(
   ######################
   ## organize results ##
   ######################
-  my.out <- sort.results(
+  my.out <-(
     combi.names,
     num_study,
     simus=nsimu,
