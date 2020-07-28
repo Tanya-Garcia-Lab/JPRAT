@@ -1892,7 +1892,7 @@ compute.number.at.risk.for.HD <- function(study.names,
   ##########################
   ## store number at risk ##
   ##########################
-  if(write.output=TRUE){
+  if(write.output==TRUE){
 
     flatten.nrisk <- flatten.array(number.at.risk,
                                    dim.order=names(dimnames(number.at.risk)),
@@ -1902,10 +1902,14 @@ compute.number.at.risk.for.HD <- function(study.names,
 
     write.table(flatten.nrisk,
                   "out_nrisk.dat",col.names=TRUE, row.names=FALSE,na="0")
-    return(number.at.risk
+
+    return(number.at.risk);
+
   }else{
+
   return(number.at.risk)
-  }
+
+   }
   #return(number.at.risk)
 }
 

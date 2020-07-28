@@ -71,7 +71,8 @@ number.at.risk <- compute.number.at.risk.for.HD(study.names,
  nonfunctional.covariate.value,
  functional.covariate.values.of.interest,
  time.points.for.prediction,
- estimated.parameters.common.for.all.studies
+ estimated.parameters.common.for.all.studies,
+ write.output=TRUE
  )
 
 
@@ -94,7 +95,7 @@ ylabel.for.plots.comparing.studies="Probability"
 xlabel.for.plots.comparing.studies="Age (years)"
 file.name.for.analysis="test" ## figure names
 show.results.description=FALSE;
-
+is.nrisk.flatten=TRUE ## if users choose write.output=TRUE, then nrisk is flattened.
 ####################################
 ## functions to get default values #
 ####################################
@@ -126,8 +127,11 @@ if(num_study > 1){
 
 #data.count <- read.table("out_count_real_output_iseed_1.dat",header=FALSE)
 #data.count.outside <- read.table("out_outside_count_real_output_iseed_1.dat",header=FALSE)
-nrisk <- read.table("out_nrisk.dat",header=TRUE)
-
+if(is.nrisk.flatten==TRUE){
+  nrisk <- read.table("out_nrisk.dat",header=TRUE)
+}else{
+  nrisk<-number.at.risk
+}
 
 ## display all results including tables and plots
 results.out <- view.all.results(
@@ -195,7 +199,8 @@ results.out <- view.all.results(
   #####################################
   ## Do we show results description? ##
   #####################################
-  show.results.description
+  show.results.description,
+  is.nrisk.flatten
 )
 
 

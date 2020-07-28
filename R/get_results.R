@@ -59,10 +59,10 @@
 #' @param data.combi data file for the difference between the estimated values of all components among studies as a result of analysis.
 #'         Default is data.combi and this file is automatically created if users choose \code{write.output=TRUE}.
 #'         See return value \code{combi.out} in the \code{\link{jprat.wrapper}} function.
-#' @param nrisk data file for the number of subjects who is at risk at the interested the time points defined by users. This is automatically calculated.
-#'              Default is nrisk and this file is automatically created.
+#' @param nrisk data file for the number of subjects who is at risk at the interested the time points defined by users.
+#'              nrisk results are flattened by time if write.output is TRUE from the function \code{\link{compute.number.at.risk.for.HD}}, otherwise it is not flattened.
 #' @param show.results.description a logical value whether the description of plots and tables will be produced. Default is FALSE.
-#'
+#' @param is.nrisk.flatten a logical value whether output for nrisk is flattend or not. If users choose write.output is TRUE from the function \code{\link{compute.number.at.risk.for.HD}}, this argument should be TRUE. Otherwise, FALSE.
 #' @details The number of risks at each time point will be printed in the plot.
 #'
 #' @return This function returns ggplots.
@@ -153,7 +153,8 @@ view.all.results <- function(
   #####################################
   ## Do we show results description? ##
   #####################################
-  show.results.description
+  show.results.description,
+  is.nrisk.flatten
 ){
 
 
@@ -499,9 +500,14 @@ view.all.results <- function(
     return(number.at.risk)
   }
 
+
   if(real_data==TRUE){
 
+     if(is.nrisk.flatten==TRUE){
      number.at.risk <- get.number.at.risk(nrisk)
+     }else{
+     number.at.risk <- nrisk
+     }
   }
 
 
