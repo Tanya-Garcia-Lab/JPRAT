@@ -13,7 +13,8 @@ compute.number.at.risk.for.HD(
   nonfunctional.covariate.value,
   functional.covariate.values.of.interest,
   time.points.for.prediction,
-  estimated.parameters.common.for.all.studies
+  estimated.parameters.common.for.all.studies,
+  write.output
 )
 }
 \arguments{
@@ -38,6 +39,8 @@ Users may encounter a warning message that "Not enough data at time points (e.g.
 This may get rid of the warning messages.}
 
 \item{estimated.parameters.common.for.all.studies}{a logical value whether the model parameters are the same across studies. Default is FALSE.}
+
+\item{write.output}{a logical value whether outputs will be saved into data files. Default is TRUE.}
 }
 \value{
 a table for the number of subjects whoare at risk for HD for each study at times.(ignores specific covariate values)

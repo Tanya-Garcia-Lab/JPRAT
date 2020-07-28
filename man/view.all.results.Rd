@@ -44,7 +44,8 @@ view.all.results(
   data.theta = data.theta,
   data.combi = data.combi,
   nrisk = nrisk,
-  show.results.description
+  show.results.description,
+  is.nrisk.flatten
 )
 }
 \arguments{
@@ -142,10 +143,12 @@ See return value \code{theta.out} in the \code{\link{jprat.wrapper}} function.}
 Default is data.combi and this file is automatically created if users choose \code{write.output=TRUE}.
 See return value \code{combi.out} in the \code{\link{jprat.wrapper}} function.}
 
-\item{nrisk}{data file for the number of subjects who is at risk at the interested the time points defined by users. This is automatically calculated.
-Default is nrisk and this file is automatically created.}
+\item{nrisk}{data file for the number of subjects who is at risk at the interested the time points defined by users.
+nrisk results are flattened by time if write.output is TRUE from the function \code{\link{compute.number.at.risk.for.HD}}, otherwise it is not flattened.}
 
 \item{show.results.description}{a logical value whether the description of plots and tables will be produced. Default is FALSE.}
+
+\item{is.nrisk.flatten}{a logical value whether output for nrisk is flattend or not. If users choose write.output is TRUE from the function \code{\link{compute.number.at.risk.for.HD}}, this argument should be TRUE. Otherwise, FALSE.}
 }
 \value{
 This function returns ggplots.
@@ -230,7 +233,8 @@ number.at.risk <- compute.number.at.risk.for.HD(study.names,
  nonfunctional.covariate.value,
  functional.covariate.values.of.interest,
  time.points.for.prediction,
- estimated.parameters.common.for.all.studies
+ estimated.parameters.common.for.all.studies,
+ write.output=TRUE
  )
 
 
@@ -253,7 +257,7 @@ ylabel.for.plots.comparing.studies="Probability"
 xlabel.for.plots.comparing.studies="Age (years)"
 file.name.for.analysis="test" ## figure names
 show.results.description=FALSE;
-
+is.nrisk.flatten=TRUE ## if users choose write.output=TRUE, then nrisk is flattened.
 ####################################
 ## functions to get default values #
 ####################################
@@ -285,8 +289,11 @@ if(num_study > 1){
 
 #data.count <- read.table("out_count_real_output_iseed_1.dat",header=FALSE)
 #data.count.outside <- read.table("out_outside_count_real_output_iseed_1.dat",header=FALSE)
-nrisk <- read.table("out_nrisk.dat",header=TRUE)
-
+if(is.nrisk.flatten==TRUE){
+  nrisk <- read.table("out_nrisk.dat",header=TRUE)
+}else{
+  nrisk<-number.at.risk
+}
 
 ## display all results including tables and plots
 results.out <- view.all.results(
@@ -354,7 +361,8 @@ results.out <- view.all.results(
   #####################################
   ## Do we show results description? ##
   #####################################
-  show.results.description
+  show.results.description,
+  is.nrisk.flatten
 )
 
 
