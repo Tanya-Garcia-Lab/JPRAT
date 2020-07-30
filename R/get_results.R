@@ -599,10 +599,14 @@ view.all.results <- function(
   # #} ## end test
 
 
-
+  # If  the  list  object  ”jprat.output”  contains  data.theta,  data.combi,
+  # then  you WILL need to run these lines in getresults.R.
+  # If the list object ”jprat.output” contains beta.array, alpha.array, etc,
+  # then you do NOT need to run the following lines of getresults.R.
   ######################
   ## organize results ##
   ######################
+  ## flatten data from jprat converted to arrays for beta, alphas and Ft
   my.out <-sort.results(
     combi.names,
     num_study,
