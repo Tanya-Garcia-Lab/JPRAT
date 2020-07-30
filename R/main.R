@@ -1903,7 +1903,7 @@ compute.number.at.risk.for.HD <- function(study.names,
     write.table(flatten.nrisk,
                   "out_nrisk.dat",col.names=TRUE, row.names=FALSE,na="0")
 
-    return(number.at.risk);
+    return(flatten.nrisk)
 
   }else{
 

@@ -127,7 +127,7 @@ if(num_study > 1){
 
 #data.count <- read.table("out_count_real_output_iseed_1.dat",header=FALSE)
 #data.count.outside <- read.table("out_outside_count_real_output_iseed_1.dat",header=FALSE)
-if(is.nrisk.flatten==TRUE){
+if(is.nrisk.flatten==FALSE){
   nrisk <- read.table("out_nrisk.dat",header=TRUE)
 }else{
   nrisk<-number.at.risk
