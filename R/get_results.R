@@ -54,11 +54,12 @@
 #' @param ylabel.for.plots.comparing.studies a character value for y-label in plots when studies are comparing or event of interests were compared in each study. Default is "Probability".
 #' @param xlabel.for.plots.comparing.studies a character value for x-label in plots when studies are comparing for each event of interest or event of interests were compared in each study. Default is "Age(years)".
 #' @param file.name.for.analysis a character value, which is used as the part of plot names.
-#' @param data.theta data file for the estimated values of all components as a result of analysis. The result file is automatically created if users choose \code{write.output=TRUE}.
-#'                   See return value \code{theta.out} in the \code{\link{jprat.wrapper}} function.
-#' @param data.combi data file for the difference between the estimated values of all components among studies as a result of analysis.
-#'         Default is data.combi and this file is automatically created if users choose \code{write.output=TRUE}.
-#'         See return value \code{combi.out} in the \code{\link{jprat.wrapper}} function.
+# #@param data.theta data file for the estimated values of all components as a result of analysis. The result file is automatically created if users choose \code{write.output=TRUE}.
+# #                   See return value \code{theta.out} in the \code{\link{jprat.wrapper}} function.
+# # @param data.combi data file for the difference between the estimated values of all components among studies as a result of analysis.
+# #         Default is data.combi and this file is automatically created if users choose \code{write.output=TRUE}.
+# #         See return value \code{combi.out} in the \code{\link{jprat.wrapper}} function.
+#' @param jprat.output list of jprat output. See return value \code{jprat.output} in the \code{\link{jprat.wrapper}} function.
 #' @param nrisk data file for the number of subjects who is at risk at the interested the time points defined by users.
 #'              nrisk results are flattened by time if write.output is TRUE from the function \code{\link{compute.number.at.risk.for.HD}}, otherwise it is not flattened.
 #' @param show.results.description a logical value whether the description of plots and tables will be produced. Default is FALSE.
@@ -132,10 +133,11 @@ view.all.results <- function(
   ## Output from JPRAT ##
   #######################
   #data.truth=data.truth,
-  data.theta=data.theta,
-  data.combi=data.combi,
+  #data.theta=data.theta,
+  #data.combi=data.combi,
   #data.count=data.count,
   #data.count.outside=data.count.outside,
+  jprat.output=jprat.output,
   nrisk=nrisk,
   # data.truth.other=NULL,
   # data.theta.other=NULL,
