@@ -42,11 +42,20 @@
 #'          An analysis of multiple longitudinal outcomes. Journal of Huntington's disease, 7, 337-344
 #'
 #' @return  A list of
-#'          \item{theta.out}{data frame of the estimated values for all components ("beta0", "beta1",  "alpha1", "Ft", "Ft.predicted")
+# #          \item{theta.out}{data frame of the estimated values for all components ("beta0", "beta1",  "alpha1", "Ft", "Ft.predicted")
+# #                          at each iteration for the clinical events of interest per study. The columns of the data frame include iters (iteration number), study(names of studies), event (the names of outcome events), theta (names for all components to be estimated), zz (the labels of the nonfunctional covariates Z),
+# #                           xx (the labels of the functional covariates X), val (all estimated values for theta: "est”, "varest”, "varlo”, "varhi”, "boot_varest”, "boot_varlo”, "boot_varhi”)
+# #                           and the flatten time points.}
+# #          \item{combi.out}{a data frame of the difference of the estimated values between a pair of studies for all components ("beta0", "beta1", "alpha1", "Ft", "Ft.predicted")
+# #                           at each iteration for the clinical events of interest per a pair of studies.
+# #                           The columns of the data frame include iters (iteration number), study(names for the combinations of studies: cohort-predict, cohort-pharos, predict-pharos),
+# #                           event (the names of outcome events), theta (names for all components to be estimated), zz (the labels of the nonfunctional covariates Z), xx (the labels of the functional covariates X),
+# #                           val (all estimated values for theta: "est", "varest", "varlo", "varhi", "boot_varest", "boot_varlo",
+# #                           "boot_varhi") and the flatten time points.}
+#'          \item{jprat.output}{the list of estimated values. If write.output=TRUE, the list contains data.theta and combi.out, where theta.out is the data frame of the estimated values for all components ("beta0", "beta1",  "alpha1", "Ft", "Ft.predicted")
 #'                           at each iteration for the clinical events of interest per study. The columns of the data frame include iters (iteration number), study(names of studies), event (the names of outcome events), theta (names for all components to be estimated), zz (the labels of the nonfunctional covariates Z),
 #'                           xx (the labels of the functional covariates X), val (all estimated values for theta: "est”, "varest”, "varlo”, "varhi”, "boot_varest”, "boot_varlo”, "boot_varhi”)
-#'                           and the flatten time points.}
-#'          \item{combi.out}{a data frame of the difference of the estimated values between a pair of studies for all components ("beta0", "beta1", "alpha1", "Ft", "Ft.predicted")
+#'                           and the flatten time points, and combi.out is a data frame of the difference of the estimated values between a pair of studies for all components ("beta0", "beta1", "alpha1", "Ft", "Ft.predicted")
 #'                           at each iteration for the clinical events of interest per a pair of studies.
 #'                           The columns of the data frame include iters (iteration number), study(names for the combinations of studies: cohort-predict, cohort-pharos, predict-pharos),
 #'                           event (the names of outcome events), theta (names for all components to be estimated), zz (the labels of the nonfunctional covariates Z), xx (the labels of the functional covariates X),
@@ -59,9 +68,9 @@
 #         #                            which depends on the binary status of the event for each subject, which are outside [0,1]:
 #         #                            "zero" (censored), "one" (uncensored).  The event times are counted at all time points (\code{time_val})
 #         #                            for all studies.}
-#'          \item{Ftest.store}{array of values for the estimated monotone marginal distributions \eqn{F_{es}(t|X, Z)} (\code{Ftest} in the \code{\link{gamm4.estimates}} function
-#'                             and \code{Ft.var.boot} in the \code{\link{boot.compare.studies}} function) at each iteration. See the argument \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function
-#'                             for the dimensions of the array.}
+#         #\item{Ftest.store}{array of values for the estimated monotone marginal distributions \eqn{F_{es}(t|X, Z)} (\code{Ftest} in the \code{\link{gamm4.estimates}} function
+# #                             and \code{Ft.var.boot} in the \code{\link{boot.compare.studies}} function) at each iteration. See the argument \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function
+# #                            for the dimensions of the array.}
 #'          \item{eflag}{an integer number to check if any error comes up while processing the estimation algorithm.
 #'                       If this value is -1, then the marginal distribution \eqn{F_{es}(t|X, Z)} has missing values (NA).}
 #'
@@ -714,15 +723,9 @@ jprat.wrapper <- function(
 
   eflag<-jprat.out$eflag
 
-  #output of jprat.out
-  # betaest.store=betaest.store,
-  # alphasest.store=alphasest.store,
-  # Ftest.store=Ftest.store,
-  # Ftest.predicted.store=Ftest.predicted.store,
-  # betabootci.store=betabootci.store,
-  # alphasbootci.store=alphasbootci.store,
-  # Ftbootci.store=Ftbootci.store
 
+
+  ## array results from jprat
   betaest.store<-jprat.out$betaest.store
   alphasest.store<-jprat.out$alphasest.store
   Ftest.store<-jprat.out$Ftest.store
@@ -749,23 +752,38 @@ jprat.wrapper <- function(
   ###########################
   ## write data for output ##
   ###########################
+   ## if write.output=TRUE, jprat.output returns contains the list of theta.out and combi.out
+   ## theta.out: dataframe of beta, alphas, Ft, Ft.predicted
+   ## combi.out: dataframe of betabootci.store, alphasbootci.store, Ftbootci.store
+   ## if write.output=FALSE, jprat.output returns, which contains arrays such as betaest.store,
+   ## alphaest.store, Ftest.store, Ftest.predicted.store, and betabootci.store, alphasbootci.store, and Ftbootci.store
 
   if(write.output==TRUE){
+
+  ## get all dimension to save results with their names: beta, alphas, Ft, Ft.predicted
   dim.order.all <- get.all.dim.order(theta.names)   ## name of dimension order
+  ## theta.names: Ft, Ft.predicted
   flatten.theta.name <- get.flatten.theta.name(theta.names)
 
   ## re-order columns of truth
   if(!is.null(time_choice.predicted)){
+
     truth.colm.names <- c("study","event","theta","zz","xx","time0",
                           paste("t",time_val,sep=""))
+
     theta.colm.names <- c("iters","study","event","theta","zz","xx","val","time0",
                           paste("t",time_val,sep=""))
+
   } else{
+
     truth.colm.names <- c("study","event","theta","zz","xx",
                           paste("t",time_val,sep=""))
+
     theta.colm.names <- c("iters","study","event","theta","zz","xx","val",
                           paste("t",time_val,sep=""))
+
   }
+
   combi.colm.names <- c("iters","study","event","theta","zz","xx","val",
                         paste("t",time_val,sep=""))
 
@@ -784,6 +802,7 @@ jprat.wrapper <- function(
                                     flatten.theta.name=flatten.theta.name,
                                     extension=".true",
                                     theta.names)
+
   truth.out <- merge.by.columns(truth.out.tmp)
   truth.out <- truth.out[,truth.colm.names]
 
@@ -791,13 +810,17 @@ jprat.wrapper <- function(
   ##########################
   ## beta/alpha/Ft/Ftpred ##
   ##########################
+  #######################################
+  ### return restuls from jpart.out()  ##
+  #######################################
 
-  ### return restuls from jpart.out()
   theta.est.list <- list(beta.tmp=betaest.store,
                          alphas.tmp=alphasest.store,
                          Ft.tmp=Ftest.store,
                          Ft.predicted.tmp=Ftest.predicted.store)
 
+
+  ## change the above estimation list
   theta.out.all <- get.theta.output(all.est.store=theta.est.list,
                                     dim.order=dim.order.all$dim.order.simus.ci,
                                     flatten.name="time",
@@ -807,28 +830,6 @@ jprat.wrapper <- function(
 
   theta.out <- merge.by.columns(theta.out.all)
   theta.out <- theta.out[,theta.colm.names]
-
-
-  ## separate estimate and variances
-  #est.var.out <- extract.var.est.output(theta.out.all,theta.names)
-  #theta.out <- est.var.out$theta.out
-  #theta.var.out <- est.var.out$theta.var.out
-
-  ## extract beta,alpha,Ft parts
-  #parts.theta.out <- extract.output(theta.out,gamma.param,omega.param,time_val)
-  #parts.theta.var.out <- extract.output(theta.var.out,gamma.param,omega.param,time_val)
-
-  #beta.out <- parts.theta.out$beta.out
-  #beta.var.out <- parts.theta.var.out$beta.out
-  #gamma.out <-parts.theta.out$gamma.out
-  #gamma.var.out <-parts.theta.var.out$gamma.out
-  #omega.out <-parts.theta.out$omega.out
-  #omega.var.out <-parts.theta.var.out$omega.out
-  #alphas.out <-parts.theta.out$alphas.out
-  #alphas.var.out <-parts.theta.var.out$alphas.out
-  #Ft.out <-parts.theta.out$Ft.out
-  #Ft.var.out <- parts.theta.var.out$Ft.out
-
 
 
   #####################
@@ -849,20 +850,9 @@ jprat.wrapper <- function(
     combi.out <- merge.by.columns(combi.theta.out.all)
     combi.out <- combi.out[,combi.colm.names]
 
-    ## extract beta,alpha,Ft parts
-    #parts.theta.out <- extract.output(combi.theta.out.all,gamma.param,omega.param,time_val)
 
-    #beta.diff.out <- parts.theta.out$beta.out
-    #gamma.diff.out <-parts.theta.out$gamma.out
-    #omega.diff.out <-parts.theta.out$omega.out
-    #alphas.diff.out <-parts.theta.out$alphas.out
-    #Ft.diff.out <-parts.theta.out$Ft.out
   } else{
-    #beta.diff.out <- 0
-    #gamma.diff.out <- 0
-    #omega.diff.out <- 0
-    #alphas.diff.out <- 0
-    #Ft.diff.out <- 0
+
     combi.out <- 0
   }
 
@@ -884,35 +874,50 @@ jprat.wrapper <- function(
   filename <- paste("real_",filename,sep="")
   #}
 
-
-
-
-
-
     #write.table(truth.out,paste("out_truth_",filename,sep=""),
     #            col.names=FALSE,row.names=FALSE)
 
-    write.table(theta.out,
-                paste("out_thetaest_",filename,sep=""), col.names=FALSE, row.names=FALSE)
+    #write.table(theta.out,
+    #            paste("out_thetaest_",filename,sep=""), col.names=FALSE, row.names=FALSE)
 
-    write.table(combi.out,
-                paste("out_combi_",filename,sep=""),col.names=FALSE,row.names=FALSE,na="0")
+    #write.table(combi.out,
+    #            paste("out_combi_",filename,sep=""),col.names=FALSE,row.names=FALSE,na="0")
 
    # write.table(jprat.out$count.store,
    #              paste("out_count_",filename,sep=""),col.names=FALSE,row.names=FALSE,na="0")
 
    #  write.table(jprat.out$count.store.outside,
    #              paste("out_outside_count_",filename,sep=""),col.names=FALSE,row.names=FALSE,na="0")
+
+
+    jprat.output<- list(data.theta=theta.out, data.combi=combi.out)
+
+  }else{
+
+    #perm.alphaest.store <- aperm(alphasest.store,c("iters","study","event","time","xx","theta","val")) ## permutation  of alpha.array with the following order
+
+      jprat.output=list(
+      beta.array=betaest.store,
+      alpha.array=alphasest.store,
+      #alpha.array.new=perm.alphaest.store,
+      Ft.array=Ftest.store,
+      Ft.predicted.array=Ftest.predicted.store,
+      beta.diff.array=betabootci.store,
+      alpha.diff.array=alphasbootci.store,
+      Ft.diff.array=Ftbootci.store
+    )
+
   }
 
 
 
 
-  list(#truth.out=truth.out,
-       theta.out=theta.out,
-       combi.out=combi.out,
+  return(#truth.out=truth.out,
+       jprat.output=jprat.output,
+      # theta.out=theta.out,
+      # combi.out=combi.out,
        #count.store=count.store,
        #count.store.outside=count.store.outside,
-       Ftest.store=Ftest.store,
+      # Ftest.store=Ftest.store,
        eflag=eflag)
 }
