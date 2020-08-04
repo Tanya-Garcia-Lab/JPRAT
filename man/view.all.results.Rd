@@ -41,11 +41,11 @@ view.all.results(
   ylabel.for.plots.comparing.studies,
   xlabel.for.plots.comparing.studies,
   file.name.for.analysis,
-  data.theta = data.theta,
-  data.combi = data.combi,
-  nrisk = nrisk,
+  jprat.output = jprat.output,
+  nrisk = number.at.risk,
   show.results.description,
-  is.nrisk.flatten
+  is.nrisk.data.frame,
+  write.jprat.output
 )
 }
 \arguments{
@@ -136,19 +136,16 @@ which will be compared across studies. Currently, we are not interested in sampl
 
 \item{file.name.for.analysis}{a character value, which is used as the part of plot names.}
 
-\item{data.theta}{data file for the estimated values of all components as a result of analysis. The result file is automatically created if users choose \code{write.output=TRUE}.
-See return value \code{theta.out} in the \code{\link{jprat.wrapper}} function.}
-
-\item{data.combi}{data file for the difference between the estimated values of all components among studies as a result of analysis.
-Default is data.combi and this file is automatically created if users choose \code{write.output=TRUE}.
-See return value \code{combi.out} in the \code{\link{jprat.wrapper}} function.}
+\item{jprat.output}{list of jprat output. See return value \code{jprat.output} in the \code{\link{jprat.wrapper}} function.}
 
 \item{nrisk}{data file for the number of subjects who is at risk at the interested the time points defined by users.
 nrisk results are flattened by time if write.output is TRUE from the function \code{\link{compute.number.at.risk.for.HD}}, otherwise it is not flattened.}
 
 \item{show.results.description}{a logical value whether the description of plots and tables will be produced. Default is FALSE.}
 
-\item{is.nrisk.flatten}{a logical value whether output for nrisk is flattend or not. If users choose write.output is TRUE from the function \code{\link{compute.number.at.risk.for.HD}}, this argument should be TRUE. Otherwise, FALSE.}
+\item{is.nrisk.data.frame}{a logical value whether output for nrisk is the data frame. If users choose write.output is TRUE from the function \code{\link{compute.number.at.risk.for.HD}}, this argument should be TRUE. Otherwise, FALSE.}
+
+\item{write.jprat.output}{a logical value whether output for the jprat function will be created. If write.output=TRUE in  the  \code{\link{jprat.wrapper}} function, then it should be TRUE; FALSE otherwise.}
 }
 \value{
 This function returns ggplots.
@@ -160,7 +157,6 @@ This function returns analysis results including plots and tables.
 The number of risks at each time point will be printed in the plot.
 }
 \examples{
-
 ## load your data in the list format: should match order of study.names
 input.data.list=list(cohort=data_cohort, predict=data_predict, pharos=data_pharos);
 
@@ -187,7 +183,7 @@ what.analyzed.separately="studyevent";
 estimated.parameters.common.for.all.studies=FALSE;
 use.bootstrap.variance=TRUE ;
 estimation.when.censoring.depends.on.z=FALSE ;
-write.output=TRUE;
+write.output=FALSE;
 
 # JPRAT estimation
 jprat.estimat.results<-jprat.wrapper(study.names=study.names,
@@ -234,7 +230,7 @@ number.at.risk <- compute.number.at.risk.for.HD(study.names,
  functional.covariate.values.of.interest,
  time.points.for.prediction,
  estimated.parameters.common.for.all.studies,
- write.output=TRUE
+ write.output=FALSE
  )
 
 
@@ -257,7 +253,11 @@ ylabel.for.plots.comparing.studies="Probability"
 xlabel.for.plots.comparing.studies="Age (years)"
 file.name.for.analysis="test" ## figure names
 show.results.description=FALSE;
-is.nrisk.flatten=TRUE ## if users choose write.output=TRUE, then nrisk is flattened.
+is.nrisk.data.frame=FALSE; ## if users choose write.output=TRUE, then nrisk is data frame
+                     ## if users choose write.output=FALSE, then nrisk is array form
+write.jprat.output=FALSE; ## users need to choose write.jprat.output=TRUE
+                        ## when they choose write.output=TRUE in jprat function;
+                        ## FALSE otherwise.
 ####################################
 ## functions to get default values #
 ####################################
@@ -276,24 +276,25 @@ combine.data<-default.options$combine.data
 
 ## datasets are reformatted, so that results plots and tables can be produced;
 num_study<-reformatted.data.for.analysis.results$num_study;
-
+jprat.output<-jprat.estimat.results$jprat.output
 ## load results file from JPRAT algorithm
 #data.truth <- read.table("out_truth_real_output_iseed_1.dat",header=FALSE)
-data.theta <- read.table("out_thetaest_real_output_iseed_1.dat",header=FALSE)
+#data.theta <- read.table("out_thetaest_real_output_iseed_1.dat",header=FALSE)
 
-if(num_study > 1){
-  data.combi <- read.table("out_combi_real_output_iseed_1.dat",header=FALSE)
-} else {
-  data.combi <- NULL
-}
+#if(num_study > 1){
+#  data.combi <- read.table("out_combi_real_output_iseed_1.dat",header=FALSE)
+#} else {
+#  data.combi <- NULL
+#}
 
 #data.count <- read.table("out_count_real_output_iseed_1.dat",header=FALSE)
 #data.count.outside <- read.table("out_outside_count_real_output_iseed_1.dat",header=FALSE)
-if(is.nrisk.flatten==TRUE){
-  nrisk <- read.table("out_nrisk.dat",header=TRUE)
-}else{
-  nrisk<-number.at.risk
-}
+
+# if(is.nrisk.data.frame==TRUE){
+#   nrisk <- read.table("out_nrisk.dat",header=TRUE)
+# }else{
+#   nrisk<-number.at.risk
+# }
 
 ## display all results including tables and plots
 results.out <- view.all.results(
@@ -353,16 +354,18 @@ results.out <- view.all.results(
   ## Output from JPRAT ##
   #######################
   #data.truth=data.truth,
-  data.theta=data.theta,
-  data.combi=data.combi,
+  #data.theta=data.theta,
+  #data.combi=data.combi,
+  jprat.output=jprat.output,
   #data.count=data.count,
   #data.count.outside=data.count.outside,
-  nrisk=nrisk,
+  nrisk=number.at.risk,
   #####################################
   ## Do we show results description? ##
   #####################################
   show.results.description,
-  is.nrisk.flatten
+  is.nrisk.data.frame,
+  write.jprat.output
 )
 
 
