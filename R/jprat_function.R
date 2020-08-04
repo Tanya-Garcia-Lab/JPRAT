@@ -877,11 +877,11 @@ jprat.wrapper <- function(
     #write.table(truth.out,paste("out_truth_",filename,sep=""),
     #            col.names=FALSE,row.names=FALSE)
 
-    #write.table(theta.out,
-    #            paste("out_thetaest_",filename,sep=""), col.names=FALSE, row.names=FALSE)
+    write.table(theta.out,
+                paste("out_thetaest_",filename,sep=""), col.names=FALSE, row.names=FALSE)
 
-    #write.table(combi.out,
-    #            paste("out_combi_",filename,sep=""),col.names=FALSE,row.names=FALSE,na="0")
+    write.table(combi.out,
+                paste("out_combi_",filename,sep=""),col.names=FALSE,row.names=FALSE,na="0")
 
    # write.table(jprat.out$count.store,
    #              paste("out_count_",filename,sep=""),col.names=FALSE,row.names=FALSE,na="0")
@@ -912,7 +912,7 @@ jprat.wrapper <- function(
 
 
 
-  return(#truth.out=truth.out,
+  list(#truth.out=truth.out,
        jprat.output=jprat.output,
       # theta.out=theta.out,
       # combi.out=combi.out,
