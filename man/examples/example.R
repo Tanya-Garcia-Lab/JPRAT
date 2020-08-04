@@ -1,4 +1,3 @@
-
 ## load your data in the list format: should match order of study.names
 input.data.list=list(cohort=data_cohort, predict=data_predict, pharos=data_pharos);
 
@@ -25,7 +24,7 @@ what.analyzed.separately="studyevent";
 estimated.parameters.common.for.all.studies=FALSE;
 use.bootstrap.variance=TRUE ;
 estimation.when.censoring.depends.on.z=FALSE ;
-write.output=TRUE;
+write.output=FALSE;
 
 # JPRAT estimation
 jprat.estimat.results<-jprat.wrapper(study.names=study.names,
@@ -72,7 +71,7 @@ number.at.risk <- compute.number.at.risk.for.HD(study.names,
  functional.covariate.values.of.interest,
  time.points.for.prediction,
  estimated.parameters.common.for.all.studies,
- write.output=TRUE
+ write.output=FALSE
  )
 
 
@@ -95,7 +94,11 @@ ylabel.for.plots.comparing.studies="Probability"
 xlabel.for.plots.comparing.studies="Age (years)"
 file.name.for.analysis="test" ## figure names
 show.results.description=FALSE;
-is.nrisk.flatten=TRUE ## if users choose write.output=TRUE, then nrisk is flattened.
+is.nrisk.data.frame=FALSE; ## if users choose write.output=TRUE, then nrisk is data frame
+                     ## if users choose write.output=FALSE, then nrisk is array form
+write.jprat.output=FALSE; ## users need to choose write.jprat.output=TRUE
+                        ## when they choose write.output=TRUE in jprat function;
+                        ## FALSE otherwise.
 ####################################
 ## functions to get default values #
 ####################################
@@ -114,23 +117,20 @@ combine.data<-default.options$combine.data
 
 ## datasets are reformatted, so that results plots and tables can be produced;
 num_study<-reformatted.data.for.analysis.results$num_study;
+jprat.output<-jprat.estimat.results$jprat.output
+nrisk<-number.at.risk
 
-## load results file from JPRAT algorithm
-#data.truth <- read.table("out_truth_real_output_iseed_1.dat",header=FALSE)
-data.theta <- read.table("out_thetaest_real_output_iseed_1.dat",header=FALSE)
-
-if(num_study > 1){
-  data.combi <- read.table("out_combi_real_output_iseed_1.dat",header=FALSE)
-} else {
-  data.combi <- NULL
+## if you want to load results from JPRAT algorithm
+if(write.jprat.output==TRUE){
+  data.truth <- read.table("out_truth_real_output_iseed_1.dat",header=FALSE)
+  data.theta <- read.table("out_thetaest_real_output_iseed_1.dat",header=FALSE)
 }
 
-#data.count <- read.table("out_count_real_output_iseed_1.dat",header=FALSE)
-#data.count.outside <- read.table("out_outside_count_real_output_iseed_1.dat",header=FALSE)
-if(is.nrisk.flatten==FALSE){
-  nrisk <- read.table("out_nrisk.dat",header=TRUE)
+
+if(is.nrisk.data.frame==TRUE){
+   nrisk <- read.table("out_nrisk.dat",header=TRUE)
 }else{
-  nrisk<-number.at.risk
+   nrisk<-number.at.risk
 }
 
 ## display all results including tables and plots
@@ -191,8 +191,9 @@ results.out <- view.all.results(
   ## Output from JPRAT ##
   #######################
   #data.truth=data.truth,
-  data.theta=data.theta,
-  data.combi=data.combi,
+  #data.theta=data.theta,
+  #data.combi=data.combi,
+  jprat.output=jprat.output,
   #data.count=data.count,
   #data.count.outside=data.count.outside,
   nrisk=nrisk,
@@ -200,7 +201,8 @@ results.out <- view.all.results(
   ## Do we show results description? ##
   #####################################
   show.results.description,
-  is.nrisk.flatten
+  is.nrisk.data.frame,
+  write.jprat.output
 )
 
 
