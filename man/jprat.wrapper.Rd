@@ -84,19 +84,15 @@ If this is FALSE, the only option is  "none" (no variances are estimated). Defau
 }
 \value{
 A list of
-         \item{theta.out}{data frame of the estimated values for all components ("beta0", "beta1",  "alpha1", "Ft", "Ft.predicted")
+         \item{jprat.output}{the list of estimated values. If write.output=TRUE, the list contains data.theta and combi.out, where theta.out is the data frame of the estimated values for all components ("beta0", "beta1",  "alpha1", "Ft", "Ft.predicted")
                           at each iteration for the clinical events of interest per study. The columns of the data frame include iters (iteration number), study(names of studies), event (the names of outcome events), theta (names for all components to be estimated), zz (the labels of the nonfunctional covariates Z),
                           xx (the labels of the functional covariates X), val (all estimated values for theta: "est”, "varest”, "varlo”, "varhi”, "boot_varest”, "boot_varlo”, "boot_varhi”)
-                          and the flatten time points.}
-         \item{combi.out}{a data frame of the difference of the estimated values between a pair of studies for all components ("beta0", "beta1", "alpha1", "Ft", "Ft.predicted")
+                          and the flatten time points, and combi.out is a data frame of the difference of the estimated values between a pair of studies for all components ("beta0", "beta1", "alpha1", "Ft", "Ft.predicted")
                           at each iteration for the clinical events of interest per a pair of studies.
                           The columns of the data frame include iters (iteration number), study(names for the combinations of studies: cohort-predict, cohort-pharos, predict-pharos),
                           event (the names of outcome events), theta (names for all components to be estimated), zz (the labels of the nonfunctional covariates Z), xx (the labels of the functional covariates X),
                           val (all estimated values for theta: "est", "varest", "varlo", "varhi", "boot_varest", "boot_varlo",
                           "boot_varhi") and the flatten time points.}
-         \item{Ftest.store}{array of values for the estimated monotone marginal distributions \eqn{F_{es}(t|X, Z)} (\code{Ftest} in the \code{\link{gamm4.estimates}} function
-                            and \code{Ft.var.boot} in the \code{\link{boot.compare.studies}} function) at each iteration. See the argument \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function
-                            for the dimensions of the array.}
          \item{eflag}{an integer number to check if any error comes up while processing the estimation algorithm.
                       If this value is -1, then the marginal distribution \eqn{F_{es}(t|X, Z)} has missing values (NA).}
 }
