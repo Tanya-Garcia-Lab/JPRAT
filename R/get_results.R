@@ -63,7 +63,8 @@
 #' @param nrisk data file for the number of subjects who is at risk at the interested the time points defined by users.
 #'              nrisk results are flattened by time if write.output is TRUE from the function \code{\link{compute.number.at.risk.for.HD}}, otherwise it is not flattened.
 #' @param show.results.description a logical value whether the description of plots and tables will be produced. Default is FALSE.
-#' @param is.nrisk.flatten a logical value whether output for nrisk is flattend or not. If users choose write.output is TRUE from the function \code{\link{compute.number.at.risk.for.HD}}, this argument should be TRUE. Otherwise, FALSE.
+#' @param is.nrisk.data.frame a logical value whether output for nrisk is the data frame. If users choose write.output is TRUE from the function \code{\link{compute.number.at.risk.for.HD}}, this argument should be TRUE. Otherwise, FALSE.
+#' @param write.jprat.output a logical value whether output for the jprat function will be created. If write.output=TRUE in  the  \code{\link{jprat.wrapper}} function, then it should be TRUE; FALSE otherwise.
 #' @details The number of risks at each time point will be printed in the plot.
 #'
 #' @return This function returns ggplots.
@@ -138,7 +139,7 @@ view.all.results <- function(
   #data.count=data.count,
   #data.count.outside=data.count.outside,
   jprat.output=jprat.output,
-  nrisk=nrisk,
+  nrisk=number.at.risk,
   # data.truth.other=NULL,
   # data.theta.other=NULL,
   # nrisk.other=NULL,
@@ -156,7 +157,8 @@ view.all.results <- function(
   ## Do we show results description? ##
   #####################################
   show.results.description,
-  is.nrisk.flatten
+  is.nrisk.data.frame,
+  write.jprat.output
 ){
 
 
@@ -490,23 +492,27 @@ view.all.results <- function(
   ####################
   ## Number at risk ##
   ####################
-  get.number.at.risk <- function(nrisk){
-    nrisk.array <- apply(nrisk[,c("xx","zz","event","study")],2,unique)
-    nrisk.array$time <- paste("t",time_val,sep="")
-    nrisk.array <- array(0,dim=lapply(nrisk.array,length),
-                         dimnames=nrisk.array)
-    nrisk.array <- aperm(nrisk.array,c("study","event","zz","xx","time"))
-    number.at.risk <- unflatten.array(nrisk.array,
-                                      names(dimnames(nrisk.array)),
-                                      nrisk,flatten.name="time")
-    return(number.at.risk)
-  }
+
 
 
   if(real_data==TRUE){
 
-     if(is.nrisk.flatten==TRUE){
-     number.at.risk <- get.number.at.risk(nrisk)
+    if(is.nrisk.data.frame==TRUE){
+
+        get.number.at.risk <- function(nrisk){
+          nrisk.array <- apply(nrisk[,c("xx","zz","event","study")],2,unique)
+          nrisk.array$time <- paste("t",time_val,sep="")
+          nrisk.array <- array(0,dim=lapply(nrisk.array,length),
+                               dimnames=nrisk.array)
+          nrisk.array <- aperm(nrisk.array,c("study","event","zz","xx","time"))
+          number.at.risk <- unflatten.array(nrisk.array,
+                                            names(dimnames(nrisk.array)),
+                                            nrisk,flatten.name="time")
+          return(number.at.risk)
+        }
+
+        number.at.risk <- get.number.at.risk(nrisk)
+
      }else{
      number.at.risk <- nrisk
      }
@@ -543,6 +549,8 @@ view.all.results <- function(
 
 
   ## nsimu
+ if (write.jprat.output==TRUE){
+  data.theta<-jprat.output$data.theta
   nsimu <- nrow(data.theta)/
     (num_study*np* 7 * (
       length(param.label) +  ## number of betas
@@ -552,7 +560,7 @@ view.all.results <- function(
       ## Ft.predicted
     )
     )
-
+ }
 
   ############
   ## counts ##
@@ -608,7 +616,13 @@ view.all.results <- function(
   ######################
   ## organize results ##
   ######################
-  ## flatten data from jprat converted to arrays for beta, alphas and Ft
+  ## jprat output: if write.output=TRUE, this function converts data frame output to arrays for beta, alphas and Ft
+
+  if (write.jprat.output==TRUE){
+
+  #data.theta<-jprat.output$data.theta
+  data.combi<-jprat.output$data.combi
+
   my.out <-sort.results(
     combi.names,
     num_study,
@@ -650,6 +664,19 @@ view.all.results <- function(
   alpha.diff.array <- my.out$alpha.diff.array
   Ft.diff.array <- my.out$Ft.diff.array
 
+  }else{
+
+    beta.array<-jprat.output$beta.array
+    alpha.array<-jprat.output$alpha.array
+      alpha.array.new <- aperm(alpha.array,c("iters","study","event","time","xx","theta","val"))
+      #alpha.array.new=perm.alphaest.store,
+      Ft.array<-jprat.output$Ft.array
+      Ft.predicted.array<-jprat.output$Ft.predicted.array
+      beta.diff.array<-jprat.output$beta.diff.array
+      alpha.diff.array<-jprat.output$alpha.diff.array
+      Ft.diff.array<-jprat.output$Ft.diff.array
+
+  }
   ###############################################
   ## if other exists: get needed matrices	     ##
   ## used to compare COX with PROP ODD model   ##
