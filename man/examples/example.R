@@ -196,7 +196,8 @@ results.out <- view.all.results(
   jprat.output=jprat.output,
   #data.count=data.count,
   #data.count.outside=data.count.outside,
-  nrisk=nrisk,
+  nrisk=nrisk
+  ,
   #####################################
   ## Do we show results description? ##
   #####################################
