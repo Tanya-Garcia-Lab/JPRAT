@@ -9718,7 +9718,97 @@ sort.results <- function(
 }
 
 
+sort.results.when.jprat.ouput.array <- function(jprat.output){
 
+  #####################
+  ## theta estimates ##
+  #####################
+
+  beta.array<-jprat.output$beta.array
+  alpha.array<-jprat.output$alpha.array
+  #alpha.array.new <- aperm(alpha.array,c("iters","study","event","time","xx","theta","val"))
+  #alpha.array.new=perm.alphaest.store,
+  Ft.array<-jprat.output$Ft.array
+  Ft.predicted.array<-jprat.output$Ft.predicted.array
+  beta.diff.array<-jprat.output$beta.diff.array
+  alpha.diff.array<-jprat.output$alpha.diff.array
+  Ft.diff.array<-jprat.output$Ft.diff.array
+
+  ##########################
+  ## theta mean estimates ##
+  ##########################
+  beta.mean <- apply.index(beta.array,"iters",mean)
+  alpha.mean <-  apply.index(alpha.array,"iters",mean) ## average of esimates over iteration per study at each even
+  Ft.mean  <-  apply.index(Ft.array,"iters",mean)
+
+  ## do monotonit
+    Ft.mono.array <- apply.function.index(Ft.array,
+                                          dim.fun=c("time","xx"),getF,
+                                          p=length(dimnames(Ft.array)[["xx"]]))
+    Ft.mono.mean <-  apply.function.index(Ft.mean,
+                                          dim.fun=c("time","xx"),getF,
+                                          p=length(dimnames(Ft.mean)[["xx"]]))
+
+
+    Ft.predicted.mean <- apply.index(Ft.predicted.array,"iters",mean)
+
+
+  #####################
+  ## combi estimates ##
+  ####################
+
+    beta.diff.mean <- apply.index(beta.diff.array,"iters",mean)
+    alpha.diff.mean <-  apply.index(alpha.diff.array,"iters",mean)
+    Ft.diff.mean  <-  apply.index(Ft.diff.array,"iters",mean)
+
+    beta.diff.array <- list(out=beta.diff.array,
+                            out.mean=beta.diff.mean)
+    alpha.diff.array <- list(out=alpha.diff.array,
+                             out.mean=alpha.diff.mean)
+    Ft.diff.array <- list(out=Ft.diff.array,
+                          out.mean=Ft.diff.mean)
+
+
+  ######################
+  ## alpha(x,t) vs. x ##
+  ######################
+  alpha.array.new <- aperm(alpha.array,c("iters","study","event","time","xx","theta","val")) ## permutation  of alpha.array with the following order
+  alpha.new.mean <- aperm(alpha.mean,c("study","event","time","xx","theta","val"))
+  #alphat.new <- aperm(alphat,c("study","event","time","xx","theta"))
+
+  ##########################
+  ## put objects together ##
+  ##########################
+  beta.array <- list(out=beta.array,
+                     out.mean=beta.mean)
+  alpha.array <- list(out=alpha.array,
+                      out.mean=alpha.mean)
+  Ft.array <- list(out=Ft.array,
+                   out.mean=Ft.mean,
+                   out.mono=Ft.mono.array,
+                   out.mono.mean=Ft.mono.mean)
+  Ft.predicted.array <- list(out=Ft.predicted.array,
+                             out.mean=Ft.predicted.mean)
+  alpha.array.new <- list(out=alpha.array.new,
+                          out.mean=alpha.new.mean)
+
+
+  list(#betat=betat,
+    #alphat=alphat,
+    #alphat.new=alphat.new,
+    #Ft=Ft,
+    #Ft.predicted=Ft.predicted,
+    #
+    beta.array=beta.array,
+    alpha.array=alpha.array,
+    alpha.array.new=alpha.array.new,
+    Ft.array=Ft.array,
+    Ft.predicted.array=Ft.predicted.array,
+    #
+    beta.diff.array=beta.diff.array,
+    alpha.diff.array=alpha.diff.array,
+    Ft.diff.array=Ft.diff.array)
+}
 
 
 

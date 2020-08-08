@@ -139,7 +139,7 @@ view.all.results <- function(
   #data.count=data.count,
   #data.count.outside=data.count.outside,
   jprat.output=jprat.output,
-  nrisk=number.at.risk,
+  nrisk=nrisk,
   # data.truth.other=NULL,
   # data.theta.other=NULL,
   # nrisk.other=NULL,
@@ -666,15 +666,32 @@ view.all.results <- function(
 
   }else{
 
-    beta.array<-jprat.output$beta.array
-    alpha.array<-jprat.output$alpha.array
-      alpha.array.new <- aperm(alpha.array,c("iters","study","event","time","xx","theta","val"))
-      #alpha.array.new=perm.alphaest.store,
-      Ft.array<-jprat.output$Ft.array
-      Ft.predicted.array<-jprat.output$Ft.predicted.array
-      beta.diff.array<-jprat.output$beta.diff.array
-      alpha.diff.array<-jprat.output$alpha.diff.array
-      Ft.diff.array<-jprat.output$Ft.diff.array
+      ########################
+      ## edit 08/07/2020  ####
+      ########################
+     #  beta.array<-jprat.output$beta.array
+     #  alpha.array<-jprat.output$alpha.array
+     #  #alpha.array.new <- aperm(alpha.array,c("iters","study","event","time","xx","theta","val"))
+     # #alpha.array.new=perm.alphaest.store,
+     #  Ft.array<-jprat.output$Ft.array
+     #  Ft.predicted.array<-jprat.output$Ft.predicted.array
+     #  beta.diff.array<-jprat.output$beta.diff.array
+     #  alpha.diff.array<-jprat.output$alpha.diff.array
+     #  Ft.diff.array<-jprat.output$Ft.diff.array
+
+
+
+      my.out<-sort.results.when.jprat.ouput.array(jprat.output)
+
+      beta.array <- my.out$beta.array
+      alpha.array <- my.out$alpha.array
+      alpha.array.new<- my.out$alpha.array.new
+      Ft.array <- my.out$Ft.array
+      Ft.predicted.array<- my.out$Ft.predicted.array
+      #
+      beta.diff.array <- my.out$beta.diff.array
+      alpha.diff.array <- my.out$alpha.diff.array
+      Ft.diff.array <- my.out$Ft.diff.array
 
   }
   ###############################################
