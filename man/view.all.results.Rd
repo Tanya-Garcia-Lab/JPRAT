@@ -277,24 +277,20 @@ combine.data<-default.options$combine.data
 ## datasets are reformatted, so that results plots and tables can be produced;
 num_study<-reformatted.data.for.analysis.results$num_study;
 jprat.output<-jprat.estimat.results$jprat.output
-## load results file from JPRAT algorithm
-#data.truth <- read.table("out_truth_real_output_iseed_1.dat",header=FALSE)
-#data.theta <- read.table("out_thetaest_real_output_iseed_1.dat",header=FALSE)
+nrisk<-number.at.risk
 
-#if(num_study > 1){
-#  data.combi <- read.table("out_combi_real_output_iseed_1.dat",header=FALSE)
-#} else {
-#  data.combi <- NULL
-#}
+## if you want to load results from JPRAT algorithm
+if(write.jprat.output==TRUE){
+  data.truth <- read.table("out_truth_real_output_iseed_1.dat",header=FALSE)
+  data.theta <- read.table("out_thetaest_real_output_iseed_1.dat",header=FALSE)
+}
 
-#data.count <- read.table("out_count_real_output_iseed_1.dat",header=FALSE)
-#data.count.outside <- read.table("out_outside_count_real_output_iseed_1.dat",header=FALSE)
 
-# if(is.nrisk.data.frame==TRUE){
-#   nrisk <- read.table("out_nrisk.dat",header=TRUE)
-# }else{
-#   nrisk<-number.at.risk
-# }
+if(is.nrisk.data.frame==TRUE){
+   nrisk <- read.table("out_nrisk.dat",header=TRUE)
+}else{
+   nrisk<-number.at.risk
+}
 
 ## display all results including tables and plots
 results.out <- view.all.results(
@@ -359,7 +355,8 @@ results.out <- view.all.results(
   jprat.output=jprat.output,
   #data.count=data.count,
   #data.count.outside=data.count.outside,
-  nrisk=number.at.risk,
+  nrisk=nrisk
+  ,
   #####################################
   ## Do we show results description? ##
   #####################################
