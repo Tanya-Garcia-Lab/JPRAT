@@ -9718,7 +9718,7 @@ sort.results <- function(
 }
 
 
-sort.results.when.jprat.ouput.array <- function(jprat.output){
+sort.results.when.jprat.ouput.array <- function(time_choice.predicted, jprat.output){
 
   #####################
   ## theta estimates ##
@@ -9749,14 +9749,19 @@ sort.results.when.jprat.ouput.array <- function(jprat.output){
                                           dim.fun=c("time","xx"),getF,
                                           p=length(dimnames(Ft.mean)[["xx"]]))
 
-
-    Ft.predicted.mean <- apply.index(Ft.predicted.array,"iters",mean)
+    if(!is.null(time_choice.predicted)){
+      Ft.predicted.array <- out$Ft.predicted
+      Ft.predicted.mean <- apply.index(Ft.predicted.array,"iters",mean)
+    } else{
+      Ft.predicted.array <- NULL
+      Ft.predicted.mean <- NULL
+    }
 
 
   #####################
   ## combi estimates ##
   ####################
-
+    if(num_study>1){
     beta.diff.mean <- apply.index(beta.diff.array,"iters",mean)
     alpha.diff.mean <-  apply.index(alpha.diff.array,"iters",mean)
     Ft.diff.mean  <-  apply.index(Ft.diff.array,"iters",mean)
@@ -9767,6 +9772,11 @@ sort.results.when.jprat.ouput.array <- function(jprat.output){
                              out.mean=alpha.diff.mean)
     Ft.diff.array <- list(out=Ft.diff.array,
                           out.mean=Ft.diff.mean)
+    }else{
+      beta.diff.array <- NULL
+      alpha.diff.array <- NULL
+      Ft.diff.array <- NULL
+    }
 
 
   ######################

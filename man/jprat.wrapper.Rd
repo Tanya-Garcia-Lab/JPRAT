@@ -71,7 +71,7 @@ This may get rid of the warning messages.}
 
 \item{estimated.parameters.common.for.all.studies}{a logical value whether the model parameters are the same across studies. Default is FALSE.}
 
-\item{what.analyzed.separately}{a character value to determine whether analysis will be performed separately or jointly: the options are "studyevents" (studies and event), "studies", "events", or "none". Default is "studyevents".}
+\item{what.analyzed.separately}{a character value to determine whether analysis will be performed separately or jointly: the options are "studyevent" (studies and event), "study", "event", or "none". Default is "studyevent".}
 
 \item{estimation.when.censoring.depends.on.z}{a logical value whether the estimation process assumes that a censoring distribution depends on nonfunctional covariates Z. If covariates Z does not follow a binomial distribution, then default is FALSE.}
 

@@ -681,7 +681,8 @@ view.all.results <- function(
 
 
 
-      my.out<-sort.results.when.jprat.ouput.array(jprat.output)
+      my.out<-sort.results.when.jprat.ouput.array(time_choice.predicted,
+                                                  jprat.output)
 
       beta.array <- my.out$beta.array
       alpha.array <- my.out$alpha.array

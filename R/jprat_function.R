@@ -22,7 +22,7 @@
 #' @param use.functional.study.coefficients a logical value whether the study-specific effect \eqn{\omega_s(t)} will be used in the time-varying proportional odds model. Default is TRUE.
 #' @param check.study.equality a logical value whether estimates are similar across studies: Default is FALSE. Set TRUE when what.analyzed.separately is "none".
 #' @param estimated.parameters.common.for.all.studies a logical value whether the model parameters are the same across studies. Default is FALSE.
-#' @param what.analyzed.separately a character value to determine whether analysis will be performed separately or jointly: the options are "studyevents" (studies and event), "studies", "events", or "none". Default is "studyevents".
+#' @param what.analyzed.separately a character value to determine whether analysis will be performed separately or jointly: the options are "studyevent" (studies and event), "study", "event", or "none". Default is "studyevent".
 #' @param estimation.when.censoring.depends.on.z a logical value whether the estimation process assumes that a censoring distribution depends on nonfunctional covariates Z. If covariates Z does not follow a binomial distribution, then default is FALSE.
 #' @param use.bootstrap.variance  a logical value whether to compute bootstrap variances. Default is TRUE.
 #' @param estimate.variances a logical value how variances will be estimated. If this is TRUE, there are two options: "est" (estimated), and "quant" (quantiles from bootstrap);
