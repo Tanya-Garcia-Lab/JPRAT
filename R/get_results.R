@@ -70,6 +70,8 @@
 #' @return This function returns ggplots.
 #'
 #' @import abind
+#' @import grid
+#' @import gridExtra
 #' @export
 #'
 #' @example man/examples/example.R
@@ -620,7 +622,7 @@ view.all.results <- function(
 
   if (write.jprat.output==TRUE){
 
-  #data.theta<-jprat.output$data.theta
+  data.theta<-jprat.output$data.theta
   data.combi<-jprat.output$data.combi
 
   my.out <-sort.results(
@@ -631,8 +633,8 @@ view.all.results <- function(
     num_xx,la,z.choice,
     time_choice.predicted,time_choice.predicted.toadd,
     #data.truth,
-    data.theta,
-    data.combi,
+    data.theta=data.theta,
+    data.combi=data.combi,
     alpha.cut,
     beta.cut,
     theta.names,
@@ -682,7 +684,7 @@ view.all.results <- function(
 
 
       my.out<-sort.results.when.jprat.ouput.array(time_choice.predicted,
-                                                  jprat.output)
+                                                  out=jprat.output)
 
       beta.array <- my.out$beta.array
       alpha.array <- my.out$alpha.array
@@ -1388,6 +1390,7 @@ view.all.results <- function(
                              ylab.use=study.ylab,
                              xlab.use=study.xlab,
                              add.second.legend=add.second.legend)
+
         }
 
 

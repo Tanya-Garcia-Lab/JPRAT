@@ -7835,9 +7835,9 @@ gamm.mle.new <- function(num_study,np,lb,num_xx,xks,
 
             fm$gam <- fm
           } else if(random.effect=="event"){  ## random effect for event only
-            fm <- gamm(fmla,data=data.gamm,paraPen=pen.list.full,
+            fm <- gamm(fmla,data=data.gamm,#paraPen=pen.list.full,
                        family=quasibinomial(link=link.type), ## quasi
-                       random=list(family=~1),verbosePQL=FALSE)#,niterPQL=100)
+                       random=list(family=~1),verbosePQL=FALSE,niterPQL=200)
           } else if(random.effect=="study"){  ## random effect for study only
             if(is.null(par_fu)){
               fm <- gamm(fmla,data=data.gamm,paraPen=pen.list.full,
@@ -7851,7 +7851,7 @@ gamm.mle.new <- function(num_study,np,lb,num_xx,xks,
           } else if(random.effect=="studyevent"){  ## random effect for event and study?
             if(is.null(par_fu)){
               ## setup is for random intercept r_si
-              fm <- gamm(fmla,data=data.gamm,paraPen=pen.list.full,
+              fm <- gamm(fmla,data=data.gamm,#paraPen=pen.list.full,
                          family=quasibinomial(link=link.type), ## quasi
                          random=list(int=random.formula),verbosePQL=FALSE)#,niterPQL=100)
             } else {
@@ -9552,8 +9552,8 @@ sort.results <- function(
   num_xx,la,z.choice,
   time_choice.predicted,time_choice.predicted.toadd,
   #data.truth,
-  data.theta,
-  data.combi,
+  data.theta=data.theta,
+  data.combi=data.combi,
   alpha.cut,
   beta.cut,
   theta.names,
@@ -9717,22 +9717,193 @@ sort.results <- function(
        Ft.diff.array=Ft.diff.array)
 }
 
+sort.results <- function(
+  combi.names,
+  num_study,
+  simus,
+  time_val,param.label,
+  num_xx,la,z.choice,
+  time_choice.predicted,time_choice.predicted.toadd,
+  #data.truth,
+  data.theta,
+  data.combi,
+  alpha.cut,
+  beta.cut,
+  theta.names,
+  theta.names.combi,
+  study.names,
+  s.names,
+  z_lab_names,
+  x_lab_names
 
-sort.results.when.jprat.ouput.array <- function(time_choice.predicted, jprat.output){
+){
+
+  ## get necessary information
+
+  ## get null theta arrays
+  null.theta <- all.null.theta(theta.names,
+                               study.names,
+                               event.names=s.names,
+                               z_lab_names,
+                               x_lab_names,
+                               label.dim.simus=simus,
+                               label.name.simus=paste("iter",1:simus,sep=""),
+                               time_val,param.label,
+                               time_choice.predicted,time_choice.predicted.toadd,la
+  )
+
+  ## get combi null theta arrays
+  combi.null.theta <- all.null.theta(theta.names.combi,
+                                     study.names=combi.names,
+                                     event.names=s.names,
+                                     z_lab_names,
+                                     x_lab_names,
+                                     label.dim.simus=simus,
+                                     label.name.simus=paste("iter",1:simus,sep=""),
+                                     time_val,param.label,
+                                     time_choice.predicted,time_choice.predicted.toadd,la)
+
+
+  dim.order.all <- get.all.dim.order(theta.names)
+
+  ###########
+  ## truth ##
+  ###########
+  # out <- unflatten.organize.data(data.use=data.truth,
+  #                                time_val,
+  #                                time_choice.predicted,
+  #                                null.theta.use=null.theta$null.theta,
+  #                                dim.order.use=dim.order.all$dim.order)
+  # betat <- out$beta
+  # alphat <- out$alpha
+  # Ft <- out$Ft
+  # Ft.predicted <- out$Ft.predicted
+  #
+  #####################
+  ## theta estimates ##
+  #####################
+  out <- unflatten.organize.data(data.use=data.theta,
+                                 time_val,
+                                 time_choice.predicted,
+                                 null.theta.use=null.theta$null.theta.simus.est.ciboot,
+                                 dim.order.use=dim.order.all$dim.order.simus.ci)
+  beta.array <- out$beta
+  beta.mean <- apply.index(beta.array,"iters",mean)
+
+  alpha.array <- out$alpha
+  alpha.mean <-  apply.index(alpha.array,"iters",mean)
+
+
+  Ft.array <- out$Ft
+  Ft.mean  <-  apply.index(Ft.array,"iters",mean)
+  ## do monotonity
+  if(1==1){ ##for testing
+    Ft.mono.array <- apply.function.index(Ft.array,
+                                          dim.fun=c("time","xx"),getF,
+                                          p=length(dimnames(Ft.array)[["xx"]]))
+    Ft.mono.mean <-  apply.function.index(Ft.mean,
+                                          dim.fun=c("time","xx"),getF,
+                                          p=length(dimnames(Ft.mean)[["xx"]]))
+  } else{
+    Ft.mono.array <- Ft.array
+    Ft.mono.mean <- Ft.mean
+  }  ## end for testing
+
+  if(!is.null(time_choice.predicted)){
+    Ft.predicted.array <- out$Ft.predicted
+    Ft.predicted.mean <- apply.index(Ft.predicted.array,"iters",mean)
+  } else{
+    Ft.predicted.array <- NULL
+    Ft.predicted.mean <- NULL
+  }
+
+  #####################
+  ## combi estimates ##
+  #####################
+  if(num_study>1){
+    out <- unflatten.organize.data(data.use=data.combi,
+                                   time_val,
+                                   time_choice.predicted=NULL,
+                                   null.theta.use=combi.null.theta$null.theta.simus.est.ci,
+                                   dim.order.use=dim.order.all$dim.order.simus.ci)
+    beta.diff.array <- out$beta
+    beta.diff.mean <- apply.index(beta.diff.array,"iters",mean)
+
+    alpha.diff.array <- out$alpha
+    alpha.diff.mean <-  apply.index(alpha.diff.array,"iters",mean)
+
+    Ft.diff.array <- out$Ft
+    Ft.diff.mean  <-  apply.index(Ft.diff.array,"iters",mean)
+
+    beta.diff.array <- list(out=beta.diff.array,
+                            out.mean=beta.diff.mean)
+    alpha.diff.array <- list(out=alpha.diff.array,
+                             out.mean=alpha.diff.mean)
+    Ft.diff.array <- list(out=Ft.diff.array,
+                          out.mean=Ft.diff.mean)
+
+  } else{
+    beta.diff.array <- NULL
+    alpha.diff.array <- NULL
+    Ft.diff.array <- NULL
+  }
+
+  ######################
+  ## alpha(x,t) vs. x ##
+  ######################
+  alpha.array.new <- aperm(alpha.array,c("iters","study","event","time","xx","theta","val"))
+  alpha.new.mean <- aperm(alpha.mean,c("study","event","time","xx","theta","val"))
+  alphat.new <- aperm(alphat,c("study","event","time","xx","theta"))
+
+  ##########################
+  ## put objects together ##
+  ##########################
+  beta.array <- list(out=beta.array,
+                     out.mean=beta.mean)
+  alpha.array <- list(out=alpha.array,
+                      out.mean=alpha.mean)
+  Ft.array <- list(out=Ft.array,
+                   out.mean=Ft.mean,
+                   out.mono=Ft.mono.array,
+                   out.mono.mean=Ft.mono.mean)
+  Ft.predicted.array <- list(out=Ft.predicted.array,
+                             out.mean=Ft.predicted.mean)
+  alpha.array.new <- list(out=alpha.array.new,
+                          out.mean=alpha.new.mean)
+
+
+  list(#betat=betat,
+       #alphat=alphat,
+       #alphat.new=alphat.new,
+       #Ft=Ft,
+       #Ft.predicted=Ft.predicted,
+       #
+       beta.array=beta.array,
+       alpha.array=alpha.array,
+       alpha.array.new=alpha.array.new,
+       Ft.array=Ft.array,
+       Ft.predicted.array=Ft.predicted.array,
+       #
+       beta.diff.array=beta.diff.array,
+       alpha.diff.array=alpha.diff.array,
+       Ft.diff.array=Ft.diff.array)
+}
+
+sort.results.when.jprat.ouput.array <- function(time_choice.predicted, out){
 
   #####################
   ## theta estimates ##
   #####################
 
-  beta.array<-jprat.output$beta.array
-  alpha.array<-jprat.output$alpha.array
+  beta.array<-out$beta.array
+  alpha.array<-out$alpha.array
   #alpha.array.new <- aperm(alpha.array,c("iters","study","event","time","xx","theta","val"))
   #alpha.array.new=perm.alphaest.store,
-  Ft.array<-jprat.output$Ft.array
-  Ft.predicted.array<-jprat.output$Ft.predicted.array
-  beta.diff.array<-jprat.output$beta.diff.array
-  alpha.diff.array<-jprat.output$alpha.diff.array
-  Ft.diff.array<-jprat.output$Ft.diff.array
+  Ft.array<-out$Ft.array
+  Ft.predicted.array<-out$Ft.predicted.array
+  beta.diff.array<-out$beta.diff.array
+  alpha.diff.array<-out$alpha.diff.array
+  Ft.diff.array<-out$Ft.diff.array
 
   ##########################
   ## theta mean estimates ##
