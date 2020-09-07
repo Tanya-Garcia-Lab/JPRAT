@@ -1,5 +1,5 @@
 ## load your data in the list format: should match order of study.names
-input.data.list=list(cohort=data_cohort, predict=data_predict, pharos=data_pharos);
+input.data.list=list(cohort=ex_data_cohort, predict=ex_data_predict, pharos=ex_data_pharos);
 
 #Input data for JPRAT estimation procedure
 study.names=c("cohort", "predict", "pharos");
@@ -12,7 +12,7 @@ delta.names=c("delta.hdage_nobase", "delta.mcione", "delta.dep2");
 
 ## four options whether study and event are analyzed separately:
 #what.analyzed.separately="studyevent",  "event", "study" or "none"
-what.analyzed.separately= "study"
+what.analyzed.separately= "studyevent"
 
 if(what.analyzed.separately!= "study"){
 time.points.for.prediction=seq(46, 66, by=5);
