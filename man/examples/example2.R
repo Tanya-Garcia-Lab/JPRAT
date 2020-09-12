@@ -1,31 +1,36 @@
 ## load your data in the list format: should match order of study.names
-input.data.list=list(cohort=data_cohort, predict=data_predict, pharos=data_pharos);
+input.data.list=list(study1=simu_dat_study1, study2=simu_dat_study2);
 
 #Input data for JPRAT estimation procedure
-study.names=c("cohort", "predict", "pharos");
-nonfunctional.covariate.names=c("base_age");
-functional.covariate.names="CAG";
-othercovariate.names=c("firstyear", "lastyear")
-event.outcome.names=c("hdage_nobase", "mcione", "dep2");
-delta.names=c("delta.hdage_nobase", "delta.mcione", "delta.dep2");
+study.names=c("study1", "study2");
+nonfunctional.covariate.names=c(
+
+) #, "z2");
+functional.covariate.names="x_cag";
+othercovariate.names=NULL
+event.outcome.names=c("event1", "event2");
+delta.names=c("delta.event1", "delta.event2"); ## should be delta.eventname
 
 
 ## four options whether study and event are analyzed separately:
 #what.analyzed.separately="studyevent",  "event", "study" or "none"
-what.analyzed.separately= "studyevent"
+what.analyzed.separately= "none"
 
-if(what.analyzed.separately!= "study"){
-time.points.for.prediction=seq(46, 66, by=5);
-time.points.for.conditional.prediction=c(46,51, 56);
-time.points.for.conditional.prediction.toadd=c(5);
-nonfunctional.covariate.value=c(40);
-functional.covariate.values.of.interest=c(46, 48, 50) ;
+if(what.analyzed.separately=="none"){
+
+  # time_choice.predicted <- c(40,45)
+  # time_choice.predicted.toadd  <- c(5,10)
+  #
+  # ## time points to show individual results at and label for alpha(x,t)
+  # time_choice <- c(45,55)
+
+  time.points.for.prediction=  c(seq(40,49,by=1),seq(50,60,by=1))
+  time.points.for.conditional.prediction=c(40, 50);
+  time.points.for.conditional.prediction.toadd=c(5,10);
+  nonfunctional.covariate.value=c(0.5) #as.matrix(c(0.50,0.75)) ## zeval: c(0.5)
+  functional.covariate.values.of.interest=0.5 # c(0.5,0.75) ;   ## xx_choice
 }else{
-  time.points.for.prediction=seq(44, 52, by=4);
-  time.points.for.conditional.prediction=c(44, 48, 52);
-  time.points.for.conditional.prediction.toadd=c(5);
-  nonfunctional.covariate.value=c(48);
-  functional.covariate.values.of.interest=c(44, 48) ;
+
 }
 
 # parameter setup to analyze data using JPRAT estimation procedure
@@ -44,9 +49,9 @@ if(what.analyzed.separately!="none"){
 
 
 if(what.analyzed.separately!="none"){
- estimated.parameters.common.for.all.studies=FALSE
+  estimated.parameters.common.for.all.studies=FALSE
 }else{
- estimated.parameters.common.for.all.studies=TRUE
+  estimated.parameters.common.for.all.studies=TRUE
 }
 
 use.bootstrap.variance=TRUE;
@@ -56,40 +61,47 @@ write.output=TRUE;
 # JPRAT estimation
 jprat.estimat.results<-jprat.wrapper(study.names=study.names,
                                      input.data.list=input.data.list,
- nonfunctional.covariate.names=nonfunctional.covariate.names,
- functional.covariate.names=functional.covariate.names,
- othercovariate.names=othercovariate.names,
- event.outcome.names=event.outcome.names,
- delta.names=delta.names,
- time.points.for.prediction=time.points.for.prediction,
- time.points.for.conditional.prediction=time.points.for.conditional.prediction,
- time.points.for.conditional.prediction.toadd=time.points.for.conditional.prediction.toadd,
- nonfunctional.covariate.value=nonfunctional.covariate.value,
- functional.covariate.values.of.interest=functional.covariate.values.of.interest,
- number.of.bootstraps=number.of.bootstraps,
- use.functional.beta.intercept=use.functional.beta.intercept,
- use.functional.event.coefficients=use.functional.event.coefficients,
- use.functional.study.coefficients=use.functional.study.coefficients,
- check.study.equality=check.study.equality,
- estimated.parameters.common.for.all.studies=estimated.parameters.common.for.all.studies,
- what.analyzed.separately=what.analyzed.separately,
- estimation.when.censoring.depends.on.z=estimation.when.censoring.depends.on.z,
- use.bootstrap.variance=use.bootstrap.variance, write.output=write.output)
+                                     nonfunctional.covariate.names=nonfunctional.covariate.names,
+                                     functional.covariate.names=functional.covariate.names,
+                                     othercovariate.names=othercovariate.names,
+                                     event.outcome.names=event.outcome.names,
+                                     delta.names=delta.names,
+                                     time.points.for.prediction=time.points.for.prediction,
+                                     time.points.for.conditional.prediction=time.points.for.conditional.prediction,
+                                     time.points.for.conditional.prediction.toadd=time.points.for.conditional.prediction.toadd,
+                                     nonfunctional.covariate.value=nonfunctional.covariate.value,
+                                     functional.covariate.values.of.interest=functional.covariate.values.of.interest,
+                                     number.of.bootstraps=number.of.bootstraps,
+                                     use.functional.beta.intercept=use.functional.beta.intercept,
+                                     use.functional.event.coefficients=use.functional.event.coefficients,
+                                     use.functional.study.coefficients=use.functional.study.coefficients,
+                                     check.study.equality=check.study.equality,
+                                     estimated.parameters.common.for.all.studies=estimated.parameters.common.for.all.studies,
+                                     what.analyzed.separately=what.analyzed.separately,
+                                     estimation.when.censoring.depends.on.z=estimation.when.censoring.depends.on.z,
+                                     use.bootstrap.variance=use.bootstrap.variance, write.output=write.output)
+
+
+
+
+## load your data in the list format: should match order of study.names
 
 ##get number at risk table
-study.names=c("cohort", "predict", "pharos");
-input.data.list=list(cohort=data_cohort, predict=data_predict, pharos=data_pharos);
-event.outcome.names=c("hdage_nobase", "mcione", "tfctwo");
-nonfunctional.covariate.names=c("base_age");
-functional.covariate.names="CAG";
+study.names=c("study1", "study2");
+input.data.list=list(study1=simu_dat_study1, study2=simu_dat_study2);
+event.outcome.names=c("event1", "event2");
+nonfunctional.covariate.names=c("z1");
+functional.covariate.names="x_cag";
+
+
 
 #estimated.parameters.common.for.all.studies=FALSE;
 #estimated.parameters.common.for.all.studies=TRUE;
 
 if(what.analyzed.separately!= "study"){
-  time.points.for.prediction=seq(46, 66, by=5);
-  functional.covariate.values.of.interest=c(46, 48, 50) ;
-  nonfunctional.covariate.value=c(40);
+  time.points.for.prediction=c(seq(40,49,by=1),seq(50,60,by=1));
+  functional.covariate.values.of.interest=c(0.5) ;
+  nonfunctional.covariate.value=c(0.5);
 }else{
   time.points.for.prediction=seq(44, 52, by=4);
   nonfunctional.covariate.value=c(48);
@@ -108,16 +120,16 @@ if(what.analyzed.separately!="none"){
 
 ##to creat out_nrisk.dat file
 number.at.risk <- compute.number.at.risk.for.HD(study.names,
- input.data.list, #data.file.names,
- event.outcome.names,
- nonfunctional.covariate.names,
- functional.covariate.names,
- nonfunctional.covariate.value,
- functional.covariate.values.of.interest,
- time.points.for.prediction,
- estimated.parameters.common.for.all.studies,
- write.output=TRUE
- )
+                                                input.data.list, #data.file.names,
+                                                event.outcome.names,
+                                                nonfunctional.covariate.names,
+                                                functional.covariate.names,
+                                                nonfunctional.covariate.value,
+                                                functional.covariate.values.of.interest,
+                                                time.points.for.prediction,
+                                                estimated.parameters.common.for.all.studies,
+                                                write.output=TRUE
+)
 
 
 
@@ -168,12 +180,12 @@ xlabel.for.plots.comparing.studies="Age (years)"
 file.name.for.analysis="test" ## figure names
 show.results.description=TRUE;
 is.nrisk.data.frame=TRUE; ## if users choose write.output=TRUE, then nrisk is data frame,
-                           ##so is.nrisk.data.frame=TRUE.
-                     ## if users choose write.output=FALSE, then nrisk is array form,
-                      ## so is.nrisk.data.frame=FALSE.
+##so is.nrisk.data.frame=TRUE.
+## if users choose write.output=FALSE, then nrisk is array form,
+## so is.nrisk.data.frame=FALSE.
 write.jprat.output=TRUE; ## users need to choose write.jprat.output=TRUE
-                        ## when they choose write.output=TRUE in jprat function;
-                        ## FALSE otherwise.
+## when they choose write.output=TRUE in jprat function;
+## FALSE otherwise.
 ####################################
 ## functions to get default values #
 ####################################

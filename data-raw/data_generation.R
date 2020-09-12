@@ -42,3 +42,18 @@ ex_data_pharos<-ex_data_pharos[,-1]
 
 #save(data_pharos, file="data/data_pharos.rdata")
 usethis::use_data(ex_data_pharos, overwrite = TRUE)
+
+#########################
+## simulated datasets  ##
+#########################
+## study1
+simu_data_study1<-read.csv("data-raw/simulated_datasets1.csv")
+simu_dat_study1<-simu_data_study1[,-1]
+
+usethis::use_data(simu_dat_study1, overwrite = TRUE)
+
+## study2
+simu_data_study2<-read.csv("data-raw/simulated_datasets2.csv")
+simu_dat_study2<-simu_data_study2[,-1]
+
+usethis::use_data(simu_dat_study2, overwrite = TRUE)
