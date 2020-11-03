@@ -1,7 +1,6 @@
 #' Generated data set for the Huntington's disease (HD) study: Cohort(n=430)
 #'
 #'
-#'
 #' @format A dataframe including 430 subjects' longitudinal data with the following 12 variables:
 #' \describe{
 #'   \item{CAG}{CAG repeats length.}
