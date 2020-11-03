@@ -2412,6 +2412,7 @@ data.reformatted.for.analysis.results<-function(study.names, event.outcome.names
 
   event.comparison.table <- event.comparison
 
+
   make.find.names <- function(event.outcome.names){
     function(x){
       return(which(event.outcome.names %in% x))
@@ -5899,23 +5900,24 @@ simu.data.fixed.effects <- function(x,z,
 
 ## generating new x,z each time
 #' @importFrom abind adrop
+#'
 simu.data <- function(randomeffects.covariates.dependent,
-                      z_tmp.list,
-                      x_tmp.list,
-                      delta_tmp.list,
-                      s_tmp.list,
-                      a0,axmod,num_time,censorrate,
-                      frform,fzrform,fxform,
-                      type_fr,type_fzr,type_fx,
-                      par1_fr,par2_fr,
-                      par_fu,
-                      par1_fr2,par2_fr2,mix_n,
-                      par1_fx,par2_fx,
-                      par1_fzr,par2_fzr,
-                      real_data,time_val,
-                      beta0int,beta,gamma.param,omega.param,
-                      n,nmax,m,maxm,la,lb,num_study,np,gtmod,use.random.effects,
-                      gen.cens.depend.z,lb.max){
+z_tmp.list,
+x_tmp.list,
+delta_tmp.list,
+s_tmp.list,
+a0,axmod,num_time,censorrate,
+frform,fzrform,fxform,
+type_fr,type_fzr,type_fx,
+par1_fr,par2_fr,
+par_fu,
+par1_fr2,par2_fr2,mix_n,
+par1_fx,par2_fx,
+par1_fzr,par2_fzr,
+real_data,time_val,
+beta0int,beta,gamma.param,omega.param,
+n,nmax,m,maxm,la,lb,num_study,np,gtmod,use.random.effects,
+gen.cens.depend.z){
 
   tol <- 1e-6
 
@@ -5932,7 +5934,6 @@ simu.data <- function(randomeffects.covariates.dependent,
   ymiss_ind<- y
   ytest <- y   ## for testing pseudo-values
 
-  lb.max <- max(lb)
   z <- array(0,dim=c(num_study,nmax,np,lb.max),
              dimnames=list(
                paste("ss",1:num_study,sep=""),
@@ -6039,7 +6040,7 @@ simu.data <- function(randomeffects.covariates.dependent,
       ## Set distribution f_Z
       if(fzrform=="norm"){
         ## Z|R ~Normal
-        fzr <- make.normal(mean=par1_fzr[ss],sd=par2_fzr[ss],type=type_fzr)   # to forn birnak dustribution
+        fzr <- make.normal(mean=par1_fzr[ss],sd=par2_fzr[ss],type=type_fzr)
       } else if(fzrform=="unif"){
         fzr <- make.uniform(min=par1_fzr[ss],max=par2_fzr[ss],type=type_fzr)
       } else if(fzrform=="binom"){
@@ -6092,7 +6093,7 @@ simu.data <- function(randomeffects.covariates.dependent,
         ## form z_etas and x_etas
         etas_z[ss,i,1:m[ss,i]] <- get.z.etas(m[ss,i],lb[[ss]],beta0int,beta[[ss]],
                                              gamma.param,omega.param[ss],
-                                             adrop(z[ss,i,,,drop=FALSE],drop=c(1,2)))
+                                             z[ss,i,,])
         etas_x[ss,i,1:m[ss,i]] <- get.x.etas(m[ss,i],a0[[ss]],axmod[[ss]],
                                              x[ss,i])
 
@@ -6100,11 +6101,7 @@ simu.data <- function(randomeffects.covariates.dependent,
         ## generate onset age ##
         ########################
         Ft[ss,i,] <- get.unif.Ft(m[ss,i])
-        onset_age[ss,i,] <- invFt(m[ss,i],
-                                  adrop(etas_z[ss,i,,drop=FALSE],drop=c(1,2)),
-                                  adrop(etas_x[ss,i,,drop=FALSE],drop=c(1,2)),
-                                  r[ss,i]+us[ss],
-                                  adrop(Ft[ss,i,,drop=FALSE],drop=c(1,2)),gtmod)
+        onset_age[ss,i,] <- invFt(m[ss,i],etas_z[ss,i,],etas_x[ss,i,],r[ss,i]+us[ss],Ft[ss,i,],gtmod)
 
         for(j in 1:m[ss,i]){
           if(gen.cens.depend.z==FALSE){
@@ -6188,6 +6185,298 @@ simu.data <- function(randomeffects.covariates.dependent,
        norisk_ind_start=norisk_ind,count=count,
        ytest=ytest)
 }
+
+
+
+# simu.data <- function(randomeffects.covariates.dependent,
+#                       z_tmp.list,
+#                       x_tmp.list,
+#                       delta_tmp.list,
+#                       s_tmp.list,
+#                       a0,axmod,num_time,censorrate,
+#                       frform,fzrform,fxform,
+#                       type_fr,type_fzr,type_fx,
+#                       par1_fr,par2_fr,
+#                       par_fu,
+#                       par1_fr2,par2_fr2,mix_n,
+#                       par1_fx,par2_fx,
+#                       par1_fzr,par2_fzr,
+#                       real_data,time_val,
+#                       beta0int,beta,gamma.param,omega.param,
+#                       n,nmax,m,maxm,la,lb,num_study,np,gtmod,use.random.effects,
+#                       gen.cens.depend.z,lb.max){
+#
+#   tol <- 1e-6
+#
+#   ##########################
+#   ## set values for output ##
+#   ############################
+#   y <- array(0,dim=c(num_study,num_time,nmax,maxm),
+#              dimnames=list(
+#                paste("ss",1:num_study,sep=""),
+#                paste("t",time_val,sep=""),
+#                paste("n",1:nmax,sep=""),
+#                paste("m",1:maxm,sep="")))
+#
+#   ymiss_ind<- y
+#   ytest <- y   ## for testing pseudo-values
+#
+#   lb.max <- max(lb)
+#   z <- array(0,dim=c(num_study,nmax,np,lb.max),
+#              dimnames=list(
+#                paste("ss",1:num_study,sep=""),
+#                paste("n",1:nmax,sep=""),
+#                paste("np",1:np,sep=""),
+#                paste("lb",1:lb.max,sep="")))
+#
+#   x.tmp <- array(0,dim=c(num_study,nmax),
+#                  dimnames=list(
+#                    paste("ss",1:num_study,sep=""),
+#                    paste("n",1:nmax,sep="")
+#                  ))
+#
+#   s <- array(0,dim=c(num_study,nmax,maxm),
+#              dimnames=list(
+#                paste("ss",1:num_study,sep=""),
+#                paste("n",1:nmax,sep=""),
+#                paste("m",1:maxm,sep="")))
+#
+#   delta <- s
+#   onset_age_orig <- s
+#   norisk_ind <- s
+#
+#   count <- array(0,dim=c(num_study,num_time,3),
+#                  dimnames=list(
+#                    paste("ss",1:num_study,sep=""),
+#                    paste("t",time_val,sep=""),
+#                    c("one","zero","other")))
+#
+#   q <- array(0,dim=c(num_study,np,nmax,maxm),
+#              dimnames=list(
+#                paste("ss",1:num_study,sep=""),
+#                paste("p",1:np,sep=""),
+#                paste("n",1:nmax,sep=""),
+#                paste("m",1:maxm,sep="")))
+#
+#   #######################
+#   ## additional values ##
+#   #######################
+#   x <- x.tmp
+#   r <- x.tmp
+#   bb <- x.tmp
+#
+#   etas_z <- s
+#   etas_x <- s
+#   Ft <- s
+#   onset_age <- s
+#   cens <- s
+#
+#   ##############################################
+#   ## mixture probabilities for km jack method ##
+#   ##############################################
+#   for(ss in 1:num_study){
+#     for(i in 1:n[ss]){
+#       for(j in 1:m[ss,i]){
+#         q[ss,j,i,j]  <- 1
+#       }
+#     }
+#   }
+#
+#   if(real_data==FALSE){
+#     if(!is.null(par_fu)){
+#       ## u_s random effect (random effect for study)
+#       fs <- make.normal(mean=par_fu["mean"],sd=par_fu["sd"],type=type_fr)
+#
+#       ## generate random effect
+#       us <- fs(num_study,par_fu["mean"],par_fu["sd"])
+#
+#       ## center random effect
+#       us <- us - mean(us)
+#     } else {
+#       us <- rep(0,num_study)
+#     }
+#
+#     if(use.random.effects==FALSE){ ## no random effects
+#       us <- rep(0,num_study)
+#     }
+#
+#     for(ss in 1:num_study){
+#       ##########################################
+#       ## set up functions for generating data ##
+#       ##########################################
+#       ## distribution for f_R
+#
+#       if(frform=="norm"){
+#         ## R ~ Normal(mean.fr,sd.fr^2)
+#         fr <- make.normal(mean=par1_fr[ss],sd=par2_fr[ss],type=type_fr)
+#       } else if(frform=="gamm"){
+#         ## R ~ Gamma
+#         fr <- make.gamma(shape=par1_fr[ss],scale=par2_fr[ss],type=type_fr)
+#       } else if(frform=="unif"){
+#         ## R ~ uniform
+#         fr <- make.uniform(min=par1_fr[ss],max=par2_fr[ss],type=type_fr)
+#       } else if(frform=="tdis"){
+#         ## R ~ t
+#         fr <- make.t(df=par1_fr[ss],ncp=par2_fr[ss],type=type_fr)
+#       } else if(frform=="mixn"){
+#         ## R ~ mixture of Normals
+#         fr <- make.mixture.normals(mean1=par1_fr[ss],sd1=par1_fr[ss],
+#                                    mean2=par2_fr2[ss],sd2=par2_fr2[ss],mix=mix_n[ss],type=type_fr)
+#       }
+#
+#
+#       ## Set distribution f_Z
+#       if(fzrform=="norm"){
+#         ## Z|R ~Normal
+#         fzr <- make.normal(mean=par1_fzr[ss],sd=par2_fzr[ss],type=type_fzr)   # to forn birnak dustribution
+#       } else if(fzrform=="unif"){
+#         fzr <- make.uniform(min=par1_fzr[ss],max=par2_fzr[ss],type=type_fzr)
+#       } else if(fzrform=="binom"){
+#         fzr <- make.binom(size=par1_fzr[ss],prob=par2_fzr[ss],type=type_fzr)
+#       }
+#
+#       ## Set distribution f_X
+#       if(fxform=="norm"){
+#         ## Z|R ~Normal
+#         fx <- make.normal(mean=par1_fx[ss],sd=par2_fx[ss],type=type_fx)
+#       } else if(fxform=="unif"){
+#         fx <- make.uniform(min=par1_fx[ss],max=par2_fx[ss],type=type_fx)
+#       }
+#
+#       ####################
+#       ## simulated data ##
+#       ####################
+#       if(randomeffects.covariates.dependent==TRUE){
+#         ## add dependence
+#         bb[ss,1:n[ss]] <- rnorm(n[ss],sd=0.05)
+#       } else {
+#         bb[ss,1:n[ss]] <- rep(0,n[ss])
+#       }
+#
+#       ############################
+#       ## generate random effect ##
+#       ############################
+#       if(use.random.effects==TRUE){ ## we generate random effects
+#         r[ss,1:n[ss]] <- fr(n[ss],par1_fr[ss],par2_fr[ss]) + bb[ss,1:n[ss]]
+#       }
+#
+#       ## center random effect, within each study
+#       #r[ss,1:n[ss]] <- r[ss,1:n[ss]] - mean(r[ss,1:n[ss]])
+#     }
+#
+#     ## center random effect
+#     r <- r - mean(r)
+#
+#     for(ss in 1:num_study){
+#       for(i in 1:n[ss]){
+#         ##print(i)
+#         ## generate deviate for z-covariates
+#         for(k in 1:np){
+#           z[ss,i,k,1:lb[[ss]][[k]]] <- fzr(lb[[ss]][[k]],par1_fzr[ss],par2_fzr[ss]) + bb[ss,i]
+#         }
+#
+#         ## generate deviate for x-covariates
+#         x[ss,i] <- fx(1,par1_fx[ss],par2_fx[ss]) + bb[ss,i]
+#
+#         ## form z_etas and x_etas
+#         etas_z[ss,i,1:m[ss,i]] <- get.z.etas(m[ss,i],lb[[ss]],beta0int,beta[[ss]],
+#                                              gamma.param,omega.param[ss],
+#                                              adrop(z[ss,i,,,drop=FALSE],drop=c(1,2)))
+#         etas_x[ss,i,1:m[ss,i]] <- get.x.etas(m[ss,i],a0[[ss]],axmod[[ss]],
+#                                              x[ss,i])
+#
+#         ########################
+#         ## generate onset age ##
+#         ########################
+#         Ft[ss,i,] <- get.unif.Ft(m[ss,i])
+#         onset_age[ss,i,] <- invFt(m[ss,i],
+#                                   adrop(etas_z[ss,i,,drop=FALSE],drop=c(1,2)),
+#                                   adrop(etas_x[ss,i,,drop=FALSE],drop=c(1,2)),
+#                                   r[ss,i]+us[ss],
+#                                   adrop(Ft[ss,i,,drop=FALSE],drop=c(1,2)),gtmod)
+#
+#         for(j in 1:m[ss,i]){
+#           if(gen.cens.depend.z==FALSE){
+#             cens.z <- NULL
+#           } else {
+#             cens.z <- sum(z[ss,i,j,])  ## works for all, but targeting lb=1
+#           }
+#           cens[ss,i,j] <- genc(onset_age[ss,i,j],censorrate=censorrate[ss],z=cens.z)
+#
+#           if(onset_age[ss,i,j] <= cens[ss,i,j]){
+#             s[ss,i,j] <- onset_age[ss,i,j]
+#             delta[ss,i,j] <- 1
+#           } else {
+#             s[ss,i,j] <- cens[ss,i,j]
+#             delta[ss,i,j] <- 0
+#           }
+#         }
+#       }
+#     }
+#   } else {
+#     ###############
+#     ## real data ##
+#     ###############
+#     for(ss in 1:num_study){
+#       for(k in 1:np){
+#         z[ss,1:n[ss],k,1:lb[[ss]][[k]]] <- z_tmp.list[[ss]][1:n[ss],k,1:1:lb[[ss]][[k]]]
+#       }
+#       x[ss,1:n[ss]] <- x_tmp.list[[ss]]
+#       s[ss,1:n[ss],1:max(m[ss,])] <- s_tmp.list[[ss]]
+#       delta[ss,1:n[ss],1:max(m[ss,])] <- delta_tmp.list[[ss]]
+#     }
+#   }
+#
+#   ##################
+#   ## form Y terms ##
+#   ##################
+#   for(ss in 1:num_study){
+#     for(i in 1:n[ss]){
+#       for(j in 1:m[ss,i]){
+#         for(tt in 1:num_time){
+#           if(delta[ss,i,j] > tol){
+#             ## person not censored
+#             if(s[ss,i,j] <= time_val[tt]){
+#               y[ss,tt,i,j] <- 1
+#               count[ss,tt,1] <- count[ss,tt,1] + 1
+#
+#               #ytest[ss,tt,i,j] <- 999  ## in no censoring case, pseudo-values agree with 0/1 output
+#               #ymiss_ind[ss,tt,i,j] <- 1
+#
+#             } else {
+#               y[ss,tt,i,j] <- 0
+#               count[ss,tt,2] <- count[ss,tt,2] + 1
+#
+#               #ytest[ss,tt,i,j] <- 999
+#               #ymiss_ind[ss,tt,i,j] <- 1
+#
+#
+#             }
+#           } else {
+#
+#             ## person is censored
+#             if(s[ss,i,j] >= time_val[tt]){
+#               # c_ij >= t_0
+#               y[ss,tt,i,j] <- 0
+#               count[ss,tt,2] <- count[ss,tt,2] + 1
+#             } else {
+#               ## value not observed
+#               y[ss,tt,i,j] <- 999
+#               ymiss_ind[ss,tt,i,j] <- 1
+#               count[ss,tt,3] <- count[ss,tt,3] + 1
+#             }
+#           }
+#         }
+#       }
+#     }
+#   }
+#
+#   list(y_start=y,ymiss_ind_start=ymiss_ind,
+#        z_start=z,x_start=x,s_start=s,q_start=q,delta_start=delta,
+#        onset_age_orig_start=onset_age_orig,
+#        norisk_ind_start=norisk_ind,count=count,
+#        ytest=ytest)
+# }
 
 
 
@@ -7837,7 +8126,7 @@ gamm.mle.new <- function(num_study,np,lb,num_xx,xks,
           } else if(random.effect=="event"){  ## random effect for event only
             fm <- gamm(fmla,data=data.gamm,#paraPen=pen.list.full,
                        family=quasibinomial(link=link.type), ## quasi
-                       random=list(family=~1),verbosePQL=FALSE,niterPQL=200)
+                       random=list(family=~1),verbosePQL=FALSE,niterPQL=1000)
           } else if(random.effect=="study"){  ## random effect for study only
             if(is.null(par_fu)){
               fm <- gamm(fmla,data=data.gamm,paraPen=pen.list.full,
@@ -9717,177 +10006,177 @@ sort.results <- function(
        Ft.diff.array=Ft.diff.array)
 }
 
-sort.results <- function(
-  combi.names,
-  num_study,
-  simus,
-  time_val,param.label,
-  num_xx,la,z.choice,
-  time_choice.predicted,time_choice.predicted.toadd,
-  #data.truth,
-  data.theta,
-  data.combi,
-  alpha.cut,
-  beta.cut,
-  theta.names,
-  theta.names.combi,
-  study.names,
-  s.names,
-  z_lab_names,
-  x_lab_names
-
-){
-
-  ## get necessary information
-
-  ## get null theta arrays
-  null.theta <- all.null.theta(theta.names,
-                               study.names,
-                               event.names=s.names,
-                               z_lab_names,
-                               x_lab_names,
-                               label.dim.simus=simus,
-                               label.name.simus=paste("iter",1:simus,sep=""),
-                               time_val,param.label,
-                               time_choice.predicted,time_choice.predicted.toadd,la
-  )
-
-  ## get combi null theta arrays
-  combi.null.theta <- all.null.theta(theta.names.combi,
-                                     study.names=combi.names,
-                                     event.names=s.names,
-                                     z_lab_names,
-                                     x_lab_names,
-                                     label.dim.simus=simus,
-                                     label.name.simus=paste("iter",1:simus,sep=""),
-                                     time_val,param.label,
-                                     time_choice.predicted,time_choice.predicted.toadd,la)
-
-
-  dim.order.all <- get.all.dim.order(theta.names)
-
-  ###########
-  ## truth ##
-  ###########
-  # out <- unflatten.organize.data(data.use=data.truth,
-  #                                time_val,
-  #                                time_choice.predicted,
-  #                                null.theta.use=null.theta$null.theta,
-  #                                dim.order.use=dim.order.all$dim.order)
-  # betat <- out$beta
-  # alphat <- out$alpha
-  # Ft <- out$Ft
-  # Ft.predicted <- out$Ft.predicted
-  #
-  #####################
-  ## theta estimates ##
-  #####################
-  out <- unflatten.organize.data(data.use=data.theta,
-                                 time_val,
-                                 time_choice.predicted,
-                                 null.theta.use=null.theta$null.theta.simus.est.ciboot,
-                                 dim.order.use=dim.order.all$dim.order.simus.ci)
-  beta.array <- out$beta
-  beta.mean <- apply.index(beta.array,"iters",mean)
-
-  alpha.array <- out$alpha
-  alpha.mean <-  apply.index(alpha.array,"iters",mean)
-
-
-  Ft.array <- out$Ft
-  Ft.mean  <-  apply.index(Ft.array,"iters",mean)
-  ## do monotonity
-  if(1==1){ ##for testing
-    Ft.mono.array <- apply.function.index(Ft.array,
-                                          dim.fun=c("time","xx"),getF,
-                                          p=length(dimnames(Ft.array)[["xx"]]))
-    Ft.mono.mean <-  apply.function.index(Ft.mean,
-                                          dim.fun=c("time","xx"),getF,
-                                          p=length(dimnames(Ft.mean)[["xx"]]))
-  } else{
-    Ft.mono.array <- Ft.array
-    Ft.mono.mean <- Ft.mean
-  }  ## end for testing
-
-  if(!is.null(time_choice.predicted)){
-    Ft.predicted.array <- out$Ft.predicted
-    Ft.predicted.mean <- apply.index(Ft.predicted.array,"iters",mean)
-  } else{
-    Ft.predicted.array <- NULL
-    Ft.predicted.mean <- NULL
-  }
-
-  #####################
-  ## combi estimates ##
-  #####################
-  if(num_study>1){
-    out <- unflatten.organize.data(data.use=data.combi,
-                                   time_val,
-                                   time_choice.predicted=NULL,
-                                   null.theta.use=combi.null.theta$null.theta.simus.est.ci,
-                                   dim.order.use=dim.order.all$dim.order.simus.ci)
-    beta.diff.array <- out$beta
-    beta.diff.mean <- apply.index(beta.diff.array,"iters",mean)
-
-    alpha.diff.array <- out$alpha
-    alpha.diff.mean <-  apply.index(alpha.diff.array,"iters",mean)
-
-    Ft.diff.array <- out$Ft
-    Ft.diff.mean  <-  apply.index(Ft.diff.array,"iters",mean)
-
-    beta.diff.array <- list(out=beta.diff.array,
-                            out.mean=beta.diff.mean)
-    alpha.diff.array <- list(out=alpha.diff.array,
-                             out.mean=alpha.diff.mean)
-    Ft.diff.array <- list(out=Ft.diff.array,
-                          out.mean=Ft.diff.mean)
-
-  } else{
-    beta.diff.array <- NULL
-    alpha.diff.array <- NULL
-    Ft.diff.array <- NULL
-  }
-
-  ######################
-  ## alpha(x,t) vs. x ##
-  ######################
-  alpha.array.new <- aperm(alpha.array,c("iters","study","event","time","xx","theta","val"))
-  alpha.new.mean <- aperm(alpha.mean,c("study","event","time","xx","theta","val"))
-  alphat.new <- aperm(alphat,c("study","event","time","xx","theta"))
-
-  ##########################
-  ## put objects together ##
-  ##########################
-  beta.array <- list(out=beta.array,
-                     out.mean=beta.mean)
-  alpha.array <- list(out=alpha.array,
-                      out.mean=alpha.mean)
-  Ft.array <- list(out=Ft.array,
-                   out.mean=Ft.mean,
-                   out.mono=Ft.mono.array,
-                   out.mono.mean=Ft.mono.mean)
-  Ft.predicted.array <- list(out=Ft.predicted.array,
-                             out.mean=Ft.predicted.mean)
-  alpha.array.new <- list(out=alpha.array.new,
-                          out.mean=alpha.new.mean)
-
-
-  list(#betat=betat,
-       #alphat=alphat,
-       #alphat.new=alphat.new,
-       #Ft=Ft,
-       #Ft.predicted=Ft.predicted,
-       #
-       beta.array=beta.array,
-       alpha.array=alpha.array,
-       alpha.array.new=alpha.array.new,
-       Ft.array=Ft.array,
-       Ft.predicted.array=Ft.predicted.array,
-       #
-       beta.diff.array=beta.diff.array,
-       alpha.diff.array=alpha.diff.array,
-       Ft.diff.array=Ft.diff.array)
-}
+# sort.results <- function(
+#   combi.names,
+#   num_study,
+#   simus,
+#   time_val,param.label,
+#   num_xx,la,z.choice,
+#   time_choice.predicted,time_choice.predicted.toadd,
+#   #data.truth,
+#   data.theta,
+#   data.combi,
+#   alpha.cut,
+#   beta.cut,
+#   theta.names,
+#   theta.names.combi,
+#   study.names,
+#   s.names,
+#   z_lab_names,
+#   x_lab_names
+#
+# ){
+#
+#   ## get necessary information
+#
+#   ## get null theta arrays
+#   null.theta <- all_null_theta(theta.names,
+#                                study.names,
+#                                event.names=s.names,
+#                                z_lab_names,
+#                                x_lab_names,
+#                                label.dim.simus=simus,
+#                                label.name.simus=paste("iter",1:simus,sep=""),
+#                                time_val,param.label,
+#                                time_choice.predicted,time_choice.predicted.toadd,la
+#   )
+#
+#   ## get combi null theta arrays
+#   combi.null.theta <- all_null_theta(theta.names.combi,
+#                                      study.names=combi.names,
+#                                      event.names=s.names,
+#                                      z_lab_names,
+#                                      x_lab_names,
+#                                      label.dim.simus=simus,
+#                                      label.name.simus=paste("iter",1:simus,sep=""),
+#                                      time_val,param.label,
+#                                      time_choice.predicted,time_choice.predicted.toadd,la)
+#
+#
+#   dim.order.all <- get.all.dim.order(theta.names)
+#
+#   ###########
+#   ## truth ##
+#   ###########
+#   # out <- unflatten.organize.data(data.use=data.truth,
+#   #                                time_val,
+#   #                                time_choice.predicted,
+#   #                                null.theta.use=null.theta$null.theta,
+#   #                                dim.order.use=dim.order.all$dim.order)
+#   # betat <- out$beta
+#   # alphat <- out$alpha
+#   # Ft <- out$Ft
+#   # Ft.predicted <- out$Ft.predicted
+#   #
+#   #####################
+#   ## theta estimates ##
+#   #####################
+#   out <- unflatten.organize.data(data.use=data.theta,
+#                                  time_val,
+#                                  time_choice.predicted,
+#                                  null.theta.use=null.theta$null.theta.simus.est.ciboot,
+#                                  dim.order.use=dim.order.all$dim.order.simus.ci)
+#   beta.array <- out$beta
+#   beta.mean <- apply.index(beta.array,"iters",mean)
+#
+#   alpha.array <- out$alpha
+#   alpha.mean <-  apply.index(alpha.array,"iters",mean)
+#
+#
+#   Ft.array <- out$Ft
+#   Ft.mean  <-  apply.index(Ft.array,"iters",mean)
+#   ## do monotonity
+#   if(1==1){ ##for testing
+#     Ft.mono.array <- apply.function.index(Ft.array,
+#                                           dim.fun=c("time","xx"),getF,
+#                                           p=length(dimnames(Ft.array)[["xx"]]))
+#     Ft.mono.mean <-  apply.function.index(Ft.mean,
+#                                           dim.fun=c("time","xx"),getF,
+#                                           p=length(dimnames(Ft.mean)[["xx"]]))
+#   } else{
+#     Ft.mono.array <- Ft.array
+#     Ft.mono.mean <- Ft.mean
+#   }  ## end for testing
+#
+#   if(!is.null(time_choice.predicted)){
+#     Ft.predicted.array <- out$Ft.predicted
+#     Ft.predicted.mean <- apply.index(Ft.predicted.array,"iters",mean)
+#   } else{
+#     Ft.predicted.array <- NULL
+#     Ft.predicted.mean <- NULL
+#   }
+#
+#   #####################
+#   ## combi estimates ##
+#   #####################
+#   if(num_study>1){
+#     out <- unflatten.organize.data(data.use=data.combi,
+#                                    time_val,
+#                                    time_choice.predicted=NULL,
+#                                    null.theta.use=combi.null.theta$null.theta.simus.est.ci,
+#                                    dim.order.use=dim.order.all$dim.order.simus.ci)
+#     beta.diff.array <- out$beta
+#     beta.diff.mean <- apply.index(beta.diff.array,"iters",mean)
+#
+#     alpha.diff.array <- out$alpha
+#     alpha.diff.mean <-  apply.index(alpha.diff.array,"iters",mean)
+#
+#     Ft.diff.array <- out$Ft
+#     Ft.diff.mean  <-  apply.index(Ft.diff.array,"iters",mean)
+#
+#     beta.diff.array <- list(out=beta.diff.array,
+#                             out.mean=beta.diff.mean)
+#     alpha.diff.array <- list(out=alpha.diff.array,
+#                              out.mean=alpha.diff.mean)
+#     Ft.diff.array <- list(out=Ft.diff.array,
+#                           out.mean=Ft.diff.mean)
+#
+#   } else{
+#     beta.diff.array <- NULL
+#     alpha.diff.array <- NULL
+#     Ft.diff.array <- NULL
+#   }
+#
+#   ######################
+#   ## alpha(x,t) vs. x ##
+#   ######################
+#   alpha.array.new <- aperm(alpha.array,c("iters","study","event","time","xx","theta","val"))
+#   alpha.new.mean <- aperm(alpha.mean,c("study","event","time","xx","theta","val"))
+#   alphat.new <- aperm(alphat,c("study","event","time","xx","theta"))
+#
+#   ##########################
+#   ## put objects together ##
+#   ##########################
+#   beta.array <- list(out=beta.array,
+#                      out.mean=beta.mean)
+#   alpha.array <- list(out=alpha.array,
+#                       out.mean=alpha.mean)
+#   Ft.array <- list(out=Ft.array,
+#                    out.mean=Ft.mean,
+#                    out.mono=Ft.mono.array,
+#                    out.mono.mean=Ft.mono.mean)
+#   Ft.predicted.array <- list(out=Ft.predicted.array,
+#                              out.mean=Ft.predicted.mean)
+#   alpha.array.new <- list(out=alpha.array.new,
+#                           out.mean=alpha.new.mean)
+#
+#
+#   list(#betat=betat,
+#        #alphat=alphat,
+#        #alphat.new=alphat.new,
+#        #Ft=Ft,
+#        #Ft.predicted=Ft.predicted,
+#        #
+#        beta.array=beta.array,
+#        alpha.array=alpha.array,
+#        alpha.array.new=alpha.array.new,
+#        Ft.array=Ft.array,
+#        Ft.predicted.array=Ft.predicted.array,
+#        #
+#        beta.diff.array=beta.diff.array,
+#        alpha.diff.array=alpha.diff.array,
+#        Ft.diff.array=Ft.diff.array)
+# }
 
 sort.results.when.jprat.ouput.array <- function(time_choice.predicted, out){
 

@@ -208,7 +208,7 @@ if(what.analyzed.separately!="none"){
  estimated.parameters.common.for.all.studies=TRUE
 }
 
-use.bootstrap.variance=FALSE;
+use.bootstrap.variance=TRUE;
 estimation.when.censoring.depends.on.z=FALSE ;
 write.output=TRUE;
 
