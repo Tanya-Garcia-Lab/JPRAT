@@ -8118,7 +8118,7 @@ gamm.mle.new <- function(num_study,np,lb,num_xx,xks,
       aout <- tryCatch(
         {
           if(random.effect=="none"){## no random effect
-            fm <- gam(fmla,data=data.gamm,#paraPen=pen.list.full,   ## data.gamm: study, family, Y, X_1, Z0, Z1_1, np, int
+            fm <- gam(fmla,data=data.gamm,paraPen=pen.list.full,   ## data.gamm: study, family, Y, X_1, Z0, Z1_1, np, int
                       family=quasibinomial(link=link.type),
                       verbose=FALSE)#,niterPQL=100)
 
