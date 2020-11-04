@@ -683,6 +683,7 @@ view.all.results <- function(
      #  Ft.diff.array<-jprat.output$Ft.diff.array
 
 
+      #data.combi<-jprat.output$data.combi
 
       my.out<-sort.results.when.jprat.ouput.array(time_choice.predicted,
                                                   out=jprat.output)
