@@ -82,7 +82,7 @@
 
     use.bootstrap.variance=TRUE;
     estimation.when.censoring.depends.on.z=FALSE ;
-    write.output=TRUE;
+    write.output=FALSE;
 
 #############################################
 ## a function to estimate JPRAT algorithm  ##
