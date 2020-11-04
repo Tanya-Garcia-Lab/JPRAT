@@ -115,7 +115,7 @@ view.all.results <- function(
   time.points.of.interest,
   time.points.of.interest.ci,
   label.for.alpha.values.over.time=NULL,
-  which.nonfunctional.covariate.comparisons,
+  #which.nonfunctional.covariate.comparisons,
   color.names,
   legend.names,
   functional.covariate.comparisons,
@@ -212,7 +212,8 @@ view.all.results <- function(
   ## see function data.reformatted.for.analysis.results in main.R       ##
   ## added on 10/09/19                                                  ##
   ########################################################################
-
+  # default: use one nonfunctional covariate, no comparison
+  which.nonfunctional.covariate.comparisons=c(1,1);
   reformatted.data.for.analysis.results<-data.reformatted.for.analysis.results(study.names,
                                                                                event.outcome.names,
                                                                                color.names,
