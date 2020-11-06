@@ -10178,7 +10178,7 @@ sort.results <- function(
 #        Ft.diff.array=Ft.diff.array)
 # }
 
-sort.results.when.jprat.ouput.array <- function(time_choice.predicted, out){
+sort.results.when.jprat.ouput.array <- function(time_choice.predicted, num_study, out){
 
   #####################
   ## theta estimates ##
@@ -10349,6 +10349,7 @@ convert.matrix.to.data.plot <- function(index.b.cut,index_a,bvalues,estimate,lab
 
   data.plot <- NULL
   for(ll in 1:length(index_a)){
+
     data.plot.tmp <- data.frame(x=bvalues[index.b.cut],y=estimate[index_a[ll],index.b.cut],Group=label.names[ll])
 
     #x         y Group
