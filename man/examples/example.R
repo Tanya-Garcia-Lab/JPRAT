@@ -4,7 +4,7 @@
 
 ## Four options whether study and event are analyzed separately:
 ## what.analyzed.separately="studyevent", "event", "study" or "none"
-    what.analyzed.separately= "studyevent"
+    what.analyzed.separately= "none"
 
 
 ## Load your data in the list format: should match order of study.names
@@ -35,7 +35,7 @@
       nonfunctional.covariate.names=c("base_age");
       functional.covariate.names="CAG";
 
-    }else if(what.analyzed.separately== "none"){
+    }else if(what.analyzed.separately== "none"||what.analyzed.separately=="study"){
 
       study.names=c("study1", "study2");
       othercovariate.names=NULL;
@@ -82,7 +82,7 @@
 
     use.bootstrap.variance=TRUE;
     estimation.when.censoring.depends.on.z=FALSE ;
-    write.output=FALSE;
+    write.output=TRUE;
 
 #############################################
 ## a function to estimate JPRAT algorithm  ##
@@ -116,7 +116,7 @@
     if(what.analyzed.separately=="event"||what.analyzed.separately=="studyevent"){
 
       study.names=c("cohort", "predict", "pharos");
-      event.outcome.names=c("hdage_nobase", "mcione", "tfctwo");
+      event.outcome.names=c("hdage_nobase", "mcione", "dep2");
       nonfunctional.covariate.names=c("base_age");
       functional.covariate.names="CAG";
 
@@ -164,7 +164,7 @@
      functional.covariate.values.of.interest,
      time.points.for.prediction,
      estimated.parameters.common.for.all.studies,
-     write.output=FALSE
+     write.output=TRUE
      )
 
 
@@ -226,14 +226,18 @@
     xlabel.for.plots.comparing.studies="Age (years)"
     file.name.for.analysis="test" ## figure names
     show.results.description=TRUE;
-    is.nrisk.data.frame=FALSE; ## if users choose write.output=TRUE, then nrisk is data frame,
-                               ##so is.nrisk.data.frame=TRUE.
+
+    if(write.output==TRUE){
+    is.nrisk.data.frame=TRUE;      ##so is.nrisk.data.frame=TRUE.
                          ## if users choose write.output=FALSE, then nrisk is array form,
                           ## so is.nrisk.data.frame=FALSE.
-    write.jprat.output=FALSE; ## users need to choose write.jprat.output=TRUE
+    write.jprat.output=TRUE; ## users need to choose write.jprat.output=TRUE
                             ## when they choose write.output=TRUE in jprat function;
                             ## FALSE otherwise.
-
+    }else{
+      is.nrisk.data.frame=FALSE;
+      write.jprat.output=FALSE;
+    }
     ####################################
     ## functions to get default values #
     ####################################
@@ -246,14 +250,14 @@
 
 
       study.names=c("cohort", "predict", "pharos");
-      event.outcome.names=c("hdage_nobase", "mcione", "tfctwo");
+      event.outcome.names=c("hdage_nobase", "mcione", "dep2");
       legend.names=c("Motor Diagnosis (DCL=4)")
 
 
     }else if(what.analyzed.separately=="event"){
 
       study.names=c("cohort", "predict", "pharos");
-      event.outcome.names=c("hdage_nobase", "mcione", "tfctwo");
+      event.outcome.names=c("hdage_nobase", "mcione", "dep2");
       legend.names=c("Motor Diagnosis (DCL=4)", "Cognitive Impairment", "Stage II TFC")
 
     }else if(what.analyzed.separately=="none"||what.analyzed.separately=="study"){
@@ -278,6 +282,7 @@
     #num_study<-reformatted.data.for.analysis.results$num_study;
     jprat.output<-jprat.estimat.results$jprat.output
     nrisk<-number.at.risk
+
 
 
 ## a function to display all results including tables and plots
@@ -318,22 +323,22 @@
       time.points.of.interest.ci,
       label.for.alpha.values.over.time=NULL,
       #which.nonfunctional.covariate.comparisons,
-      color.names, ## returns color.labels
-      legend.names, ## returns legend.labels
-      functional.covariate.comparisons,
+      color.names=color.names, ## returns color.labels
+      legend.names=legend.names, ## returns legend.labels
+      functional.covariate.comparisons=functional.covariate.comparisons,
       functional.covariate.comparisons.for.sample.size=NULL,
       #############################
       # plot options             ##
       #############################
-      do.plots,
-      plot.confidence.intervals,
+      do.plots=do.plots,
+      plot.confidence.intervals=plot.confidence.intervals,
       ###########################
       # Label figures or files ##
       ###########################
-      add.number.at.risk.legend,
-      ylabel.for.plots.comparing.studies,
-      xlabel.for.plots.comparing.studies,
-      file.name.for.analysis, ## figure names
+      add.number.at.risk.legend=add.number.at.risk.legend,
+      ylabel.for.plots.comparing.studies=ylabel.for.plots.comparing.studies,
+      xlabel.for.plots.comparing.studies=xlabel.for.plots.comparing.studies,
+      file.name.for.analysis=file.name.for.analysis, ## figure names
       #######################
       ## Output from JPRAT ##
       #######################
@@ -347,9 +352,9 @@
       #####################################
       ## Do we show results description? ##
       #####################################
-      show.results.description,
-      is.nrisk.data.frame,
-      write.jprat.output
+      show.results.description=show.results.description,
+      is.nrisk.data.frame=is.nrisk.data.frame,
+      write.jprat.output=write.jprat.output
     )
 
 
