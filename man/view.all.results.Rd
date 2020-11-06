@@ -30,7 +30,6 @@ view.all.results(
   time.points.of.interest,
   time.points.of.interest.ci,
   label.for.alpha.values.over.time = NULL,
-  which.nonfunctional.covariate.comparisons,
   color.names,
   legend.names,
   functional.covariate.comparisons,
@@ -43,9 +42,9 @@ view.all.results(
   file.name.for.analysis,
   jprat.output = jprat.output,
   nrisk = nrisk,
-  show.results.description,
-  is.nrisk.data.frame,
-  write.jprat.output
+  show.results.description = show.results.description,
+  is.nrisk.data.frame = is.nrisk.data.frame,
+  write.jprat.output = write.jprat.output
 )
 }
 \arguments{
@@ -110,9 +109,6 @@ We recommend that these time points vector should be chosen as the subset of tim
 These time points are used to be labeled for the plot. Currently, we do not make a plot for the smooth functional parameters \eqn{\alpha(X,t)}.
 Default is NULL.}
 
-\item{which.nonfunctional.covariate.comparisons}{a numeric vector for which nonfunctional covariates will be compared. In our analysis, we only consider one nonfunctional covariate named "base_age", default is c(1, 1).
-Currently, we only consider one nonfunctional covariate and there is nothing to compare between covariates.}
-
 \item{color.names}{a character vector to denote which colors will be used for the labels of events of interest in plots. e.g., c("firebrick1", "darkgreen", "black").}
 
 \item{legend.names}{a character vector to label event of interests in plots. e.g., c("Motor Diagnosis (DCL=4)",  "Cognitive Impairment" , "Stage II TFC").}
@@ -157,13 +153,13 @@ This function returns analysis results including plots and tables.
 The number of risks at each time point will be printed in the plot.
 }
 \examples{
-## remove history ##
-## rm(list=ls())  ##
-####################
+## remove history         ##
+## rm(list=ls(all=TRUE))  ##
+############################
 
 ## Four options whether study and event are analyzed separately:
 ## what.analyzed.separately="studyevent", "event", "study" or "none"
-    what.analyzed.separately= "studyevent"
+    what.analyzed.separately= "none"
 
 
 ## Load your data in the list format: should match order of study.names
@@ -194,7 +190,7 @@ The number of risks at each time point will be printed in the plot.
       nonfunctional.covariate.names=c("base_age");
       functional.covariate.names="CAG";
 
-    }else if(what.analyzed.separately== "none"){
+    }else if(what.analyzed.separately== "none"||what.analyzed.separately=="study"){
 
       study.names=c("study1", "study2");
       othercovariate.names=NULL;
@@ -275,7 +271,7 @@ The number of risks at each time point will be printed in the plot.
     if(what.analyzed.separately=="event"||what.analyzed.separately=="studyevent"){
 
       study.names=c("cohort", "predict", "pharos");
-      event.outcome.names=c("hdage_nobase", "mcione", "tfctwo");
+      event.outcome.names=c("hdage_nobase", "mcione", "dep2");
       nonfunctional.covariate.names=c("base_age");
       functional.covariate.names="CAG";
 
@@ -385,19 +381,23 @@ The number of risks at each time point will be printed in the plot.
     xlabel.for.plots.comparing.studies="Age (years)"
     file.name.for.analysis="test" ## figure names
     show.results.description=TRUE;
-    is.nrisk.data.frame=TRUE; ## if users choose write.output=TRUE, then nrisk is data frame,
-                               ##so is.nrisk.data.frame=TRUE.
+
+    if(write.output==TRUE){
+    is.nrisk.data.frame=TRUE;      ##so is.nrisk.data.frame=TRUE.
                          ## if users choose write.output=FALSE, then nrisk is array form,
                           ## so is.nrisk.data.frame=FALSE.
     write.jprat.output=TRUE; ## users need to choose write.jprat.output=TRUE
                             ## when they choose write.output=TRUE in jprat function;
                             ## FALSE otherwise.
-
+    }else{
+      is.nrisk.data.frame=FALSE;
+      write.jprat.output=FALSE;
+    }
     ####################################
     ## functions to get default values #
     ####################################
-    default.options<-default.options.for.data.setting()
-    which.nonfunctional.covariate.comparisons=c(1,1);
+    #default.options<-default.options.for.data.setting()
+
 
 
 
@@ -405,14 +405,14 @@ The number of risks at each time point will be printed in the plot.
 
 
       study.names=c("cohort", "predict", "pharos");
-      event.outcome.names=c("hdage_nobase", "mcione", "tfctwo");
+      event.outcome.names=c("hdage_nobase", "mcione", "dep2");
       legend.names=c("Motor Diagnosis (DCL=4)")
 
 
     }else if(what.analyzed.separately=="event"){
 
       study.names=c("cohort", "predict", "pharos");
-      event.outcome.names=c("hdage_nobase", "mcione", "tfctwo");
+      event.outcome.names=c("hdage_nobase", "mcione", "dep2");
       legend.names=c("Motor Diagnosis (DCL=4)", "Cognitive Impairment", "Stage II TFC")
 
     }else if(what.analyzed.separately=="none"||what.analyzed.separately=="study"){
@@ -423,232 +423,22 @@ The number of risks at each time point will be printed in the plot.
 
     }
 
-    reformatted.data.for.analysis.results<-data.reformatted.for.analysis.results(
-      study.names, event.outcome.names,
-      color.names, legend.names,
-      which.nonfunctional.covariate.comparisons)
+    # reformatted.data.for.analysis.results<-data.reformatted.for.analysis.results(
+    #   study.names, event.outcome.names,
+    #   color.names, legend.names,
+    #   which.nonfunctional.covariate.comparisons)
 
     ## obtain default values
     ## default values
-    use_real_data<-default.options$use_real_data
-    combine.data<-default.options$combine.data
+    #use_real_data<-default.options$use_real_data
+    #combine.data<-default.options$combine.data
 
     ## datasets are reformatted, so that results plots and tables can be produced;
-    num_study<-reformatted.data.for.analysis.results$num_study;
+    #num_study<-reformatted.data.for.analysis.results$num_study;
     jprat.output<-jprat.estimat.results$jprat.output
     nrisk<-number.at.risk
 
-## load your data in the list format: should match order of study.names
-input.data.list=list(cohort=data_cohort, predict=data_predict, pharos=data_pharos);
 
-#Input data for JPRAT estimation procedure
-study.names=c("cohort", "predict", "pharos");
-nonfunctional.covariate.names=c("base_age");
-functional.covariate.names="CAG";
-othercovariate.names=c("firstyear", "lastyear")
-event.outcome.names=c("hdage_nobase", "mcione", "dep2");
-delta.names=c("delta.hdage_nobase", "delta.mcione", "delta.dep2");
-
-
-## four options whether study and event are analyzed separately:
-#what.analyzed.separately="studyevent",  "event", "study" or "none"
-what.analyzed.separately= "studyevent"
-
-if(what.analyzed.separately!= "study"){
-time.points.for.prediction=seq(46, 66, by=5);
-time.points.for.conditional.prediction=c(46,51, 56);
-time.points.for.conditional.prediction.toadd=c(5);
-nonfunctional.covariate.value=c(40);
-functional.covariate.values.of.interest=c(46, 48, 50) ;
-}else{
-  time.points.for.prediction=seq(44, 52, by=4);
-  time.points.for.conditional.prediction=c(44, 48, 52);
-  time.points.for.conditional.prediction.toadd=c(5);
-  nonfunctional.covariate.value=c(48);
-  functional.covariate.values.of.interest=c(44, 48) ;
-}
-
-# parameter setup to analyze data using JPRAT estimation procedure
-number.of.bootstraps=10;
-use.functional.beta.intercept= TRUE ;
-use.functional.event.coefficients= TRUE;
-use.functional.study.coefficients=TRUE;
-
-
-
-if(what.analyzed.separately!="none"){
-  check.study.equality=FALSE
-}else{
-  check.study.equality=TRUE
-}
-
-
-if(what.analyzed.separately!="none"){
- estimated.parameters.common.for.all.studies=FALSE
-}else{
- estimated.parameters.common.for.all.studies=TRUE
-}
-
-use.bootstrap.variance=TRUE;
-estimation.when.censoring.depends.on.z=FALSE ;
-write.output=TRUE;
-
-# JPRAT estimation
-jprat.estimat.results<-jprat.wrapper(study.names=study.names,
-                                     input.data.list=input.data.list,
- nonfunctional.covariate.names=nonfunctional.covariate.names,
- functional.covariate.names=functional.covariate.names,
- othercovariate.names=othercovariate.names,
- event.outcome.names=event.outcome.names,
- delta.names=delta.names,
- time.points.for.prediction=time.points.for.prediction,
- time.points.for.conditional.prediction=time.points.for.conditional.prediction,
- time.points.for.conditional.prediction.toadd=time.points.for.conditional.prediction.toadd,
- nonfunctional.covariate.value=nonfunctional.covariate.value,
- functional.covariate.values.of.interest=functional.covariate.values.of.interest,
- number.of.bootstraps=number.of.bootstraps,
- use.functional.beta.intercept=use.functional.beta.intercept,
- use.functional.event.coefficients=use.functional.event.coefficients,
- use.functional.study.coefficients=use.functional.study.coefficients,
- check.study.equality=check.study.equality,
- estimated.parameters.common.for.all.studies=estimated.parameters.common.for.all.studies,
- what.analyzed.separately=what.analyzed.separately,
- estimation.when.censoring.depends.on.z=estimation.when.censoring.depends.on.z,
- use.bootstrap.variance=use.bootstrap.variance, write.output=write.output)
-
-##get number at risk table
-study.names=c("cohort", "predict", "pharos");
-input.data.list=list(cohort=data_cohort, predict=data_predict, pharos=data_pharos);
-event.outcome.names=c("hdage_nobase", "mcione", "tfctwo");
-nonfunctional.covariate.names=c("base_age");
-functional.covariate.names="CAG";
-
-#estimated.parameters.common.for.all.studies=FALSE;
-#estimated.parameters.common.for.all.studies=TRUE;
-
-if(what.analyzed.separately!= "study"){
-  time.points.for.prediction=seq(46, 66, by=5);
-  functional.covariate.values.of.interest=c(46, 48, 50) ;
-  nonfunctional.covariate.value=c(40);
-}else{
-  time.points.for.prediction=seq(44, 52, by=4);
-  nonfunctional.covariate.value=c(48);
-  functional.covariate.values.of.interest=c(44, 48) ;
-}
-
-
-
-
-if(what.analyzed.separately!="none"){
-  estimated.parameters.common.for.all.studies=FALSE
-}else{
-  estimated.parameters.common.for.all.studies=TRUE
-}
-
-
-##to creat out_nrisk.dat file
-number.at.risk <- compute.number.at.risk.for.HD(study.names,
- input.data.list, #data.file.names,
- event.outcome.names,
- nonfunctional.covariate.names,
- functional.covariate.names,
- nonfunctional.covariate.value,
- functional.covariate.values.of.interest,
- time.points.for.prediction,
- estimated.parameters.common.for.all.studies,
- write.output=TRUE
- )
-
-
-
-## To get results
-#############################
-# parameters to get results #
-#############################
-# functional.covariate.values.of.interest.ci=c(46, 51);
-# time.points.of.interest= c(46, 56);
-# time.points.of.interest.ci=seq(46, 66, by=5);
-# which.nonfunctional.covariate.comparisons=c(1,1);
-
-# functional.covariate.comparisons=c(46, 51);
-
-
-
-
-
-if(what.analyzed.separately!= "study"){
-  # time.points.for.prediction=seq(46, 66, by=5);
-  # time.points.for.conditional.prediction=c(46,51, 56);
-  # time.points.for.conditional.prediction.toadd=c(5);
-  # nonfunctional.covariate.value=c(40);
-  # functional.covariate.values.of.interest=c(46, 48, 50) ;
-  functional.covariate.values.of.interest.ci=c(46, 51);
-  time.points.of.interest= c(46, 56);
-  time.points.of.interest.ci=seq(46, 66, by=5);
-  functional.covariate.comparisons=c(46, 51);
-}else{
-  # time.points.for.prediction=seq(44, 52, by=4);
-  # time.points.for.conditional.prediction=c(44, 48, 52);
-  # time.points.for.conditional.prediction.toadd=c(5);
-  # nonfunctional.covariate.value=c(48);
-  # functional.covariate.values.of.interest=c(44, 48) ;
-  functional.covariate.values.of.interest.ci=c(44, 48);
-  time.points.of.interest= c(44, 52);
-  time.points.of.interest.ci=seq(44, 52, by=4);
-  functional.covariate.comparisons=c(44, 48);
-}
-
-color.names=c("firebrick1", "darkgreen", "black"); ## for color.label.key
-legend.names=c("Motor Diagnosis (DCL=4)") #, "Cognitive Impairment", "Stage II TFC")
-do.plots=TRUE;
-plot.confidence.intervals=TRUE;
-add.number.at.risk.legend=TRUE;
-ylabel.for.plots.comparing.studies="Probability"
-xlabel.for.plots.comparing.studies="Age (years)"
-file.name.for.analysis="test" ## figure names
-show.results.description=TRUE;
-is.nrisk.data.frame=TRUE; ## if users choose write.output=TRUE, then nrisk is data frame,
-                           ##so is.nrisk.data.frame=TRUE.
-                     ## if users choose write.output=FALSE, then nrisk is array form,
-                      ## so is.nrisk.data.frame=FALSE.
-write.jprat.output=TRUE; ## users need to choose write.jprat.output=TRUE
-                        ## when they choose write.output=TRUE in jprat function;
-                        ## FALSE otherwise.
-####################################
-## functions to get default values #
-####################################
-default.options<-default.options.for.data.setting()
-
-## data is reformatted to get analysis results
-reformatted.data.for.analysis.results<-data.reformatted.for.analysis.results(
-  study.names, event.outcome.names,
-  color.names, legend.names,
-  which.nonfunctional.covariate.comparisons)
-
-## obtain default values
-## default values
-use_real_data<-default.options$use_real_data
-combine.data<-default.options$combine.data
-
-## datasets are reformatted, so that results plots and tables can be produced;
-num_study<-reformatted.data.for.analysis.results$num_study;
-jprat.output<-jprat.estimat.results$jprat.output
-nrisk<-number.at.risk
-
-# ## if you want to load results from JPRAT algorithm
-# if(write.jprat.output==TRUE){
-#   data.theta <- read.table("out_thetaest_real_output_iseed_1.dat",header=FALSE)
-#   data.combi <- read.table("out_combi_real_output_iseed_1.dat",header=FALSE)
-#
-# }
-#
-#
-# ## In case, if you want to load results of number of risks
-# ## when the output option for compute.number.at.risk.for.HD
-# ## is a dataframe (is.nrisk.data.frame==TRUE).
-# if(is.nrisk.data.frame==TRUE){
-#    nrisk <- read.table("out_nrisk.dat",header=TRUE)
-# }
 
 ## a function to display all results including tables and plots
     results.out <- view.all.results(
@@ -687,23 +477,23 @@ nrisk<-number.at.risk
       time.points.of.interest,
       time.points.of.interest.ci,
       label.for.alpha.values.over.time=NULL,
-      which.nonfunctional.covariate.comparisons,
-      color.names, ## returns color.labels
-      legend.names, ## returns legend.labels
-      functional.covariate.comparisons,
+      #which.nonfunctional.covariate.comparisons,
+      color.names=color.names, ## returns color.labels
+      legend.names=legend.names, ## returns legend.labels
+      functional.covariate.comparisons=functional.covariate.comparisons,
       functional.covariate.comparisons.for.sample.size=NULL,
       #############################
       # plot options             ##
       #############################
-      do.plots,
-      plot.confidence.intervals,
+      do.plots=do.plots,
+      plot.confidence.intervals=plot.confidence.intervals,
       ###########################
       # Label figures or files ##
       ###########################
-      add.number.at.risk.legend,
-      ylabel.for.plots.comparing.studies,
-      xlabel.for.plots.comparing.studies,
-      file.name.for.analysis, ## figure names
+      add.number.at.risk.legend=add.number.at.risk.legend,
+      ylabel.for.plots.comparing.studies=ylabel.for.plots.comparing.studies,
+      xlabel.for.plots.comparing.studies=xlabel.for.plots.comparing.studies,
+      file.name.for.analysis=file.name.for.analysis, ## figure names
       #######################
       ## Output from JPRAT ##
       #######################
@@ -717,9 +507,9 @@ nrisk<-number.at.risk
       #####################################
       ## Do we show results description? ##
       #####################################
-      show.results.description,
-      is.nrisk.data.frame,
-      write.jprat.output
+      show.results.description=show.results.description,
+      is.nrisk.data.frame=is.nrisk.data.frame,
+      write.jprat.output=write.jprat.output
     )
 
 
