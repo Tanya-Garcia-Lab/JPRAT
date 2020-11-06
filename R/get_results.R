@@ -39,8 +39,8 @@
 #' @param label.for.alpha.values.over.time  a vector of specific time points at which the smooth functional parameters \eqn{\alpha(X,t)} will be predicted.
 #'                       These time points are used to be labeled for the plot. Currently, we do not make a plot for the smooth functional parameters \eqn{\alpha(X,t)}.
 #'                       Default is NULL.
-#' @param which.nonfunctional.covariate.comparisons  a numeric vector for which nonfunctional covariates will be compared. In our analysis, we only consider one nonfunctional covariate named "base_age", default is c(1, 1).
-#'        Currently, we only consider one nonfunctional covariate and there is nothing to compare between covariates.
+# #@param which.nonfunctional.covariate.comparisons  a numeric vector for which nonfunctional covariates will be compared. In our analysis, we only consider one nonfunctional covariate named "base_age", default is c(1, 1).
+# #        Currently, we only consider one nonfunctional covariate and there is nothing to compare between covariates.
 #' @param color.names a character vector to denote which colors will be used for the labels of events of interest in plots. e.g., c("firebrick1", "darkgreen", "black").
 #' @param legend.names a character vector to label event of interests in plots. e.g., c("Motor Diagnosis (DCL=4)",  "Cognitive Impairment" , "Stage II TFC").
 #' @param functional.covariate.comparisons a vector of functional covariate values of X at which the smooth functional parameters \eqn{\alpha(X=x,\cdot)} were estimated and compared.
@@ -158,9 +158,9 @@ view.all.results <- function(
   #####################################
   ## Do we show results description? ##
   #####################################
-  show.results.description,
-  is.nrisk.data.frame,
-  write.jprat.output
+  show.results.description=show.results.description,
+  is.nrisk.data.frame=is.nrisk.data.frame,
+  write.jprat.output=write.jprat.output
 ){
 
 
@@ -218,7 +218,7 @@ view.all.results <- function(
                                                                                event.outcome.names,
                                                                                color.names,
                                                                                legend.names,
-                                                                               which.nonfunctional.covariate.comparisons)
+                                                                               which.nonfunctional.covariate.comparisons=which.nonfunctional.covariate.comparisons)
 
   ## datasets are reformmated, so that results plots and tables can be produced
   num_study<-reformatted.data.for.analysis.results$num_study;
@@ -685,7 +685,7 @@ view.all.results <- function(
 
       #data.combi<-jprat.output$data.combi
 
-      my.out<-sort.results.when.jprat.ouput.array(time_choice.predicted,
+      my.out<-sort.results.when.jprat.ouput.array(time_choice.predicted, num_study=num_study,
                                                   out=jprat.output)
 
       beta.array <- my.out$beta.array
@@ -1036,7 +1036,6 @@ view.all.results <- function(
 
     }
 
-
     for(ss in 1:num_study){
       ##legend.position <- legend.position.use
 
@@ -1076,8 +1075,14 @@ view.all.results <- function(
 
         }
 
-
         index_a <- s.names[nn.comparison[[nn_comp]]]
+#
+#         if(write.jprat.output=TRUE){
+#
+#         index_a <- s.names[nn.comparison[[nn_comp]]]
+#         }else{
+#           index_a <- s.names[nn.comparison[[nn_comp]]]
+#         }
 
         for(zz in 1:z.choice){
 
@@ -1112,7 +1117,7 @@ view.all.results <- function(
             #####################################
             # no examples but add documentations#
             #####################################
-
+            if(write.jprat.output==TRUE){
             ggplot_at_a_over_b(filename=paste("gg_",filename.set,sep=""),
                                estimate=adrop(Ft.array$out.mono.mean[ss,index_a,zz,i,,"est",drop=FALSE],
                                               drop=c(1,3,4,6)),
@@ -1132,8 +1137,29 @@ view.all.results <- function(
                                ylab.use=study.ylab,
                                xlab.use=study.xlab,
                                add.second.legend=add.second.legend)
-          }
 
+            }else{
+            ggplot_at_a_over_b(filename=paste("gg_",filename.set,sep=""),
+                               estimate=adrop(Ft.array$out.mono.mean[ss,,zz,i,,"est",drop=FALSE],
+                                              drop=c(1,3,4,6)),
+                               theta.array.lo=adrop(Ft.array$out.mono.mean[ss,,zz,i,,var.lo,drop=FALSE],
+                                                    drop=c(1,3,4,6)),
+                               theta.array.hi=adrop(Ft.array$out.mono.mean[ss,,zz,i,,var.hi,drop=FALSE],
+                                                    drop=c(1,3,4,6)),
+                               index_a=index_a,
+                               bvalues=time_val,
+                               bvalues.cut=time.cut,
+                               color.list=color.list,
+                               nrisk=adrop(number.at.risk[ss,index_a,zz,i,,drop=FALSE],drop=c(1,3,4)),
+                               margin.move=unit(c(0,-100,0,0),"mm"),
+                               ##cex.line=1,cex.size=12,
+                               ylim=ylim.setting["Ft",],
+                               conf.int=conf.int.use,label.names=label.names,
+                               ylab.use=study.ylab,
+                               xlab.use=study.xlab,
+                               add.second.legend=add.second.legend)
+          }
+}
           if(plot.parameters==TRUE){
 
             if(show.results.description==TRUE){
