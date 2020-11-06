@@ -31,7 +31,7 @@ get.parameters<-function(param.setting){
 
     #This states that we generate data where the true model has shared study parameters ("Parameter Setting B" in the Biostatistics paper): TRUE
     #This states that we generate data where the true model has distinct study parameters ("Parameter Setting A" in the Biostatistics paper): FALSE
-    common.param.data <- TRUE
+    common.param.data <- FALSE #TRUE
     #We do not analyze the data separately. Results when we estimated under Model A: a Joint model with distinct study parameters.
     analyze.separately <- "none"
 
