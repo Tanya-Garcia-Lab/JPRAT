@@ -6,7 +6,7 @@
 \usage{
 jprat.wrapper(
   study.names,
-  data.file.names,
+  input.data.list,
   nonfunctional.covariate.names,
   functional.covariate.names,
   othercovariate.names,
@@ -33,7 +33,8 @@ jprat.wrapper(
 \arguments{
 \item{study.names}{a character vector of name of studies used in analyses. e.g., c("cohort", "predict", "pharos").}
 
-\item{data.file.names}{a character vector of name of data files for all studies, which should be saved as \code{.csv} file. e.g., c("cohort", "predict", "pharos")}
+\item{input.data.list}{a list of data sets to be analyzed. If you want to use data sets provided by JPRAT,
+use list(cohort=data_cohort, predict=data_predict, pharos=data_pharos), otherwise you need to feed your own data files list(study.name1=data.set1, study.name2=data.set2, study.name3=data.set3). The order of data sets should match study.names.}
 
 \item{nonfunctional.covariate.names}{a character vector for the name of the non-functional covariates that is used in the analysis.  e.g., "base_age".}
 
@@ -70,43 +71,28 @@ This may get rid of the warning messages.}
 
 \item{estimated.parameters.common.for.all.studies}{a logical value whether the model parameters are the same across studies. Default is FALSE.}
 
-\item{what.analyzed.separately}{a character value to determine whether analysis will be performed separately or jointly: the options are "studyevents" (studies and event), "studies", "events", or "none". Default is "studyevents".}
+\item{what.analyzed.separately}{a character value to determine whether analysis will be performed separately or jointly: the options are "studyevent" (studies and event), "study", "event", or "none". Default is "studyevent".}
 
 \item{estimation.when.censoring.depends.on.z}{a logical value whether the estimation process assumes that a censoring distribution depends on nonfunctional covariates Z. If covariates Z does not follow a binomial distribution, then default is FALSE.}
 
 \item{use.bootstrap.variance}{a logical value whether to compute bootstrap variances. Default is TRUE.}
 
-\item{estimate.variances}{FILL IN DETAILS}
+\item{estimate.variances}{a logical value how variances will be estimated. If this is TRUE, there are two options: "est" (estimated), and "quant" (quantiles from bootstrap);
+If this is FALSE, the only option is  "none" (no variances are estimated). Default is ``est".}
 
 \item{write.output}{a logical value whether outputs will be saved into data files. Default is TRUE.}
 }
 \value{
 A list of
-         \item{truth.out}{a data frame of true values for all components to be estimated ("beta0", "beta1",  "alpha1", "Ft",
-         "Ft.predicted") at each time point \code{time_val} for clinical events of interest per study.
-         The columns of the data frame include study (names of studies), event (the names of outcome events),
-         theta (names for all components to be estimated), zz (the labels of the nonfunctional covariates Z),
-         xx (the labels of the functional covariates X) and the flatten time points.}
-         \item{theta.out}{data frame of the estimated values for all components ("beta0", "beta1",  "alpha1", "Ft", "Ft.predicted")
+         \item{jprat.output}{the list of estimated values. If write.output=TRUE, the list contains data.theta and combi.out, where theta.out is the data frame of the estimated values for all components ("beta0", "beta1",  "alpha1", "Ft", "Ft.predicted")
                           at each iteration for the clinical events of interest per study. The columns of the data frame include iters (iteration number), study(names of studies), event (the names of outcome events), theta (names for all components to be estimated), zz (the labels of the nonfunctional covariates Z),
                           xx (the labels of the functional covariates X), val (all estimated values for theta: "est”, "varest”, "varlo”, "varhi”, "boot_varest”, "boot_varlo”, "boot_varhi”)
-                          and the flatten time points.}
-         \item{combi.out}{a data frame of the difference of the estimated values between a pair of studies for all components ("beta0", "beta1", "alpha1", "Ft", "Ft.predicted")
+                          and the flatten time points, and combi.out is a data frame of the difference of the estimated values between a pair of studies for all components ("beta0", "beta1", "alpha1", "Ft", "Ft.predicted")
                           at each iteration for the clinical events of interest per a pair of studies.
                           The columns of the data frame include iters (iteration number), study(names for the combinations of studies: cohort-predict, cohort-pharos, predict-pharos),
                           event (the names of outcome events), theta (names for all components to be estimated), zz (the labels of the nonfunctional covariates Z), xx (the labels of the functional covariates X),
                           val (all estimated values for theta: "est", "varest", "varlo", "varhi", "boot_varest", "boot_varlo",
                           "boot_varhi") and the flatten time points.}
-         \item{count.store}{a data frame for the rate of event times for uncensored, censored, uncensored but zero, and other cases,
-                            which depends on the binary status of the event for each subject: "zero" (censored), "one" (uncensored), or "others" (missing).
-                            The event times are counted at all time points (\code{time_val}) for all studies.}
-         \item{count.store.outside}{a data frame of the rate of event times for uncensored and censored,
-                                    which depends on the binary status of the event for each subject, which are outside [0,1]:
-                                    "zero" (censored), "one" (uncensored).  The event times are counted at all time points (\code{time_val})
-                                    for all studies.}
-         \item{Ftest.store}{array of values for the estimated monotone marginal distributions \eqn{F_{es}(t|X, Z)} (\code{Ftest} in the \code{\link{gamm4.estimates}} function
-                            and \code{Ft.var.boot} in the \code{\link{boot.compare.studies}} function) at each iteration. See the argument \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function
-                            for the dimensions of the array.}
          \item{eflag}{an integer number to check if any error comes up while processing the estimation algorithm.
                       If this value is -1, then the marginal distribution \eqn{F_{es}(t|X, Z)} has missing values (NA).}
 }
@@ -128,12 +114,11 @@ The Joint Progression of Risk Assessment Tool (JPRAT) evaluates and compares all
 }
 \examples{
 
-
 ####################################
 # For JPRAT estimation: Input data #
 ####################################
 study.names=c("cohort", "predict", "pharos");
-data.file.names=c("cohort", "predict", "pharos");
+input.data.list=list(cohort=data_cohort, predict=data_predict, pharos=data_pharos);
 nonfunctional.covariate.names=c("base_age");
 functional.covariate.names="CAG";
 othercovariate.names=c("firstyear", "lastyear");
@@ -163,7 +148,7 @@ write.output=TRUE;
 
 
 jprat.estimate.results<-jprat.wrapper(study.names=study.names,
-  data.file.names=data.file.names,
+  input.data.list=input.data.list,
   nonfunctional.covariate.names=nonfunctional.covariate.names,
   functional.covariate.names=functional.covariate.names,
   othercovariate.names=othercovariate.names,
@@ -185,11 +170,5 @@ jprat.estimate.results<-jprat.wrapper(study.names=study.names,
   use.bootstrap.variance=use.bootstrap.variance,
   estimate.variances=estimate.variances,
   write.output=write.output)
-
-
-
-
-
-
 
 }

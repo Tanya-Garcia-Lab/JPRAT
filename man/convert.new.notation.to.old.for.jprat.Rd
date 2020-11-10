@@ -27,7 +27,6 @@ convert.new.notation.to.old.for.jprat(
   check.study.equality,
   what.analyzed.separately,
   estimated.parameters.common.for.all.studies,
-  estimate.variances,
   estimation.when.censoring.depends.on.z,
   glm.link.type,
   use.bootstrap.variance,
@@ -78,9 +77,6 @@ convert.new.notation.to.old.for.jprat(
 \item{what.analyzed.separately}{See the argument in the \code{\link{jprat.wrapper}} function.}
 
 \item{estimated.parameters.common.for.all.studies}{See the argument in the \code{\link{jprat.wrapper}} function.}
-
-\item{estimate.variances}{a logical value how variances will be estimated. If this is TRUE, there are two options: "est" (estimated), and "quant" (quantiles from bootstrap);
-If this is FALSE, the only option is  "none" (no variances are estimated). Default is ``est".}
 
 \item{estimation.when.censoring.depends.on.z}{See the argument in the \code{\link{jprat.wrapper}} function.}
 

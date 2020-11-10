@@ -6,34 +6,41 @@
 \usage{
 compute.number.at.risk.for.HD(
   study.names,
-  data.file.names,
+  input.data.list,
   event.outcome.names,
   nonfunctional.covariate.names,
   functional.covariate.names,
   nonfunctional.covariate.value,
   functional.covariate.values.of.interest,
   time.points.for.prediction,
-  estimated.parameters.common.for.all.studies
+  estimated.parameters.common.for.all.studies,
+  write.output
 )
 }
 \arguments{
-\item{study.names}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{study.names}{a character vector of name of studies used in analyses. e.g., c("cohort", "predict", "pharos").}
 
-\item{data.file.names}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{input.data.list}{a list of data sets to be analyzed. If you want to use data sets provided by JPRAT,
+use list(cohort=data_cohort, predict=data_predict, pharos=data_pharos), otherwise you need to feed your own data files list(study.name1=data.set1, study.name2=data.set2, study.name3=data.set3). The order of data sets should match study.names.}
 
-\item{event.outcome.names}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{event.outcome.names}{a character vector for the name of the time-to-event outcomes interested: For example, the HD age onsets, first cognitive impairments,and stage II total function capacity. e.g., c("hdage_nobase", "mcione", "tfctwo").}
 
-\item{nonfunctional.covariate.names}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{nonfunctional.covariate.names}{a character vector for the name of the non-functional covariates that is used in the analysis.  e.g., "base_age".}
 
-\item{functional.covariate.names}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{functional.covariate.names}{a character vector for the name of the functional covariates that is used in the analysis.
+e.g., \code{"CAG"}.}
 
-\item{nonfunctional.covariate.value}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{nonfunctional.covariate.value}{a numeric value interested for the nonfunctional covariate. e.g., 40 for \code{base_age}, which will be used for prediction.}
 
-\item{functional.covariate.values.of.interest}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{functional.covariate.values.of.interest}{a vector of specific functional covariate values \eqn{X=x} where the smooth functional parameter \eqn{\alpha(X=x,t)} will be estimated. For example, we set \eqn{x=46,48,50} in the analysis. We recommend that the specific functional covariate values \eqn{X=x} should be chosen between the minimum and the maximum of functional covariate values. Otherwise, users may encounter a warning message.}
 
-\item{time.points.for.prediction}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{time.points.for.prediction}{a vector of time points at which the predicted values of marginal distribution will be estimated. e.g., time points are at 46, 51, 56, 61, and 66.
+Users may encounter a warning message that "Not enough data at time points (e.g., base_age);  May have divergent in the integration while bootstrapping." We recommend that users evaluate the proportional odds model at the average of nonfunctional covariate (e.g., base_age) across all subjects in each study.
+This may get rid of the warning messages.}
 
-\item{estimated.parameters.common.for.all.studies}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{estimated.parameters.common.for.all.studies}{a logical value whether the model parameters are the same across studies. Default is FALSE.}
+
+\item{write.output}{a logical value whether outputs will be saved into data files. Default is TRUE.}
 }
 \value{
 a table for the number of subjects whoare at risk for HD for each study at times.(ignores specific covariate values)

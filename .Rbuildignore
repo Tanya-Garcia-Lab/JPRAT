@@ -4,3 +4,6 @@
 ^README\.Rmd$
 ^data-raw$
 ^docs$
+\.fsrc$
+\.o$
+\.so$

@@ -1267,14 +1267,14 @@ default.options.for.data.setting <- function(){ #use.bootstrap.variance
 
 
   if(!exists(as.character(substitute(combine.data)))){
-    combine.data <- FALSE
+    combine.data <-FALSE
   }
 
 
 
   # estimate.variances: variance is estimated using gamm4
   if(!exists(as.character(substitute(estimate.variances)))){
-    estimate.variances <- "est" # est, quant, none
+    estimate.variances <- "est"  # est, quant, none
   }
 
 

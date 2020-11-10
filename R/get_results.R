@@ -4,7 +4,7 @@
 #' This function returns analysis results including plots and tables.
 #'
 #' @param study.names See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param data.file.names See this argument in the \code{\link{jprat.wrapper}} function.
+#' @param input.data.list See this argument in the \code{\link{jprat.wrapper}} function.
 #' @param nonfunctional.covariate.names See this argument in the \code{\link{jprat.wrapper}} function.
 #' @param functional.covariate.names See this argument in the \code{\link{jprat.wrapper}} function.
 #' @param othercovariate.names See this argument in the \code{\link{jprat.wrapper}} function.
@@ -39,8 +39,8 @@
 #' @param label.for.alpha.values.over.time  a vector of specific time points at which the smooth functional parameters \eqn{\alpha(X,t)} will be predicted.
 #'                       These time points are used to be labeled for the plot. Currently, we do not make a plot for the smooth functional parameters \eqn{\alpha(X,t)}.
 #'                       Default is NULL.
-#' @param which.nonfunctional.covariate.comparisons  a numeric vector for which nonfunctional covariates will be compared. In our analysis, we only consider one nonfunctional covariate named "base_age", default is c(1, 1).
-#'        Currently, we only consider one nonfunctional covariate and there is nothing to compare between covariates.
+# #@param which.nonfunctional.covariate.comparisons  a numeric vector for which nonfunctional covariates will be compared. In our analysis, we only consider one nonfunctional covariate named "base_age", default is c(1, 1).
+# #        Currently, we only consider one nonfunctional covariate and there is nothing to compare between covariates.
 #' @param color.names a character vector to denote which colors will be used for the labels of events of interest in plots. e.g., c("firebrick1", "darkgreen", "black").
 #' @param legend.names a character vector to label event of interests in plots. e.g., c("Motor Diagnosis (DCL=4)",  "Cognitive Impairment" , "Stage II TFC").
 #' @param functional.covariate.comparisons a vector of functional covariate values of X at which the smooth functional parameters \eqn{\alpha(X=x,\cdot)} were estimated and compared.
@@ -54,36 +54,24 @@
 #' @param ylabel.for.plots.comparing.studies a character value for y-label in plots when studies are comparing or event of interests were compared in each study. Default is "Probability".
 #' @param xlabel.for.plots.comparing.studies a character value for x-label in plots when studies are comparing for each event of interest or event of interests were compared in each study. Default is "Age(years)".
 #' @param file.name.for.analysis a character value, which is used as the part of plot names.
-#' @param data.truth data file for true values of estimates for all components as a result of analysis. Default is data.truth and this file is automatically created if users choose \code{write.output=TRUE}.
-#'                 See return value \code{truth.out} in the \code{\link{jprat.wrapper}} function.
-#' @param data.theta data file for the estimated values of all components as a result of analysis. Default is data.truth and this file is automatically created if users choose \code{write.output=TRUE}.
-#'                   See return value \code{theta.out} in the \code{\link{jprat.wrapper}} function.
-#' @param data.combi data file for the difference between the estimated values of all components among studies as a result of analysis.
-#'         Default is data.combi and this file is automatically created if users choose \code{write.output=TRUE}.
-#'         See return value \code{combi.out} in the \code{\link{jprat.wrapper}} function.
-#' @param data.count data file for counts for binary status of censored, uncensored and missing subjects as a result of analysis.
-#' Default is data.count and this file is automatically created if users choose \code{write.output=TRUE}. See return value \code{count.store} in the \code{\link{jprat.wrapper}} function.
-#' @param data.count.outside  data file for counts for binary status of censored, uncensored outside [0,1] as a result of analysis. Default is \code{data.count.outside} and this file is automatically created if users choose \code{write.output=TRUE}.
-#'                             See return value \code{count.store.outside} in the \code{\link{jprat.wrapper}} function.
-#' @param nrisk data file for the number of subjects who is at risk at the interested the time points defined by users. This is automatically calculated.
-#'              Default is nrisk and this file is automatically created.
-#' @param data.truth.other This is not a users' interest argument. Analysis results from COX model. Use this if the proportional odds model is compared to COX model, which is not considered. Default is NULL.
-#' @param data.theta.other This is not a users' interest argument. Analysis results from COX model. Use this if the proportional odds model is compared to COX model, which is not considered. Default is NULL.
-#' @param nrisk.other This is not a users' interest argument. Analysis results from COX model. Use this if the proportional odds model is compared to COX model, which is not considered. Default is NULL.
-#' @param data.combi.other  This is not a users' interest argument. Analysis results from COX model. Use this if the proportional odds model is compared to COX model, which is not considered. Default is NULL.
-#' @param s.names.use This is not a users' interest argument. Default is NULL.
-#' @param s.names.other.use This is not a users' interest argument. Default is NULL.
-#' @param type1.error type 1 error rate, which is for sample size calculations. We do not consider this arguments in the analysis. Default is NULL.
-#' @param type2.error type 2 error rate, which is for sample size calculations. We do not consider this arguments in the analysis. Default is NULL.
-#' @param treatment.effect a numeric vector of the treatment effects for sample size calculations. We do not consider this arguments in the analysis. We do not consider this arguments in the analysis. Default is NULL.
-#' @param dropout.rate a numeric vector of drop-out rates, which is used for sample size calculations. We do not consider this arguments in the analysis. Default is NULL.
+# #@param data.theta data file for the estimated values of all components as a result of analysis. The result file is automatically created if users choose \code{write.output=TRUE}.
+# #                   See return value \code{theta.out} in the \code{\link{jprat.wrapper}} function.
+# # @param data.combi data file for the difference between the estimated values of all components among studies as a result of analysis.
+# #         Default is data.combi and this file is automatically created if users choose \code{write.output=TRUE}.
+# #         See return value \code{combi.out} in the \code{\link{jprat.wrapper}} function.
+#' @param jprat.output list of jprat output. See return value \code{jprat.output} in the \code{\link{jprat.wrapper}} function.
+#' @param nrisk data file for the number of subjects who is at risk at the interested the time points defined by users.
+#'              nrisk results are flattened by time if write.output is TRUE from the function \code{\link{compute.number.at.risk.for.HD}}, otherwise it is not flattened.
 #' @param show.results.description a logical value whether the description of plots and tables will be produced. Default is FALSE.
-#'
+#' @param is.nrisk.data.frame a logical value whether output for nrisk is the data frame. If users choose write.output is TRUE from the function \code{\link{compute.number.at.risk.for.HD}}, this argument should be TRUE. Otherwise, FALSE.
+#' @param write.jprat.output a logical value whether output for the jprat function will be created. If write.output=TRUE in  the  \code{\link{jprat.wrapper}} function, then it should be TRUE; FALSE otherwise.
 #' @details The number of risks at each time point will be printed in the plot.
 #'
 #' @return This function returns ggplots.
 #'
 #' @import abind
+#' @import grid
+#' @import gridExtra
 #' @export
 #'
 #' @example man/examples/example.R
@@ -94,7 +82,7 @@ view.all.results <- function(
   # arguments for JPRAT     ##
   ############################
   study.names,
-  data.file.names,
+  input.data.list,
   nonfunctional.covariate.names,
   functional.covariate.names,
   othercovariate.names,
@@ -127,7 +115,7 @@ view.all.results <- function(
   time.points.of.interest,
   time.points.of.interest.ci,
   label.for.alpha.values.over.time=NULL,
-  which.nonfunctional.covariate.comparisons,
+  #which.nonfunctional.covariate.comparisons,
   color.names,
   legend.names,
   functional.covariate.comparisons,
@@ -147,29 +135,32 @@ view.all.results <- function(
   #######################
   ## Output from JPRAT ##
   #######################
-  data.truth=data.truth,
-  data.theta=data.theta,
-  data.combi=data.combi,
-  data.count=data.count,
-  data.count.outside=data.count.outside,
+  #data.truth=data.truth,
+  #data.theta=data.theta,
+  #data.combi=data.combi,
+  #data.count=data.count,
+  #data.count.outside=data.count.outside,
+  jprat.output=jprat.output,
   nrisk=nrisk,
-  data.truth.other=NULL,
-  data.theta.other=NULL,
-  nrisk.other=NULL,
-  data.combi.other=NULL,
-  s.names.use=NULL,
-  s.names.other.use=NULL,
-  ########################################################
-  ## for computing sample sizes: users do not need them ##
-  ########################################################
-  type1.error=NULL,
-  type2.error=NULL,
-  treatment.effect=NULL,
-  dropout.rate=NULL,
+  # data.truth.other=NULL,
+  # data.theta.other=NULL,
+  # nrisk.other=NULL,
+  # data.combi.other=NULL,
+  # s.names.use=NULL,
+  # s.names.other.use=NULL,
+  # ########################################################
+  # ## for computing sample sizes: users do not need them ##
+  # ########################################################
+  # type1.error=NULL,
+  # type2.error=NULL,
+  # treatment.effect=NULL,
+  # dropout.rate=NULL,
   #####################################
   ## Do we show results description? ##
   #####################################
-  show.results.description
+  show.results.description=show.results.description,
+  is.nrisk.data.frame=is.nrisk.data.frame,
+  write.jprat.output=write.jprat.output
 ){
 
 
@@ -197,7 +188,7 @@ view.all.results <- function(
 
   reformatted.data.for.jprat<-data.reformatted.for.jprat.analysis(use_real_data,
                                                                   study.names,
-                                                                  data.file.names,
+                                                                  input.data.list,
                                                                   time.points.for.prediction,
                                                                   nonfunctional.covariate.names,
                                                                   functional.covariate.names,
@@ -221,12 +212,13 @@ view.all.results <- function(
   ## see function data.reformatted.for.analysis.results in main.R       ##
   ## added on 10/09/19                                                  ##
   ########################################################################
-
+  # default: use one nonfunctional covariate, no comparison
+  which.nonfunctional.covariate.comparisons=c(1,1);
   reformatted.data.for.analysis.results<-data.reformatted.for.analysis.results(study.names,
                                                                                event.outcome.names,
                                                                                color.names,
                                                                                legend.names,
-                                                                               which.nonfunctional.covariate.comparisons)
+                                                                               which.nonfunctional.covariate.comparisons=which.nonfunctional.covariate.comparisons)
 
   ## datasets are reformmated, so that results plots and tables can be produced
   num_study<-reformatted.data.for.analysis.results$num_study;
@@ -293,14 +285,14 @@ view.all.results <- function(
                                                            functional.covariate.comparisons.for.sample.size,
                                                            add.number.at.risk.legend=add.number.at.risk.legend,
                                                            ylabel.for.plots.comparing.studies=ylabel.for.plots.comparing.studies,
-                                                           xlabel.for.plots.comparing.studies=xlabel.for.plots.comparing.studies,
+                                                           xlabel.for.plots.comparing.studies=xlabel.for.plots.comparing.studies
                                                            ################################
                                                            ## for computing sample sizes ##
                                                            ################################
-                                                           type1.error=NULL,
-                                                           type2.error=NULL,
-                                                           treatment.effect=NULL,
-                                                           dropout.rate=NULL
+                                                           #type1.error=NULL,
+                                                           #type2.error=NULL,
+                                                           #treatment.effect=NULL,
+                                                           #dropout.rate=NULL
   )
 
 
@@ -503,21 +495,30 @@ view.all.results <- function(
   ####################
   ## Number at risk ##
   ####################
-  get.number.at.risk <- function(nrisk){
-    nrisk.array <- apply(nrisk[,c("xx","zz","event","study")],2,unique)
-    nrisk.array$time <- paste("t",time_val,sep="")
-    nrisk.array <- array(0,dim=lapply(nrisk.array,length),
-                         dimnames=nrisk.array)
-    nrisk.array <- aperm(nrisk.array,c("study","event","zz","xx","time"))
-    number.at.risk <- unflatten.array(nrisk.array,
-                                      names(dimnames(nrisk.array)),
-                                      nrisk,flatten.name="time")
-    return(number.at.risk)
-  }
+
+
 
   if(real_data==TRUE){
 
-     number.at.risk <- get.number.at.risk(nrisk)
+    if(is.nrisk.data.frame==TRUE){
+
+        get.number.at.risk <- function(nrisk){
+          nrisk.array <- apply(nrisk[,c("xx","zz","event","study")],2,unique)
+          nrisk.array$time <- paste("t",time_val,sep="")
+          nrisk.array <- array(0,dim=lapply(nrisk.array,length),
+                               dimnames=nrisk.array)
+          nrisk.array <- aperm(nrisk.array,c("study","event","zz","xx","time"))
+          number.at.risk <- unflatten.array(nrisk.array,
+                                            names(dimnames(nrisk.array)),
+                                            nrisk,flatten.name="time")
+          return(number.at.risk)
+        }
+
+        number.at.risk <- get.number.at.risk(nrisk)
+
+     }else{
+     number.at.risk <- nrisk
+     }
   }
 
 
@@ -551,6 +552,8 @@ view.all.results <- function(
 
 
   ## nsimu
+ if (write.jprat.output==TRUE){
+  data.theta<-jprat.output$data.theta
   nsimu <- nrow(data.theta)/
     (num_study*np* 7 * (
       length(param.label) +  ## number of betas
@@ -560,69 +563,79 @@ view.all.results <- function(
       ## Ft.predicted
     )
     )
-
+ }
 
   ############
   ## counts ##
   ############
-
-  #if(1==0){ ## for testing
-  colnames(data.count) <- c("study","time","y1","y0_nocens","y0_cens","yother")
-  counts.array <- array(0,dim=c(nsimu,num_study,num_time,4),
-                        dimnames=list(
-                          paste("iter",1:nsimu,sep=""),
-                          paste("ss",1:num_study,sep=""),
-                          paste("t",time_val,sep=""),
-                          c("y1","y0_nocens","y0_cens","yother")))
-
-  for(ss in 1:num_study){
-    for(t in 1:num_time){
-      index <- intersect(which(data.count$study==ss),
-                         which(data.count$time==as.numeric(time_val[t])))
-      counts.array[,ss,t,] <- as.matrix(data.count[index,c("y1","y0_nocens",
-                                                           "y0_cens","yother")])
-    }
-  }
-  #}
-
-
-  ####################
-  ## counts outside ##
-  ####################
-  ##if(1==0){ ## for testing
-  colnames(data.count.outside) <- c("study","time","zero","ones")
-  counts.outside.array <- array(0,dim=c(nsimu,num_study,num_time,2),
-                                dimnames=list(
-                                  paste("iter",1:nsimu,sep=""),
-                                  paste("ss",1:num_study,sep=""),
-                                  paste("t",time_val,sep=""),
-                                  c("zero","ones")))
-
-  for(ss in 1:num_study){
-    for(t in 1:num_time){
-      index <- intersect(which(data.count.outside$study==ss),
-                         which(data.count.outside$time==as.numeric(time_val[t])))
-      counts.outside.array[,ss,t,] <-
-        as.matrix(data.count.outside[index,c("zero","ones")])
-    }
-  }
-  #} ## end test
+  #
+  #   #if(1==0){ ## for testing
+  #   colnames(data.count) <- c("study","time","y1","y0_nocens","y0_cens","yother")
+  #   counts.array <- array(0,dim=c(nsimu,num_study,num_time,4),
+  #                         dimnames=list(
+  #                           paste("iter",1:nsimu,sep=""),
+  #                           paste("ss",1:num_study,sep=""),
+  #                           paste("t",time_val,sep=""),
+  #                           c("y1","y0_nocens","y0_cens","yother")))
+  #
+  #   for(ss in 1:num_study){
+  #     for(t in 1:num_time){
+  #       index <- intersect(which(data.count$study==ss),
+  #                          which(data.count$time==as.numeric(time_val[t])))
+  #       counts.array[,ss,t,] <- as.matrix(data.count[index,c("y1","y0_nocens",
+  #                                                            "y0_cens","yother")])
+  #     }
+  #   }
+  #   #}
 
 
+  # ####################
+  # ## counts outside ##
+  # ####################
+  # ##if(1==0){ ## for testing
+  # colnames(data.count.outside) <- c("study","time","zero","ones")
+  # counts.outside.array <- array(0,dim=c(nsimu,num_study,num_time,2),
+  #                               dimnames=list(
+  #                                 paste("iter",1:nsimu,sep=""),
+  #                                 paste("ss",1:num_study,sep=""),
+  #                                 paste("t",time_val,sep=""),
+  #                                 c("zero","ones")))
+  #
+  # for(ss in 1:num_study){
+  #   for(t in 1:num_time){
+  #     index <- intersect(which(data.count.outside$study==ss),
+  #                        which(data.count.outside$time==as.numeric(time_val[t])))
+  #     counts.outside.array[,ss,t,] <-
+  #       as.matrix(data.count.outside[index,c("zero","ones")])
+  #   }
+  # }
+  # #} ## end test
 
+
+  # If  the  list  object  ”jprat.output”  contains  data.theta,  data.combi,
+  # then  you WILL need to run these lines in getresults.R.
+  # If the list object ”jprat.output” contains beta.array, alpha.array, etc,
+  # then you do NOT need to run the following lines of getresults.R.
   ######################
   ## organize results ##
   ######################
-  my.out <- sort.results(
+  ## jprat output: if write.output=TRUE, this function converts data frame output to arrays for beta, alphas and Ft
+
+  if (write.jprat.output==TRUE){
+
+  data.theta<-jprat.output$data.theta
+  data.combi<-jprat.output$data.combi
+
+  my.out <-sort.results(
     combi.names,
     num_study,
     simus=nsimu,
     time_val,param.label,
     num_xx,la,z.choice,
     time_choice.predicted,time_choice.predicted.toadd,
-    data.truth,
-    data.theta,
-    data.combi,
+    #data.truth,
+    data.theta=data.theta,
+    data.combi=data.combi,
     alpha.cut,
     beta.cut,
     theta.names,
@@ -633,11 +646,16 @@ view.all.results <- function(
     x_lab_names
   )
 
-  betat <- my.out$betat
-  alphat <- my.out$alphat
-  alphat.new <- my.out$alphat.new
-  Ft <- my.out$Ft
-  Ft.predicted <- my.out$Ft.predicted
+  #betat <- my.out$betat
+  #alphat <- my.out$alphat
+  #alphat.new <- my.out$alphat.new
+  #Ft <- my.out$Ft
+  #Ft.predicted <- my.out$Ft.predicted
+  betat <-NULL
+  alphat <-NULL
+  alphat.new <-NULL
+  Ft <-NULL
+  Ft.predicted <-NULL
   #
   beta.array <- my.out$beta.array
   alpha.array <- my.out$alpha.array
@@ -649,6 +667,38 @@ view.all.results <- function(
   alpha.diff.array <- my.out$alpha.diff.array
   Ft.diff.array <- my.out$Ft.diff.array
 
+  }else{
+
+      ########################
+      ## edit 08/07/2020  ####
+      ########################
+     #  beta.array<-jprat.output$beta.array
+     #  alpha.array<-jprat.output$alpha.array
+     #  #alpha.array.new <- aperm(alpha.array,c("iters","study","event","time","xx","theta","val"))
+     # #alpha.array.new=perm.alphaest.store,
+     #  Ft.array<-jprat.output$Ft.array
+     #  Ft.predicted.array<-jprat.output$Ft.predicted.array
+     #  beta.diff.array<-jprat.output$beta.diff.array
+     #  alpha.diff.array<-jprat.output$alpha.diff.array
+     #  Ft.diff.array<-jprat.output$Ft.diff.array
+
+
+      #data.combi<-jprat.output$data.combi
+
+      my.out<-sort.results.when.jprat.ouput.array(time_choice.predicted, num_study=num_study,
+                                                  out=jprat.output)
+
+      beta.array <- my.out$beta.array
+      alpha.array <- my.out$alpha.array
+      alpha.array.new<- my.out$alpha.array.new
+      Ft.array <- my.out$Ft.array
+      Ft.predicted.array<- my.out$Ft.predicted.array
+      #
+      beta.diff.array <- my.out$beta.diff.array
+      alpha.diff.array <- my.out$alpha.diff.array
+      Ft.diff.array <- my.out$Ft.diff.array
+
+  }
   ###############################################
   ## if other exists: get needed matrices	     ##
   ## used to compare COX with PROP ODD model   ##
@@ -936,18 +986,19 @@ view.all.results <- function(
     ####################################
     extra <- paste("_plot_", comp, sep="")
 
-    if(!is.null(data.theta.other) & combine.data==FALSE){
-      ## PLOT proportional odds and proportional hazards
-      if(plot.KM==TRUE){
-        color.list  <- c("blue","red","black")
-        label.names  <-  c("Proportional Odds","Proportional Hazards","Kaplan-Meier")
-        ##add.second.legend <- TRUE
-      } else{
-        color.list <- c("blue","black")
-        label.names <-  c("Proportional Odds","Kaplan-Meier")
-        ##add.second.legend <- TRUE
-      }
-    } else {
+    # if(!is.null(data.theta.other) & combine.data==FALSE){
+    #   ## PLOT proportional odds and proportional hazards
+    #   if(plot.KM==TRUE){
+    #     color.list  <- c("blue","red","black")
+    #     label.names  <-  c("Proportional Odds","Proportional Hazards","Kaplan-Meier")
+    #     ##add.second.legend <- TRUE
+    #   } else{
+    #     color.list <- c("blue","black")
+    #     label.names <-  c("Proportional Odds","Kaplan-Meier")
+    #     ##add.second.legend <- TRUE
+    #   }
+    # }
+    #else {
       ## ONLY plot proportional odds
       if(plot.KM==TRUE){
         color.list  <- c("blue","black")
@@ -958,7 +1009,7 @@ view.all.results <- function(
         label.names <-  c("Proportional Odds")
         ##add.second.legend <- TRUE
       }
-    }
+    #}
 
     ## update color list and label names
     plot.info$color.list=color.list
@@ -984,7 +1035,6 @@ view.all.results <- function(
       #########################################################################
 
     }
-
 
     for(ss in 1:num_study){
       ##legend.position <- legend.position.use
@@ -1025,8 +1075,14 @@ view.all.results <- function(
 
         }
 
-
         index_a <- s.names[nn.comparison[[nn_comp]]]
+#
+#         if(write.jprat.output=TRUE){
+#
+#         index_a <- s.names[nn.comparison[[nn_comp]]]
+#         }else{
+#           index_a <- s.names[nn.comparison[[nn_comp]]]
+#         }
 
         for(zz in 1:z.choice){
 
@@ -1061,7 +1117,7 @@ view.all.results <- function(
             #####################################
             # no examples but add documentations#
             #####################################
-
+            if(write.jprat.output==TRUE){
             ggplot_at_a_over_b(filename=paste("gg_",filename.set,sep=""),
                                estimate=adrop(Ft.array$out.mono.mean[ss,index_a,zz,i,,"est",drop=FALSE],
                                               drop=c(1,3,4,6)),
@@ -1081,8 +1137,29 @@ view.all.results <- function(
                                ylab.use=study.ylab,
                                xlab.use=study.xlab,
                                add.second.legend=add.second.legend)
-          }
 
+            }else{
+            ggplot_at_a_over_b(filename=paste("gg_",filename.set,sep=""),
+                               estimate=adrop(Ft.array$out.mono.mean[ss,,zz,i,,"est",drop=FALSE],
+                                              drop=c(1,3,4,6)),
+                               theta.array.lo=adrop(Ft.array$out.mono.mean[ss,,zz,i,,var.lo,drop=FALSE],
+                                                    drop=c(1,3,4,6)),
+                               theta.array.hi=adrop(Ft.array$out.mono.mean[ss,,zz,i,,var.hi,drop=FALSE],
+                                                    drop=c(1,3,4,6)),
+                               index_a=index_a,
+                               bvalues=time_val,
+                               bvalues.cut=time.cut,
+                               color.list=color.list,
+                               nrisk=adrop(number.at.risk[ss,index_a,zz,i,,drop=FALSE],drop=c(1,3,4)),
+                               margin.move=unit(c(0,-100,0,0),"mm"),
+                               ##cex.line=1,cex.size=12,
+                               ylim=ylim.setting["Ft",],
+                               conf.int=conf.int.use,label.names=label.names,
+                               ylab.use=study.ylab,
+                               xlab.use=study.xlab,
+                               add.second.legend=add.second.legend)
+          }
+}
           if(plot.parameters==TRUE){
 
             if(show.results.description==TRUE){
@@ -1341,6 +1418,7 @@ view.all.results <- function(
                              ylab.use=study.ylab,
                              xlab.use=study.xlab,
                              add.second.legend=add.second.legend)
+
         }
 
 
@@ -1464,15 +1542,15 @@ view.all.results <- function(
 
 
 
-  #####################
-  ## plot the counts ##
-  #####################
-  if(1==0){ ## for testing
-    for(ss in 1:num_study){
-      plot.counts(paste("ss_",study.names[ss],"_",filename_new,"beta",sep=""),time_val,
-                  adrop(counts.array[,ss,,,drop=FALSE],drop=2))
-    }
-  }
+  # #####################
+  # ## plot the counts ##
+  # #####################
+  # if(1==0){ ## for testing
+  #   for(ss in 1:num_study){
+  #     plot.counts(paste("ss_",study.names[ss],"_",filename_new,"beta",sep=""),time_val,
+  #                 adrop(counts.array[,ss,,,drop=FALSE],drop=2))
+  #   }
+  # }
 
 
 
@@ -1481,46 +1559,46 @@ view.all.results <- function(
   ## Print results ##
   ###################
 
-  ###################
-  ## count results ##
-  ###################
-  if(1==0){ ## for testing
+  # ###################
+  # ## count results ##
+  # ###################
+  # if(1==0){ ## for testing
+  #
+  #   if(show.results.description==TRUE){
+  #
+  #     ########################################
+  #     cat("\n\n ## Counting results \n\n")  ##
+  #     ########################################
+  #
+  #   }
+  #
+  #   for(ss in 1:num_study){
+  #     cat("\n\n ## Study ",study.names[ss],"## \n\n")
+  #     print(xtable(apply(adrop(counts.array[,ss,,,drop=FALSE],drop=2),c(2,3),mean),
+  #                  digits=digits.tmp))
+  #   }
+  # }
 
-    if(show.results.description==TRUE){
 
-      ########################################
-      cat("\n\n ## Counting results \n\n")  ##
-      ########################################
-
-    }
-
-    for(ss in 1:num_study){
-      cat("\n\n ## Study ",study.names[ss],"## \n\n")
-      print(xtable(apply(adrop(counts.array[,ss,,,drop=FALSE],drop=2),c(2,3),mean),
-                   digits=digits.tmp))
-    }
-  }
-
-
-  ###########################
-  ## count outside results ##
-  ###########################
-  if(1==0){ ## for testing
-
-    if(show.results.description==TRUE){
-
-      ############################################################
-      cat("\n\n ## Counting Pseudo-values outside [0,1] \n\n")
-      ############################################################
-
-    }
-
-    for(ss in 1:num_study){
-      cat("\n\n ## Study ",study.names[ss],"## \n\n")
-      print(xtable(apply(adrop(counts.outside.array[,ss,,,drop=FALSE],drop=2),c(2,3),mean),
-                   digits=digits.tmp))
-    }
-  } ## end test
+  # ###########################
+  # ## count outside results ##
+  # ###########################
+  # if(1==0){ ## for testing
+  #
+  #   if(show.results.description==TRUE){
+  #
+  #     ############################################################
+  #     cat("\n\n ## Counting Pseudo-values outside [0,1] \n\n")
+  #     ############################################################
+  #
+  #   }
+  #
+  #   for(ss in 1:num_study){
+  #     cat("\n\n ## Study ",study.names[ss],"## \n\n")
+  #     print(xtable(apply(adrop(counts.outside.array[,ss,,,drop=FALSE],drop=2),c(2,3),mean),
+  #                  digits=digits.tmp))
+  #   }
+  # } ## end test
 
 
   ########################

@@ -8,7 +8,7 @@ This function returns warning message if the criteria are not met for \code{func
 \usage{
 criteria.time.points.for.jprat.analysis(
   study.names,
-  data.file.names,
+  input.data.list,
   time.points.for.prediction,
   nonfunctional.covariate.names,
   functional.covariate.names,
@@ -24,7 +24,7 @@ criteria.time.points.for.jprat.analysis(
 \arguments{
 \item{study.names}{See this argument in the \code{\link{jprat.wrapper}} function.}
 
-\item{data.file.names}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{input.data.list}{See this argument in the \code{\link{jprat.wrapper}} function.}
 
 \item{time.points.for.prediction}{See this argument in the \code{\link{jprat.wrapper}} function.}
 
