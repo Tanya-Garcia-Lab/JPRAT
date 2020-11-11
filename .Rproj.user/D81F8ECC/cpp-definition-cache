@@ -1,17 +1,17 @@
 [
     {
-        "definitions" : [
+        "file": "C:/Users/unkyung/Pictures/JPRAT/src/init.c",
+        "file_last_write": 1594996731.0,
+        "definitions": [
             {
-                "column" : 6,
-                "file" : "C:/Users/unkyung/Desktop/JPRAT/src/init.c",
-                "kind" : 6,
-                "line" : 18,
-                "name" : "R_init_JPRAT(DllInfo *)",
-                "parent_name" : "",
-                "usr" : "c:@F@R_init_JPRAT#*$@S@_DllInfo#"
+                "usr": "c:@F@R_init_JPRAT",
+                "kind": 6,
+                "parent_name": "",
+                "name": "R_init_JPRAT(DllInfo *)",
+                "file": "C:/Users/unkyung/Pictures/JPRAT/src/init.c",
+                "line": 21,
+                "column": 6
             }
-        ],
-        "file" : "C:/Users/unkyung/Desktop/JPRAT/src/init.c",
-        "file_last_write" : 1580630499
+        ]
     }
 ]

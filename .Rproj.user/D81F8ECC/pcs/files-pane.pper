@@ -1,13 +1,13 @@
 {
-    "path" : "C:/Users/unkyung/Desktop/JPRAT/R",
-    "sortOrder" : [
+    "path": "C:/Users/unkyung/Pictures/JPRAT/man",
+    "sortOrder": [
         {
-            "ascending" : true,
-            "columnIndex" : 2
+            "columnIndex": 2,
+            "ascending": true
         },
         {
-            "ascending" : false,
-            "columnIndex" : 4
+            "columnIndex": 4,
+            "ascending": false
         }
     ]
 }
