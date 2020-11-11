@@ -30,10 +30,12 @@ You can install the development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("tpgarcia/JPRAT")
+devtools::install_github("unkyunglee/JPRAT")
 ```
 ## Usage
 We applied two different data sets to run JPRAT function and get results depending on whether study and event are analyzed separately.
+
+
 ```{r usage, results="hide", message=FALSE}
 library(JPRAT)
 
