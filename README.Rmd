@@ -14,7 +14,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-# JPRAT
 
 <!-- badges: start -->
 The R package `JPRAT` is the Joint Progression of Risk Assessment Tool, which evaluates and compares all outcomes simultaneously across multiple studies and adjusts for outcome dependencies. The JPRAT is an estimation procedure that handles multiple data hierarchy using an additive logistic mixed effect model. This algorithm handles censoring with pseudo-values and functional covariate effects with splines. The description for the detailed estimation procedure is in the following paper:

@@ -3,8 +3,6 @@ JPRAT
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# JPRAT
-
 <!-- badges: start -->
 
 The R package `JPRAT` is the Joint Progression of Risk Assessment Tool,
