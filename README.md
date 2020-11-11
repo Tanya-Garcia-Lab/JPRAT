@@ -366,23 +366,6 @@ what.analyzed.separately= "none"
       is.nrisk.data.frame=is.nrisk.data.frame,
       write.jprat.output=write.jprat.output
     )
-#> Warning: Continuous limits supplied to discrete scale.
-#> Did you mean `limits = factor(...)` or `scale_*_continuous()`?
 ```
 
-<img src="man/figures/README-usage-1.png" width="100%" />
-
-    #> Warning: Continuous limits supplied to discrete scale.
-    #> Did you mean `limits = factor(...)` or `scale_*_continuous()`?
-
-<img src="man/figures/README-usage-2.png" width="100%" />
-
-    #> Warning: Continuous limits supplied to discrete scale.
-    #> Did you mean `limits = factor(...)` or `scale_*_continuous()`?
-
-<img src="man/figures/README-usage-3.png" width="100%" />
-
-    #> Warning: Continuous limits supplied to discrete scale.
-    #> Did you mean `limits = factor(...)` or `scale_*_continuous()`?
-
-<img src="man/figures/README-usage-4.png" width="100%" /><img src="man/figures/README-usage-5.png" width="100%" />
+<img src="man/figures/README-usage-1.png" width="100%" /><img src="man/figures/README-usage-2.png" width="100%" /><img src="man/figures/README-usage-3.png" width="100%" /><img src="man/figures/README-usage-4.png" width="100%" /><img src="man/figures/README-usage-5.png" width="100%" />

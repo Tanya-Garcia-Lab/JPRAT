@@ -35,7 +35,7 @@ devtools::install_github("unkyunglee/JPRAT")
 We applied two different data sets to run JPRAT function and get results depending on whether study and event are analyzed separately.
 
 
-```{r usage, results="hide", message=FALSE}
+```{r usage, echo = T,  results="hide", message=FALSE, warning=FALSE}
 library(JPRAT)
 
 
