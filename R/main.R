@@ -2256,7 +2256,6 @@ data.reformatted.for.jprat.analysis<-function(use_real_data,
 
   #nonfunctional.covariate.names="base_age"  ##<- make.data.for.analysis$nonfunctional.covariate.names ## base_age   ## z1
 
-
   #####################################
   ## checking foramt :       base_age
   ##                    ## A      40
