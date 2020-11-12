@@ -43,7 +43,7 @@ library(JPRAT)
 
 ## Four options whether study and event are analyzed separately:
 ## what.analyzed.separately="studyevent", "event", "study" or "none"
-what.analyzed.separately= "none"
+what.analyzed.separately= "studyevent"
 
 
 ## Load your data in the list format: should match order of study.names
@@ -115,7 +115,7 @@ what.analyzed.separately= "none"
 
     use.bootstrap.variance=TRUE;
     estimation.when.censoring.depends.on.z=FALSE ;
-    write.output=TRUE;
+    write.output=FALSE;
     
     
 
@@ -197,7 +197,7 @@ what.analyzed.separately= "none"
      functional.covariate.values.of.interest,
      time.points.for.prediction,
      estimated.parameters.common.for.all.studies,
-     write.output=TRUE
+     write.output=FALSE
      )
 
     
@@ -368,4 +368,4 @@ what.analyzed.separately= "none"
     )
 ```
 
-<img src="man/figures/README-usage-1.png" width="100%" /><img src="man/figures/README-usage-2.png" width="100%" /><img src="man/figures/README-usage-3.png" width="100%" /><img src="man/figures/README-usage-4.png" width="100%" /><img src="man/figures/README-usage-5.png" width="100%" />
+<img src="man/figures/README-usage-1.png" width="100%" /><img src="man/figures/README-usage-2.png" width="100%" /><img src="man/figures/README-usage-3.png" width="100%" /><img src="man/figures/README-usage-4.png" width="100%" /><img src="man/figures/README-usage-5.png" width="100%" /><img src="man/figures/README-usage-6.png" width="100%" /><img src="man/figures/README-usage-7.png" width="100%" /><img src="man/figures/README-usage-8.png" width="100%" /><img src="man/figures/README-usage-9.png" width="100%" /><img src="man/figures/README-usage-10.png" width="100%" />
