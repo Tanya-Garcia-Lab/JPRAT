@@ -34,6 +34,11 @@
       delta.names=c("delta.hdage_nobase", "delta.mcione", "delta.dep2");
       nonfunctional.covariate.names=c("base_age");
       functional.covariate.names="CAG";
+      time.points.for.prediction=seq(46, 66, by=5);
+      time.points.for.conditional.prediction=c(46,51, 56);
+      time.points.for.conditional.prediction.toadd=c(5);
+      nonfunctional.covariate.value=c(40);
+      functional.covariate.values.of.interest=c(46, 48, 50) ;
 
     }else if(what.analyzed.separately== "none"||what.analyzed.separately=="study"){
 
@@ -43,34 +48,14 @@
       delta.names=c("delta.event1", "delta.event2");
       nonfunctional.covariate.names=c("base_age");
       functional.covariate.names="CAG";
+      time.points.for.prediction=  c(seq(40,60,by=1));
+      time.points.for.conditional.prediction=c(40, 55);
+      time.points.for.conditional.prediction.toadd=c(5,10);
+      nonfunctional.covariate.value=c(42);
+      functional.covariate.values.of.interest=c(42);
 
     }
 
-
-    if(what.analyzed.separately=="event"||what.analyzed.separately=="studyevent"){
-
-        time.points.for.prediction=seq(46, 66, by=5);
-        time.points.for.conditional.prediction=c(46,51, 56);
-        time.points.for.conditional.prediction.toadd=c(5);
-        nonfunctional.covariate.value=c(40);
-        functional.covariate.values.of.interest=c(46, 48, 50) ;
-
-    }else if(what.analyzed.separately=="none"||what.analyzed.separately=="study"){
-
-
-        time.points.for.prediction=  c(seq(40,60,by=1))
-        time.points.for.conditional.prediction=c(40, 55);
-        time.points.for.conditional.prediction.toadd=c(5,10);
-        nonfunctional.covariate.value=c(42)
-        functional.covariate.values.of.interest=c(42)
-
-    }
-
-
-    number.of.bootstraps=10;
-    use.functional.beta.intercept= TRUE ;
-    use.functional.event.coefficients= TRUE;
-    use.functional.study.coefficients=TRUE;
 
     if(what.analyzed.separately!="none"){
       check.study.equality=FALSE
@@ -80,9 +65,13 @@
       estimated.parameters.common.for.all.studies=TRUE
     }
 
+    number.of.bootstraps=10;
+    use.functional.beta.intercept= TRUE ;
+    use.functional.event.coefficients= TRUE;
+    use.functional.study.coefficients=TRUE;
     use.bootstrap.variance=TRUE;
     estimation.when.censoring.depends.on.z=FALSE ;
-    write.output=TRUE;
+    write.output=FALSE;
 
 #############################################
 ## a function to estimate JPRAT algorithm  ##
@@ -164,7 +153,7 @@
      functional.covariate.values.of.interest,
      time.points.for.prediction,
      estimated.parameters.common.for.all.studies,
-     write.output=TRUE
+     write.output=FALSE
      )
 
 
@@ -180,6 +169,12 @@
       time.points.of.interest= c(46, 56);
       time.points.of.interest.ci=seq(46, 66, by=5);
       functional.covariate.comparisons=c(46, 51);
+      time.points.for.prediction=seq(46, 66, by=5);
+      functional.covariate.values.of.interest=c(46, 48, 50) ;
+      nonfunctional.covariate.value=c(40);
+      color.names=c("firebrick1", "darkgreen", "black"); ## for color.label.key
+      legend.names=c("Motor Diagnosis (DCL=4)") #, "Cognitive Impairment", "Stage II TFC")
+
 
     }else{
 
@@ -187,37 +182,14 @@
       time.points.of.interest= c(40, 55);
       time.points.of.interest.ci=seq(40, 60, by=5);# c(seq(40,60,by=1))
       functional.covariate.comparisons=c(40, 55);
-
-    }
-
-
-
-      if(what.analyzed.separately=="event"||what.analyzed.separately=="studyevent"){
-
-        time.points.for.prediction=seq(46, 66, by=5);
-        functional.covariate.values.of.interest=c(46, 48, 50) ;
-        nonfunctional.covariate.value=c(40);
-
-      }else if(what.analyzed.separately=="none"||what.analyzed.separately=="study"){
-
-        time.points.for.prediction=  c(seq(40,60,by=1))
-        functional.covariate.values.of.interest=c(42);
-        nonfunctional.covariate.value=c(42);
-
-      }
-
-
-    if(what.analyzed.separately=="event"||what.analyzed.separately=="studyevent"){
-
-        color.names=c("firebrick1", "darkgreen", "black"); ## for color.label.key
-        legend.names=c("Motor Diagnosis (DCL=4)") #, "Cognitive Impairment", "Stage II TFC")
-
-    }else if(what.analyzed.separately=="none"||what.analyzed.separately=="study"){
-
+      time.points.for.prediction=  c(seq(40,60,by=1))
+      functional.covariate.values.of.interest=c(42);
+      nonfunctional.covariate.value=c(42);
       color.names=c("firebrick1", "darkgreen"); ## for color.label.key
       legend.names=c("event1", "event2"); #c("Motor Diagnosis (DCL=4)", "Cognitive Impairment")
 
     }
+
 
     do.plots=TRUE;
     plot.confidence.intervals=TRUE;
@@ -238,13 +210,11 @@
       is.nrisk.data.frame=FALSE;
       write.jprat.output=FALSE;
     }
+
     ####################################
     ## functions to get default values #
     ####################################
     #default.options<-default.options.for.data.setting()
-
-
-
 
     if(what.analyzed.separately=="studyevent"){
 
