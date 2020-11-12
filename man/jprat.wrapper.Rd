@@ -114,61 +114,69 @@ The Joint Progression of Risk Assessment Tool (JPRAT) evaluates and compares all
 }
 \examples{
 
+## See more examples man/example.R
+
+## Four options whether study and event are analyzed separately:
+## what.analyzed.separately="studyevent", "event", "study" or "none"
+
+what.analyzed.separately= "event"
+
+## Load your data in the list format: should match order of study.names
+## Choose different list of data depending on the settings such as
+
+input.data.list=list(cohort=data_cohort, predict=data_predict, pharos=data_pharos);
 ####################################
 # For JPRAT estimation: Input data #
 ####################################
+
 study.names=c("cohort", "predict", "pharos");
-input.data.list=list(cohort=data_cohort, predict=data_predict, pharos=data_pharos);
+othercovariate.names=c("firstyear", "lastyear");
+event.outcome.names=c("hdage_nobase", "mcione", "dep2");
+delta.names=c("delta.hdage_nobase", "delta.mcione", "delta.dep2");
 nonfunctional.covariate.names=c("base_age");
 functional.covariate.names="CAG";
-othercovariate.names=c("firstyear", "lastyear");
-event.outcome.names=c("hdage_nobase", "mcione", "tfctwo");
-delta.names=c("delta.hdage_nobase", "delta.mcione", "delta.tfctwo");
-time.points.for.prediction=seq(46, 66, by=5)
-time.points.for.conditional.prediction=c(46, 51, 56);
+
+time.points.for.prediction=seq(46, 66, by=5);
+time.points.for.conditional.prediction=c(46,51, 56);
 time.points.for.conditional.prediction.toadd=c(5);
 nonfunctional.covariate.value=c(40);
 functional.covariate.values.of.interest=c(46, 48, 50) ;
 
-#######################################
-# How to analysis in JPRAT estimation #
-#######################################
-number.of.bootstraps=100;
+number.of.bootstraps=10;
 use.functional.beta.intercept= TRUE ;
 use.functional.event.coefficients= TRUE;
 use.functional.study.coefficients=TRUE;
-check.study.equality=FALSE;
-what.analyzed.separately="studyevent";
-estimated.parameters.common.for.all.studies=FALSE;
-use.bootstrap.variance=TRUE ;
+check.study.equality=FALSE
+estimated.parameters.common.for.all.studies=FALSE
+
+use.bootstrap.variance=TRUE;
 estimation.when.censoring.depends.on.z=FALSE ;
-estimate.variances="est";
 write.output=TRUE;
 
+#############################################
+## a function to estimate JPRAT algorithm  ##
+#############################################
 
-
-jprat.estimate.results<-jprat.wrapper(study.names=study.names,
-  input.data.list=input.data.list,
-  nonfunctional.covariate.names=nonfunctional.covariate.names,
-  functional.covariate.names=functional.covariate.names,
-  othercovariate.names=othercovariate.names,
-  event.outcome.names=event.outcome.names,
-  delta.names=delta.names,
-  time.points.for.prediction=time.points.for.prediction,
-  time.points.for.conditional.prediction=time.points.for.conditional.prediction,
-  time.points.for.conditional.prediction.toadd=time.points.for.conditional.prediction.toadd,
-  nonfunctional.covariate.value=nonfunctional.covariate.value,
-  functional.covariate.values.of.interest=functional.covariate.values.of.interest,
-  number.of.bootstraps=number.of.bootstraps,
-  use.functional.beta.intercept=use.functional.beta.intercept,
-  use.functional.event.coefficients=use.functional.event.coefficients,
-  use.functional.study.coefficients=use.functional.study.coefficients,
-  check.study.equality=check.study.equality,
-  estimated.parameters.common.for.all.studies=estimated.parameters.common.for.all.studies,
-  what.analyzed.separately=what.analyzed.separately,
-  estimation.when.censoring.depends.on.z=estimation.when.censoring.depends.on.z,
-  use.bootstrap.variance=use.bootstrap.variance,
-  estimate.variances=estimate.variances,
-  write.output=write.output)
+jprat.estimat.results<-jprat.wrapper(study.names=study.names,
+                                    input.data.list=input.data.list,
+                                    nonfunctional.covariate.names=nonfunctional.covariate.names,
+                                    functional.covariate.names=functional.covariate.names,
+                                    othercovariate.names=othercovariate.names,
+                                    event.outcome.names=event.outcome.names,
+                                    delta.names=delta.names,
+                                    time.points.for.prediction=time.points.for.prediction,
+                                    time.points.for.conditional.prediction=time.points.for.conditional.prediction,
+                                    time.points.for.conditional.prediction.toadd=time.points.for.conditional.prediction.toadd,
+                                    nonfunctional.covariate.value=nonfunctional.covariate.value,
+                                    functional.covariate.values.of.interest=functional.covariate.values.of.interest,
+                                    number.of.bootstraps=number.of.bootstraps,
+                                    use.functional.beta.intercept=use.functional.beta.intercept,
+                                    use.functional.event.coefficients=use.functional.event.coefficients,
+                                    use.functional.study.coefficients=use.functional.study.coefficients,
+                                    check.study.equality=check.study.equality,
+                                    estimated.parameters.common.for.all.studies=estimated.parameters.common.for.all.studies,
+                                    what.analyzed.separately=what.analyzed.separately,
+                                    estimation.when.censoring.depends.on.z=estimation.when.censoring.depends.on.z,
+                                    use.bootstrap.variance=use.bootstrap.variance, write.output=write.output)
 
 }
