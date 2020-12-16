@@ -532,9 +532,7 @@ generate.datasets <- function(#method=c("gamm4","new")[1],
   x_tmp.list=NULL,
   delta_tmp.list=NULL,
   s_tmp.list=NULL,
-  #knot.length,
   randomeffects.covariates.dependent,
-  #family.data,
   num_study=num_study,
   np=np,
   lb=lb,
@@ -551,17 +549,11 @@ generate.datasets <- function(#method=c("gamm4","new")[1],
   ## set terms ##
   ###############
 
-  ## number of time points for evaluation
-  #num_time <- length(time_val)
-
   ## number of x's at which to evaluate alpha(x,t)
   num_xx <- max(unlist(lapply(xks,length.apply)))
 
   ## maximum number of event types
   maxm <- max(m)
-
-  ## maximum sample size across all studies
-  #nmax <- max(n)
 
   if(num_study > 1){
     ## used to get all combinations to compare equality of studies.
@@ -616,37 +608,21 @@ generate.datasets <- function(#method=c("gamm4","new")[1],
 
     n<-length(data$z_start[ss,,1,1][data$z_start[ss,,1,1]!=0])
 
-
     z1.event1<-data$z_start[ss,1:n,1,]
     z1.event2<-data$z_start[ss,1:n,2,]
-    #z1<-data$z_start[2,1:500,1,]
-    #z2<-data$z_start[2,1:500,2,]
 
     CAG<-data$x_start[ss,1:n]
-    #CAG<-data$x_start[2,1:500]
 
     event1<-data$s_start[ss,1:n,1]
     event2<-data$s_start[ss,1:n,2]
-    #event1<-data$s_start[2,1:500,1]
-    #event2<-data$s_start[2,1:500,2]
-
-
-    #event1<-data$s_start[1,1:400,1]
-    #event2<-data$s_start[1,1:400,2]
-    #event1<-data$s_start[2,1:500,1]
-    #event2<-data$s_start[2,1:500,2]
 
     delta.event1<-data$delta_start[ss,1:n,1]
     delta.event2<-data$delta_start[ss,1:n,2]
-    #delta.event1<-data$delta_start[2,1:500,1]
-    #delta.event2<-data$delta_start[2,1:500,2]
+
 
     data.event<-cbind(z1.event1, z1.event2, CAG, event1, event2, delta.event1, delta.event2)
     data.sets[[ss]]<-data.event
   }
-
-
-
 
 
 
@@ -691,19 +667,11 @@ generate.datasets <- function(#method=c("gamm4","new")[1],
 
   }
 
-  #filename <- paste("output_iseed_",iseed,".dat",sep="")
   if(write.output==TRUE){
-
-
-    #write.table(data,paste("out_data_",filename,sep=""),
-    #            col.names=FALSE,row.names=FALSE)
 
     write.csv(input.data.sets[[1]], file="simu_data1_for_jprat.csv")
     write.csv(input.data.sets[[2]], file="simu_data2_for_jprat.csv")
   }
-
-
-
 
 
   #return(data)

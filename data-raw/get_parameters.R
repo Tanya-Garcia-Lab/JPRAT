@@ -103,8 +103,7 @@ get.parameters<-function(param.setting){
   if(!exists(as.character(substitute(fxform)))){
 
     fxform <- "unif"
-    ##fxform <- "uniR"
-    ##fxform <- "norR"
+
   }
 
   ## random effect R and covariates X,Z dependent?
@@ -135,7 +134,6 @@ get.parameters<-function(param.setting){
     ## Data setup for simulation study  ##
     ######################################
 
-    #simus <- 1 			 ## number of simulations, 10
     study.names <- 1:num_study     ## names of the study
 
 
@@ -146,15 +144,12 @@ get.parameters<-function(param.setting){
     } else if(num_study==3){
       n <- c(300,400,500)
     }
-    #n <- rep(500,num_study)
-    #n <- rep(100,num_study)
 
-    if(num_study==1){              ## censoring rates
+    ## censoring rates
+    if(num_study==1){
       censorrate <- 30
-      ##censorrate <- 0
     } else if(num_study==2){
       censorrate <- c(30,50)
-      ##censorrate <- c(0,0)
     } else if(num_study==3){
       censorrate <- c(0,30,50)
     }
@@ -182,11 +177,6 @@ get.parameters<-function(param.setting){
        xks[[ss]] <- seq(0,1,by=0.01)
      }
 
-    ## x's to show results at. Common for ALL studies.
-    # xx_choice <- c(0.5)
-
-    ## alpha(x,t) label in x-dimension
-    # alphax_lab <- xx_choice * 100
 
     ##########################
     ## alpha(x,t) functions ##
@@ -254,13 +244,11 @@ get.parameters<-function(param.setting){
     } else if(np==3){
       gamma.param <- c(0,0.5,1)
     }
-    ##gamma.param <- NULL
+
 
     ##################################
     ## True parameter values: omega ##
     ##################################
-
-    ## omega_s
     ## omega_s represents the difference between study s and (s-1)
     if(num_study==1){
       omega.param <- 0
@@ -274,7 +262,7 @@ get.parameters<-function(param.setting){
       ## there are no differences between the studies.
       omega.param <- rep(0,num_study)
     }
-    ##omega.param <- NULL
+
 
     if(common.param.estimation==TRUE){
       omega.param <- NULL
@@ -283,10 +271,9 @@ get.parameters<-function(param.setting){
     ####################################################
     ## True parameter values: beta0(t)=beta * gtmod() ##
     ####################################################
-
     ## beta0int: intercept
     beta0int <- 0.25
-    ##beta0int <- NULL
+
 
     ##################################################
     ## True parameter values:beta(t)=beta * gtmod() ##
@@ -395,10 +382,10 @@ get.parameters<-function(param.setting){
     ### dimension of beta: lb ##
     ############################
     ### lb: list of beta_is dimensions for each study
-     lb <- lapply(beta0,double.length.apply)
+    lb <- lapply(beta0,double.length.apply)
 
     ### lb.max: maximum dimension in lb
-     lb.max <- max(unlist(lb))
+    lb.max <- max(unlist(lb))
 
 
     ###################################################
@@ -414,7 +401,6 @@ get.parameters<-function(param.setting){
   #####################################################
   ## set terms needed whether real_data=TRUE or FALSE##
   #####################################################
-
   ## m: number of events in each study for each subject
   m <- array(0,dim=c(num_study,nmax),
              dimnames=list(
@@ -427,7 +413,7 @@ get.parameters<-function(param.setting){
   ## for kaplan-meier jack-knife implementation (these are all equal to np: number of events)
   maxm  <- max(m)
   p <- np
-  # m0_qvs <- p
+
 
   ##########################################
   ## choice for a0: alpha(x,t)=a0*axmod() ##
@@ -600,7 +586,6 @@ get.parameters<-function(param.setting){
     par2_fr <- rep(0,num_study)  # ncp
     par3_fr <- rep(1.5,num_study) ## u random effect variance
     mix_n<-NULL
-
   } else if(frform=="mixn"){
     ## mixture of normal reffect
     par1_fr <- rep(3,num_study)  # mean1
