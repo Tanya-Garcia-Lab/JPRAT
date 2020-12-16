@@ -29,16 +29,20 @@ get.parameters<-function(param.setting){
     num_study <- 2
     frform <- "norm"
 
-    #This states that we generate data where the true model has shared study parameters ("Parameter Setting B" in the Biostatistics paper): TRUE
-    #This states that we generate data where the true model has distinct study parameters ("Parameter Setting A" in the Biostatistics paper): FALSE
-    common.param.data <- FALSE #TRUE
-    #We do not analyze the data separately. Results when we estimated under Model A: a Joint model with distinct study parameters.
-    analyze.separately <- "none"
+    ##This states that we generate data where the true model has shared study parameters
+    ##if common.param.data=TRUE, then parameters are generated from Setting B in Garcia et al., Biostatistics, (2017).
+    ##if common.param.data=FALSE, then parameters are generated from Setting A in Garcia et al., Biostatistics, (2017).
 
-    #Results when we estimated under Model A: a Joint model with distinct study parameters.
+    common.param.data <- FALSE #TRUE
+
+    ##want to generate under the condition of not analyzing the data separately.
+    ##Under Model A: a Joint model with distinct study parameters.
+
+    analyze.separately <- "none"
     common.param.estimation <- FALSE
-    #defined as 30, but it is actually 40%. Check the output.
-    censorrate <- rep(30,num_study)  ## actually it is 40, check output
+
+    #Censoring rate was defined as 30, but it is actually 40%.
+    censorrate <- rep(30,num_study)
     write.output<-TRUE
 
     }else{
@@ -79,17 +83,12 @@ get.parameters<-function(param.setting){
     type_fx <- "none"
   }
 
-  ## frform: specification of density for random effect R (this is "v" in the paper).
-  # if(!exists(as.character(substitute(frform)))){
-  #   frform <- "norm"
-  # }
 
   ## fzrform: specification of density for covariate Z.
   if(!exists(as.character(substitute(fzrform)))){
-    ##fzrform <- "binom"
-    fzrform <- "unif" ##1/23/2017: "unif" is the default choice and what we use for results in paper.
-    ##fzrform <- "norR"
-    ##fzrform <- "uniR"
+    ##1/23/2017: "unif" is the default choice and what we use for results in paper.
+    fzrform <- "unif"
+
   }
 
   ## generate data so that censoring depends on z (when Z=binary)
@@ -172,21 +171,6 @@ get.parameters<-function(param.setting){
 
     ## number of time points for evaluation
     num_time <- length(time_val)
-
-    ## where to do predicted probabilities: Pr(T<t|T >= t0)
-    ## time_choice.predicted, and time_choice.predicted + *.toadd must be in time_val
-    # time_choice.predicted <- c(40,45)
-    # time_choice.predicted.toadd  <- c(5,10)
-    #
-    # ## time points to show individual results at and label for alpha(x,t)
-    # time_choice <- c(45,55)
-    #alphat_lab <- time_choice
-
-    ## 6/1/2017: time_choice no longer a list
-    ##time_choice <-  get.empty.list(paste("study",1:num_study,sep=""))
-    ##for(ss in 1:num_study){
-    ##  time_choice[[ss]] <- c(45,55)
-    ##}
 
     ##############
     ## X's used ##
@@ -407,46 +391,14 @@ get.parameters<-function(param.setting){
       }
     }
 
-    # ###########################
-    # ## dimension of beta: lb ##
-    # ###########################
-    # ## lb: list of beta_is dimensions for each study
+    ############################
+    ### dimension of beta: lb ##
+    ############################
+    ### lb: list of beta_is dimensions for each study
      lb <- lapply(beta0,double.length.apply)
-    #
-    # ## lb.max: maximum dimension in lb
+
+    ### lb.max: maximum dimension in lb
      lb.max <- max(unlist(lb))
-
-    ## beta_lab: label of beta_is parameters
-    # beta_lab <- lapply(lb,double.get.label)
-
-    ########################################
-    ## Where to evaluate z's at		##
-    ## z.choice: number of z evaluations	##
-    ########################################
-    # z.choice <- 2
-    # #z.choice <- 1
-
-    ## zeval: where to evaluate z's at in each study
-    # zeval <- array(0,dim=c(num_study,z.choice,np,lb.max),
-    #                dimnames=list(
-    #                  paste("ss",1:num_study,sep=""),
-    #                  paste("zz",1:z.choice,sep=""),
-    #                  paste("np",1:np,sep=""),
-    #                  paste("lb",1:lb.max,sep="")))
-
-    # if(fzrform=="unif"){
-    #   zeval[,1,,] <- 0.50
-    #   zeval[,2,,] <- 0.75
-    # } else if(fzrform=="binom"){
-    #   zeval[,1,,] <- 0
-    #   zeval[,2,,] <- 1
-    # }
-
-    # ## label for z's
-    #  z_lab <- c("1","2")
-    #
-    # ##zeval[,1,,] <- 1.5
-    # ##z_lab <- c("1")
 
 
     ###################################################
@@ -455,31 +407,6 @@ get.parameters<-function(param.setting){
     ###################################################
     xmin <- NULL
     xmax <- NULL
-    # z_tmp <- NULL
-    # x_tmp <- NULL
-    # s_tmp <- NULL
-    # delta_tmp <- NULL
-    # ii.choose <- NULL
-
-    #################
-    ## For results ##
-    #################
-    # do.plots <- FALSE ## do we show plots?
-    # conf.int.use <- TRUE  ## do we show CIs?
-    # alpha.cut <- NULL
-    # beta.cut <- NULL
-    # ylim.set <- c(-5,5)	  ## y-axis limits for plots
-    # ylim.x <- c(-8,8)
-    # ylim.beta <- c(-8,8)
-    # ylim.time <- c(-8,8)
-    # ylim.Ft <- c(0,1.2)
-    # round.set <- 2
-    # xx_choice.ci <- xx_choice
-    # time_choice.ci <- time_choice
-    # list.name <- paste("np",1:np,sep="")
-    # s.names <- list.name
-    # s.names.short <- 1:np
-    # legend.position.use <- "topleft"
 
 
   }
@@ -633,25 +560,6 @@ get.parameters<-function(param.setting){
   }
 
 
-  ###############
-  ## for gamm4 ##
-  ###############
-  ## number of knots
-  # get.knot <- function(axmod){
-  #   if(axmod=="wah4" | axmod=="wah3" | axmod=="real"){
-  #     a <- 8
-  #   } else {
-  #     a <- 5
-  #   }
-  #   return(a)
-  # }
-
-  ## knot length
-  # knot.length <- NULL
-  # for(k in 1:np){
-  #   knot.length <- c(knot.length,get.knot(axmod[k]))
-  # }
-
   ## dim of alpha(x,t) in x-dimension
   la <- 1
 
@@ -734,16 +642,8 @@ get.parameters<-function(param.setting){
     par2_fx <- rep(1,num_study)  # hi
   }
 
-  #########################
-  ## for plotting output ##
-  #########################
-  # plot.nw <- FALSE	## plot.nw: do we produce Nadaraya-Watson estimator plots? (not used).
-  # boot.ci <- FALSE	## use bootstrap confidence intervals?
-  #
-  #
 
-list(#method=method, # not used for data setup
-  iseed=iseed, # not used for data setup
+list(iseed=iseed,
   beta0int= beta0int,
   gamma.param=gamma.param,
   omega.param=omega.param,
@@ -770,84 +670,27 @@ list(#method=method, # not used for data setup
   par1_fr2=par1_fr2,
   par2_fr2=par2_fr2,
   mix_n=mix_n,
-  #par3_fr= par3_fr,
   par1_fzr=par1_fzr,
   par2_fzr=par2_fzr,
   par1_fx= par1_fx,
   par2_fx=par2_fx,
-
   axmod=axmod,
   gtmod=gtmod,
   censorrate=censorrate,
   gen.cens.depend.z=gen.cens.depend.z,
-  #
-  #common.param.data=common.param.data,
-  # analyze.separately=analyze.separately,  # not used for data setup
-  # common.param.estimation=common.param.estimation, # not used for data setup
-  #
-  #
-  # arbitrary=arbitrary, # not used for data setup
-  #
   randomeffects.covariates.dependent=randomeffects.covariates.dependent,
   ######################################
   ## Data setup for simulation study  ##
   ######################################
-  #simus=simus,
-  #study.names=study.names, ## num_study=2, c(400,500)
-  #n=n,  ## num_study=2, c(400,500)
-  #censorrate-censorrate, # c(30, 50)
-  #nmax=nmax,
-  #
-  #time_choice.predicted=time_choice.predicted,
-  #time_choice.predicted.toadd= time_choice.predicted.toadd,
-  #time_choice=time_choice,
-  #alphat_lab=alphat_lab,
   xks=xks,
-  #xx_choice= xx_choice,
-  #alphax_lab=alphax_lab,
-
-  #beta_lab=beta_lab,
-  #z.choice=z.choice,
-  #zeval=zeval,
-  #z_lab=z_lab,
-  #xmin=xmin,
-  #xmax=xmax,
-  #z_tmp=z_tmp,
-  #x_tmp=x_tmp,
-  #s_tmp= s_tmp,
-  #delta_tmp=delta_tmp,
-  ##ii.choice=ii.choice,
-  #do.plots=do.plots,
-  #conf.int.use=conf.int.use,
-  #alpha.cut=alpha.cut,
-  #beta.cut=beta.cut,
-  #ylim.set= ylim.set,
-  #ylim.beta=ylim.beta,
-  #ylim.time= ylim.time,
-  #ylim.Ft=ylim.Ft,
-  #round.set=round.set,
-  #xx_choice.ci=xx_choice.ci,
-  #time_choice.ci=time_choice.ci,
-  #list.name=list.name,
-  #s.names=s.names,
-  #s.names.short=s.names.short, # not used for data setup
-  #legend.position.use=legend.position.use, # not used for data setup
   #####################################################
   ## set terms needed whether real_data=TRUE or FALSE##
   #####################################################
   maxm=maxm,
+  nmax=nmax,
   p=p,
   la=la,
   write.output=write.output
-  #m0_qvs=m0_qvs, # not used for data setup
-  ##########################################
-  ## choice for a0: alpha(x,t)=a0*axmod() ##
-  ##########################################
-
-  #knot.length=knot.length,
-
-  #par_fu=par_fu,
-
      )
 }
 

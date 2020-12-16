@@ -1,13 +1,10 @@
-#/home/grad/unkyunglee/HDConverters/simus_numstudy2/gen_nocommon_param/analyze_noseparate/est_nocommon/cens40/
-# 1.runsimu :
-# this is the file to run the original simulation code under the parameter setting (Model A)
+########################
+## Clear out history ##
+#######################
+rm(list=ls(all=TRUE))
 
-
-source("get_parameters.R")
-source("simu_data_generation_for_jprat.R")
-
-data.for.jprat<-get.parameters(param.setting=1)
-
+## Generate input parameters for JPRAT function based on the simulation study
+## See the parameter settings for model A in Garcial at al., Biostatisticis, (2017)
 
 source("data-raw/get_parameters.R")
 source("data-raw/simu_data_generation_for_jprat.R")
@@ -24,6 +21,7 @@ real_data=data.for.jprat$real_data;
 num_study=data.for.jprat$num_study;
 np=data.for.jprat$np;
 lb=data.for.jprat$lb;
+lb.max=data.for.jprat$lb.max;
 time_val=data.for.jprat$time_val;
 use.random.effects=data.for.jprat$use.random.effects;
 randomeffects.covariates.dependent=data.for.jprat$randomeffects.covariates.dependent;
@@ -57,13 +55,19 @@ censorrate=data.for.jprat$censorrate;
 gen.cens.depend.z=data.for.jprat$gen.cens.depend.z;
 
 maxm=data.for.jprat$maxm;
+nmax=data.for.jprat$nmax;
 write.output=data.for.jprat$write.output;
 
-data.sets1<-generate.datasets.uk(#method=c("gamm4","new")[1],
-  a0,
+## the generated simulated data has nonfunctional covariate values between [0, 1]
+## Using the scale function such as
+## new value =((old value- old min)/(old_max-old_min))*(new_max-mew_min)+(new_min), i.e.,
+## new value =((x-0)/(1-0))*(50-36)+35
+## we generate the datasets, which mimics the real datasets for each study.
+## rescale: default is TRUE.
+rescale<-TRUE
+
+data.sets1<-generate.datasets(a0,
   iseed,
-  #simus,
-  #m0_qvs,
   xks,
   frform,
   fzrform,
@@ -82,45 +86,30 @@ data.sets1<-generate.datasets.uk(#method=c("gamm4","new")[1],
   par1_fx,
   par2_fx,
   axmod,
-  num_time,
+  num_time=num_time,
   censorrate,
   p,
   beta0int,
-  beta0,
+  beta0=beta0,
   gamma.param,
   omega.param,
-  n,
-  m,
-  #la,
-  real_data,
-  time_val,
-  #time_choice.predicted,
-  #time_choice.predicted.toadd,
-  #boot,
-  #var.boot,
+  n=n,
+  m=m,
+  real_data=real_data,
+  time_val=time_val,
   z_tmp.list=NULL,
   x_tmp.list=NULL,
   delta_tmp.list=NULL,
   s_tmp.list=NULL,
-  #knot.length,
-  randomeffects.covariates.dependent,
-  #family.data,
+  randomeffects.covariates.dependent=randomeffects.covariates.dependent,
   num_study=num_study,
   np=np,
   lb=lb,
   lb.max=lb.max,
-  #zeval=zeval,
-  #z.choice=z.choice,
-  #spline.constrain=spline.constrain,
+  use.random.effects=use.random.effects,
   gtmod=gtmod,
-  #use.random.effects=use.random.effects,
-  #analyze.separately=analyze.separately,
-  #check.study.equality=check.study.equality,
-  #common.param.estimation=common.param.estimation,
-  #param.label,
-  #arbitrary,
+  nmax=nmax,
   gen.cens.depend.z=gen.cens.depend.z,
+  rescale=rescale,
   write.output=write.output
-  #est.cens.depend.z=est.cens.depend.z,
-  #link.type=link.type
 )
