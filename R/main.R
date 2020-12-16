@@ -2,13 +2,14 @@
 # Begin documentation
 ############################################################
 
-
-#' all_null_theta: This function is to create a list of all components to be estimated,
-#' where each element of the list is an array with zeros to store all estimates.
+#' @title all_null_theta
+#' @discription This function is to initialize a list of all components to be estimated to zero arrays.
 #'
-#' @param theta.names a character vector of names that will be estimated in the model: functional parameters
-#'                   \eqn{\beta_0(t)} , \eqn{\beta_{es}(t)}, ("beta") \eqn{\alpha(X, t)},("alphas") and \eqn{F_{es}(t)} ("Ft" and "Ft.predicted").
-#' @param study.names See this argument in the \code{\link{jprat.wrapper}} function.
+#'
+#' @param theta.names a character vector of names that will be estimated in the model: the names of functional parameters
+#'                     \eqn{\beta_{es}(t)},  \eqn{\alpha(X, t)}, and \eqn{F_{es}(t)}  are "beta", "alphas" and "Ft" (or "Ft.predicted").
+#' @inheritParams jprat.wrapper
+#' #'study.names See this argument in the \code{\link{}} function.
 #' @param event.names See the argument \code{event.outcome.names} in the \code{\link{jprat.wrapper}} function.
 #' @param z_lab_names a vector of character values for the names of nonfunctional covariates Z.
 #' @param x_lab_names  a vector of character values for the names of functional covariates X in functional coefficients \eqn{\alpha(X, t)}.
@@ -22,6 +23,8 @@
 #' @param la length of smooth functional parameters \eqn{\alpha(X,t)} in the model. In real analysis, we only have one  \eqn{\alpha(X,t)}. Default is 1.
 #'
 #' @details The list will be created to store estimates for "beta", "alphas", "Ft" and "Ft.predicted".
+#' #' Each component has multi-dimensional array structure depending on the number of studies, the number of events,
+#' the number of covariates, and the length of time points where estimates will be evaluated.
 #'
 #'@return A list of
 #'
