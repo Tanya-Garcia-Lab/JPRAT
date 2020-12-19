@@ -76,10 +76,6 @@
 #'                                label.name.simus=label.name.simus, time_val, param.label,
 #'                                time_choice.predicted, time_choice.predicted.toadd, la)
 #'
-#'null.theta[["null.theta.simus.ci"]]$beta
-#'
-#'
-#'
 all_null_theta <- function(theta.names,
                            study.names,
                            event.names,
@@ -127,12 +123,14 @@ all_null_theta <- function(theta.names,
                                                     label.dim=7,label.name=c("est","varest","varlo","varhi",
                                                                              "boot_varest","boot_varlo","boot_varhi"))
 
-  list(null.theta=null.theta,null.theta.simus=null.theta.simus,
+  list(null.theta=null.theta,
+       null.theta.ci=null.theta.ci,
+       null.theta.est.ci =null.theta.est.ci,
+       null.theta.simus=null.theta.simus,
        null.theta.simus.ci=null.theta.simus.ci,
        null.theta.simus.est.ci=null.theta.simus.est.ci,
-       null.theta.ci=null.theta.ci,
-       null.theta.simus.est.ciboot=null.theta.simus.est.ciboot,
-       null.theta.est.ci =  null.theta.est.ci )
+       null.theta.simus.est.ciboot=null.theta.simus.est.ciboot
+       )
 }
 
 
