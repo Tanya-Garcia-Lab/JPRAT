@@ -2,7 +2,7 @@
 % Please edit documentation in R/jprat_function.R
 \name{jprat.wrapper}
 \alias{jprat.wrapper}
-\title{This function is to call and run JPRAT algorithm.}
+\title{JPRAT algorithm}
 \usage{
 jprat.wrapper(
   study.names,
@@ -31,60 +31,60 @@ jprat.wrapper(
 )
 }
 \arguments{
-\item{study.names}{a character vector of name of studies used in analyses. e.g., c("cohort", "predict", "pharos").}
+\item{study.names}{A character vector of name of studies used in the analysis. e.g., c("cohort", "predict", "pharos").}
 
-\item{input.data.list}{a list of data sets to be analyzed. If you want to use data sets provided by JPRAT,
-use list(cohort=data_cohort, predict=data_predict, pharos=data_pharos), otherwise you need to feed your own data files list(study.name1=data.set1, study.name2=data.set2, study.name3=data.set3). The order of data sets should match study.names.}
+\item{input.data.list}{Lists of datasets to be analyzed. In the case, you use datasets given from JPRAT, then there are two options:
+use list(cohort=data_cohort, predict=data_predict, pharos=data_pharos) if you choose \code{what.analyzed.separately}="event" or "eventstudy";
+otherwise use list(study1=simu_data1_model_A, study2=simu_data2_model_A). (See \code{what.analyzed.separately} for option details.)}
 
-\item{nonfunctional.covariate.names}{a character vector for the name of the non-functional covariates that is used in the analysis.  e.g., "base_age".}
+\item{nonfunctional.covariate.names}{A character vector for the name of the nonfunctional covariates that is used in the analysis.}
 
-\item{functional.covariate.names}{a character vector for the name of the functional covariates that is used in the analysis.
-e.g., \code{"CAG"}.}
+\item{functional.covariate.names}{A character vector for the name of the functional covariates that is used in the analysis.}
 
-\item{othercovariate.names}{a character vector for the name of other covariates not to be analyzed but kept within the data used in the analysis: the first year when subjects visit clinics  and the last year when subjects stop visiting clinics. e.g.,  c("firstyear", "lastyear").}
+\item{othercovariate.names}{A character vector for the name of other covariates, which are not to be analyzed but kept within data during the analysis procedure.}
 
-\item{event.outcome.names}{a character vector for the name of the time-to-event outcomes interested: For example, the HD age onsets, first cognitive impairments,and stage II total function capacity. e.g., c("hdage_nobase", "mcione", "tfctwo").}
+\item{event.outcome.names}{A character vector for the name of the time-to-event of interest (outcomes).}
 
-\item{delta.names}{a character vector for the name of the censoring indicator for time-to-event outcomes.}
+\item{delta.names}{A character vector for the name of the censoring indicator for the time-to-event outcomes.}
 
-\item{time.points.for.prediction}{a vector of time points at which the predicted values of marginal distribution will be estimated. e.g., time points are at 46, 51, 56, 61, and 66.
-Users may encounter a warning message that "Not enough data at time points (e.g., base_age);  May have divergent in the integration while bootstrapping." We recommend that users evaluate the proportional odds model at the average of nonfunctional covariate (e.g., base_age) across all subjects in each study.
-This may get rid of the warning messages.}
+\item{time.points.for.prediction}{A vector of time points at which the predicted values of marginal distribution will be estimated. Users may encounter a warning message that "Not enough data at time points (e.g., base_age);  May have divergent in the integration while bootstrapping." We recommend that users evaluate the proportional odds model at the average of nonfunctional covariate (e.g., base_age) across all subjects in each study. This may get rid of the warning messages.}
 
-\item{time.points.for.conditional.prediction}{a vector of time points \eqn{t} at which the predicted values of conditional distribution \deqn{Pr(T <t + t_0| T>t)} will be estimated. e.g., time points \eqn{t} are at \eqn{t=46, 51, 56}.}
+\item{time.points.for.conditional.prediction}{A vector of time points \eqn{t} at which the predicted values of conditional distribution \eqn{Pr(T <t + t_0| T>t)} will be estimated.}
 
-\item{time.points.for.conditional.prediction.toadd}{a vector of future time points \eqn{t_0} at which the predicted values of conditional distribution \deqn{Pr(T <t + t_0 | T>t)} will be estimated. e.g., time points are at \eqn{t_0=5}.}
+\item{time.points.for.conditional.prediction.toadd}{A vector of future time points \eqn{t_0} at which the predicted values of conditional distribution \eqn{Pr(T <t + t_0 | T>t)} will be estimated.}
 
-\item{nonfunctional.covariate.value}{a numeric value interested for the nonfunctional covariate. e.g., 40 for \code{base_age}, which will be used for prediction.}
+\item{nonfunctional.covariate.value}{A numeric value interested for the nonfunctional covariate. e.g., 40 for \code{base_age}, which will be used for prediction.}
 
-\item{functional.covariate.values.of.interest}{a vector of specific functional covariate values \eqn{X=x} where the smooth functional parameter \eqn{\alpha(X=x,t)} will be estimated. For example, we set \eqn{x=46,48,50} in the analysis. We recommend that the specific functional covariate values \eqn{X=x} should be chosen between the minimum and the maximum of functional covariate values. Otherwise, users may encounter a warning message.}
+\item{functional.covariate.values.of.interest}{A vector of specific functional covariate values \eqn{X=x} where the smooth functional parameter \eqn{\alpha(X=x,t)} will be estimated. For example, we set \eqn{x=46,48,50} in the analysis. We recommend that the specific functional covariate values \eqn{X=x} should be chosen between the minimum and the maximum of functional covariate values. Otherwise, users may encounter a warning message.}
 
-\item{number.of.bootstraps}{number of bootstrap iterations. The bootstrap procedure is to do hypothesis testing, which compares functional parameters over interested time points among studies.  e.g., 100.}
+\item{number.of.bootstraps}{The number of bootstrap iterations. The bootstrap procedure is to do a hypothesis testing, which compares functional parameters over interested time points among studies.}
 
-\item{use.functional.beta.intercept}{a logical value whether a functional intercept (coefficient) of \eqn{\beta_0(t)} is included in the  time-varying proportional odds model. Default is TRUE.}
+\item{use.functional.beta.intercept}{A logical value whether a functional intercept \eqn{\beta_0(t)} is included in the time-varying proportional odds model. The default option is TRUE.}
 
-\item{use.functional.event.coefficients}{a logical value whether the event specific effect \eqn{\gamma_e(t)} will be used in the  time-varying proportional odds model. Default is TRUE.}
+\item{use.functional.event.coefficients}{A logical value whether the event specific effect \eqn{\gamma_e(t)} will be used in the time-varying proportional odds model. The default option is TRUE.}
 
-\item{use.functional.study.coefficients}{a logical value whether the study-specific effect \eqn{\omega_s(t)} will be used in the time-varying proportional odds model. Default is TRUE.}
+\item{use.functional.study.coefficients}{A logical value whether the study specific effect \eqn{\omega_s(t)} will be used in the time-varying proportional odds model. The default option is TRUE.}
 
-\item{check.study.equality}{a logical value whether estimates are similar across studies: Default is FALSE. Set TRUE when what.analyzed.separately is "none".}
+\item{check.study.equality}{A logical value whether estimates are similar across studies: The default option is TRUE when what.analyzed.separately is "none"; otherwise, FALSE.}
 
-\item{estimated.parameters.common.for.all.studies}{a logical value whether the model parameters are the same across studies. Default is FALSE.}
+\item{estimated.parameters.common.for.all.studies}{A logical value whether the model parameters are same across studies. The default option is FALSE.}
 
-\item{what.analyzed.separately}{a character value to determine whether analysis will be performed separately or jointly: the options are "studyevent" (studies and event), "study", "event", or "none". Default is "studyevent".}
+\item{what.analyzed.separately}{A character value to determine whether analysis will be performed separately or jointly: the options are "studyevent" (studies and event), "study", "event", or "none".}
 
-\item{estimation.when.censoring.depends.on.z}{a logical value whether the estimation process assumes that a censoring distribution depends on nonfunctional covariates Z. If covariates Z does not follow a binomial distribution, then default is FALSE.}
+\item{estimation.when.censoring.depends.on.z}{A logical value whether the estimation process assumes that a censoring distribution depends on nonfunctional covariates \eqn{Z}. If covariates \eqn{Z} does not follow a binomial distribution, then the default option is FALSE.}
 
-\item{use.bootstrap.variance}{a logical value whether to compute bootstrap variances. Default is TRUE.}
+\item{use.bootstrap.variance}{A logical value whether the bootstrap variances will be evaluated. The default option is TRUE.}
 
-\item{estimate.variances}{a logical value how variances will be estimated. If this is TRUE, there are two options: "est" (estimated), and "quant" (quantiles from bootstrap);
-If this is FALSE, the only option is  "none" (no variances are estimated). Default is ``est".}
+\item{estimate.variances}{A logical value how variances will be estimated. If this is TRUE, there are two options: "est" (estimated), and "quant" (quantiles from bootstrap).
+If this is FALSE, the only option is  "none" (no variances are estimated). The default option is "est".}
 
-\item{write.output}{a logical value whether outputs will be saved into data files. Default is TRUE.}
+\item{write.output}{A logical value whether outputs should be saved into data files. The default option is TRUE.}
 }
 \value{
 A list of
-         \item{jprat.output}{the list of estimated values. If write.output=TRUE, the list contains data.theta and combi.out, where theta.out is the data frame of the estimated values for all components ("beta0", "beta1",  "alpha1", "Ft", "Ft.predicted")
+
+
+             \item{jprat.output}{the list of estimated values. If write.output=TRUE, the list contains data.theta and combi.out, where theta.out is the data frame of the estimated values for all components ("beta0", "beta1",  "alpha1", "Ft", "Ft.predicted")
                           at each iteration for the clinical events of interest per study. The columns of the data frame include iters (iteration number), study(names of studies), event (the names of outcome events), theta (names for all components to be estimated), zz (the labels of the nonfunctional covariates Z),
                           xx (the labels of the functional covariates X), val (all estimated values for theta: "est”, "varest”, "varlo”, "varhi”, "boot_varest”, "boot_varlo”, "boot_varhi”)
                           and the flatten time points, and combi.out is a data frame of the difference of the estimated values between a pair of studies for all components ("beta0", "beta1", "alpha1", "Ft", "Ft.predicted")
@@ -105,12 +105,14 @@ The Joint Progression of Risk Assessment Tool (JPRAT) evaluates and compares all
          The function \code{\link{jprat.wrapper}} is an estimation procedure that handles multiple data hierarchy
          using an additive logistic mixed effect model. The algorithm handles censoring with pseudo-values and
          functional covariate effects with splines.
-         The description for the detailed estimation procedure is in the following paper:
-         Garcia, T. P., Marder, K., Wang, Y. (2017). Time-varying proportional odds model for mega-analysis of clustered event
-         times. Biostatistics, 20(1), 129-146.
-         For the real data analysis, details are in the following clinical paper:
-         Garcia, T.P., Wang, Y., Shoulson, I., Paulsen, J.S. and Marder, K. (2018). Disease progression in Huntington disease:
-         An analysis of multiple longitudinal outcomes. Journal of Huntington's disease, 7, 337-344
+         There are four options whether the event information from all studies is analyzed jointly or separately with distinct or shared study parameters in the model.
+         If you choose
+         \itemize{
+         \item \code{what.analyzed.separately}="study", then JPRAT assumes separate study models, i.e., event information from each study is analyzed separately.
+         \item \code{what.analyzed.separately}="event", then JPRAT analyzes the events separately and uses common parameters across all events.
+         \item \code{what.analyzed.separately}="none",  then JPRAT does not analyze the data separately.
+         \item \code{what.analyzed.separately}="studyevent", then JPRAT analyzes the evnts and sutdies separately.
+}
 }
 \examples{
 
@@ -119,7 +121,7 @@ The Joint Progression of Risk Assessment Tool (JPRAT) evaluates and compares all
 ## Four options whether study and event are analyzed separately:
 ## what.analyzed.separately="studyevent", "event", "study" or "none"
 
-what.analyzed.separately= "event"
+what.analyzed.separately= "studyevent"
 
 ## Load your data in the list format: should match order of study.names
 ## Choose different list of data depending on the settings such as
@@ -179,4 +181,12 @@ jprat.estimat.results<-jprat.wrapper(study.names=study.names,
    estimation.when.censoring.depends.on.z=estimation.when.censoring.depends.on.z,
    use.bootstrap.variance=use.bootstrap.variance, write.output=write.output)
 
+}
+\references{
+To see the detailed description for the JPRAT estimation procedure, we refer to
+         Garcia, T. P., Marder, K., Wang, Y. (2017). Time-varying proportional odds model for mega-analysis of clustered event
+         times. Biostatistics, 20(1), 129-146.
+         To see the detailed real data analysis, we refer to
+         Garcia, T.P., Wang, Y., Shoulson, I., Paulsen, J.S. and Marder, K. (2018). Disease progression in Huntington disease:
+         An analysis of multiple longitudinal outcomes. Journal of Huntington's disease, 7, 337-344
 }

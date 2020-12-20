@@ -23,7 +23,7 @@ all_null_theta(
 \item{theta.names}{A character vector of functional parameters' names that will be estimated in the model: "beta" (include intercept), "alphas" and "Ft" (or "Ft.predicted") corresponds to
 \eqn{\beta_{es}(t)} (\eqn{\beta_0(t)}) ,  \eqn{\alpha(X, t)}, and \eqn{F_{es}(t)}.}
 
-\item{study.names}{a character vector of name of studies used in analyses. e.g., c("cohort", "predict", "pharos").}
+\item{study.names}{A character vector of name of studies used in the analysis. e.g., c("cohort", "predict", "pharos").}
 
 \item{event.names}{See the argument \code{event.outcome.names} in the \code{\link{jprat.wrapper}} function.}
 
@@ -60,33 +60,55 @@ A list of
 
 
 \item{null.theta.ci}{A list of all estimated parameters and coefficients ("beta", "alphas", "Ft" and ``Ft.predicted"), where each element of the list contains arrays of zeros.
-, where three dimensions for the estimated variance, the lower and upper bounds of the confidence intervals were added to the last dimension of \code{null.theta}.}
+, where three dimensions for the estimated variance, the lower and upper bounds of the confidence intervals were added to the last dimensions of arrays in \code{null.theta}.}
 
 
 \item{null.theta.est.ci}{A list of all estimated parameters and coefficients ("beta", "alphas", "Ft" and ``Ft.predicted"), where each element of the list contains arrays of zeros.
-Four dimensions for the estimates, the estimated variance, the lower and upper bounds of the confidence intervals were added to the last dimension of \code{null.theta}.}
+Four dimensions for the estimates, the estimated variance, the lower and upper bounds of the confidence intervals were added to the last dimensions of arrays in \code{null.theta}.}
 
 
 \item{null.theta.simus.ci}{
 A list of all estimated parameters and coefficients ("beta", "alphas", "Ft" and ``Ft.predicted"),
 where each element of the list contains arrays of zeros. Three dimensions for the estimated variance, the lower and upper bounds of the confidence intervals
-were added to the last dimension of \code{null.theta.simus}.}
+were added to the last dimensions of arrays in \code{null.theta.simus}.}
 
 \item{null.theta.simus.est.ci}{A list of all estimated parameters and coefficients ("beta", "alphas", "Ft" and ``Ft.predicted"),
 where each element of the list contains arrays of zeros. Four dimensions for the estimates, the estimated variance, the lower and upper bounds of the confidence intervals
-were added to the last dimension of \code{null.theta.simus}.}
+were added to the last dimensions of arrays in \code{null.theta.simus}.}
 
 
 \item{null.theta.simus.est.ciboot}{A list of all estimated parameters and coefficients ("beta", "alphas", "Ft" and ``Ft.predicted"),
 where each element of the list contains arrays of zeros. Seven dimensions for the estimates, the estimated variance, the lower and upper bounds of the confidence intervals,
-the estimated bootstrap variances, the lower and upper bounds of bootstrap confidence intervals were added to the last dimension of \code{null.theta.simus}.}
+the estimated bootstrap variances, the lower and upper bounds of bootstrap confidence intervals were added to the last dimensions of arrays in \code{null.theta.simus}.}
 }
 \description{
 This function is to initialize a list of all components to be estimated to zeros. The structure of each component is a multi-dimensional array, whose dimension size depends on the number of studies, the number of events,
 the number of covariates, and the length of time points where estimates will be evaluated, etc.
 }
 \details{
-A list of zero arrays will be created to store those estimates of \eqn{\beta_{es}(t)} (\eqn{\beta_0(t)}) ,  \eqn{\alpha(X, t)}, and \eqn{F_{es}(t)} in the time varying, proportional odds model with random effects.
+A list of zero arrays will be created to store those estimates of \eqn{\beta_{es}(t)} (\eqn{\beta_0(t)}) ,  \eqn{\alpha(X, t)}, and \eqn{F_{es}(t)} in the time varying, proportional odds model.
+}
+\examples{
+
+
+theta.names=c("beta", "alphas", "Ft")
+study.names=c("cohort", "predict", "pharos")
+event.names=c("hdage_nobase", "mcione", "dep2");
+z_lab_names=c("base_age");
+x_lab_names=c(40, 46);
+simus=5;
+label.name.simus=paste("iter",1:simus,sep="")
+time_val=seq(40, 100, by=5)
+param.label=c("beta0", "beta1");
+time_choice.predicted=NULL;
+time_choice.predicted.toadd=NULL;
+la=1
+
+null.theta <- all_null_theta(theta.names, study.names, event.names=event.names,
+                             z_lab_names, x_lab_names, label.dim.simus=simus,
+                               label.name.simus=label.name.simus, time_val, param.label,
+                               time_choice.predicted, time_choice.predicted.toadd, la)
+
 }
 \references{
 Garcia, T.P., Marder, K., and Wang, Y. (2019). Time-varying proportional odds model for mega-analysis of clustered event times. Biostatistics, 20(1), 129-146.
