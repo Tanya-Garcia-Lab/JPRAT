@@ -69,7 +69,7 @@ otherwise use list(study1=simu_data1_model_A, study2=simu_data2_model_A). (See \
 
 \item{estimated.parameters.common.for.all.studies}{A logical value whether the model parameters are same across studies. The default option is FALSE.}
 
-\item{what.analyzed.separately}{A character value to determine whether analysis will be performed separately or jointly: the options are "studyevent" (studies and event), "study", "event", or "none".}
+\item{what.analyzed.separately}{A character value to determine whether the event information from all studies is analyzed jointly or separately with distinct or shared study parameters in the model: the options are "studyevent" (studies and event), "study", "event", or "none".}
 
 \item{estimation.when.censoring.depends.on.z}{A logical value whether the estimation process assumes that a censoring distribution depends on nonfunctional covariates \eqn{Z}. If covariates \eqn{Z} does not follow a binomial distribution, then the default option is FALSE.}
 
@@ -82,9 +82,7 @@ If this is FALSE, the only option is  "none" (no variances are estimated). The d
 }
 \value{
 A list of
-
-
-             \item{jprat.output}{the list of estimated values. If write.output=TRUE, the list contains data.theta and combi.out, where theta.out is the data frame of the estimated values for all components ("beta0", "beta1",  "alpha1", "Ft", "Ft.predicted")
+         \item{jprat.output}{A list of estimated values. If write.output=TRUE, the list contains data.theta and combi.out, where theta.out is the data frame of the estimated values for all components ("beta0", "beta1",  "alpha1", "Ft", "Ft.predicted")
                           at each iteration for the clinical events of interest per study. The columns of the data frame include iters (iteration number), study(names of studies), event (the names of outcome events), theta (names for all components to be estimated), zz (the labels of the nonfunctional covariates Z),
                           xx (the labels of the functional covariates X), val (all estimated values for theta: "est”, "varest”, "varlo”, "varhi”, "boot_varest”, "boot_varlo”, "boot_varhi”)
                           and the flatten time points, and combi.out is a data frame of the difference of the estimated values between a pair of studies for all components ("beta0", "beta1", "alpha1", "Ft", "Ft.predicted")
@@ -93,7 +91,7 @@ A list of
                           event (the names of outcome events), theta (names for all components to be estimated), zz (the labels of the nonfunctional covariates Z), xx (the labels of the functional covariates X),
                           val (all estimated values for theta: "est", "varest", "varlo", "varhi", "boot_varest", "boot_varlo",
                           "boot_varhi") and the flatten time points.}
-         \item{eflag}{an integer number to check if any error comes up while processing the estimation algorithm.
+         \item{eflag}{an integer number to check if any error comes up while estimation algorithm is processed.
                       If this value is -1, then the marginal distribution \eqn{F_{es}(t|X, Z)} has missing values (NA).}
 }
 \description{
