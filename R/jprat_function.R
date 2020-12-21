@@ -59,20 +59,20 @@
 #' library(JPRAT)
 #'
 #' ## input parameters
-#' theta.names=c("beta", "alphas", "Ft")
-#' study.names=c("cohort", "predict", "pharos")
+#' theta.names=c("beta", "alphas", "Ft");
+#' study.names=c("cohort", "predict", "pharos");
 #' event.names=c("hdage_nobase", "mcione", "dep2");
 #' z_lab_names=c("base_age");
 #' x_lab_names=c(40, 46);
 #' simus=5;
-#' label.name.simus=paste("iter",1:simus,sep="")
-#' time_val=seq(40, 100, by=5)
+#' label.name.simus=paste("iter",1:simus,sep="");
+#' time_val=seq(40, 100, by=5);
 #' param.label=c("beta0", "beta1");
 #' time_choice.predicted=NULL;
 #' time_choice.predicted.toadd=NULL;
-#' la=1
+#' la=1;
 #'
-#' ## List of all components to be estimated; each element has zero arrays
+#' ## List of all components to be estimated; each element has zero arrays.
 #'
 #' null.theta <- all_null_theta(theta.names, study.names, event.names=event.names,
 #'                              z_lab_names, x_lab_names, label.dim.simus=simus,
@@ -193,17 +193,21 @@ all_null_theta <- function(theta.names,
 #'          An analysis of multiple longitudinal outcomes. Journal of Huntington's disease, 7, 337-344
 #'
 #' @return  A list of
-#'          \item{jprat.output}{A list of estimated values. If write.output=TRUE, the list contains data.theta and combi.out, where theta.out is the data frame of the estimated values for all components ("beta0", "beta1",  "alpha1", "Ft", "Ft.predicted")
-#'                           at each iteration for the clinical events of interest per study. The columns of the data frame include iters (iteration number), study(names of studies), event (the names of outcome events), theta (names for all components to be estimated), zz (the labels of the nonfunctional covariates Z),
-#'                           xx (the labels of the functional covariates X), val (all estimated values for theta: "est”, "varest”, "varlo”, "varhi”, "boot_varest”, "boot_varlo”, "boot_varhi”)
-#'                           and the flatten time points, and combi.out is a data frame of the difference of the estimated values between a pair of studies for all components ("beta0", "beta1", "alpha1", "Ft", "Ft.predicted")
-#'                           at each iteration for the clinical events of interest per a pair of studies.
-#'                           The columns of the data frame include iters (iteration number), study(names for the combinations of studies: cohort-predict, cohort-pharos, predict-pharos),
-#'                           event (the names of outcome events), theta (names for all components to be estimated), zz (the labels of the nonfunctional covariates Z), xx (the labels of the functional covariates X),
-#'                           val (all estimated values for theta: "est", "varest", "varlo", "varhi", "boot_varest", "boot_varlo",
-#'                           "boot_varhi") and the flatten time points.}
-#'          \item{eflag}{an integer number to check if any error comes up while estimation algorithm is processed.
+#'          \item{jprat.output}{A list of estimated values. If write.output=TRUE, the list contains simulation results as data.theta and combi.out;
 #'
+#'          \itemize{
+#'          \item theta.out: a data frame of the estimated values for all components ("beta0", "beta1",  "alpha1", "Ft", "Ft.predicted")
+#'          at each iteration for the clinical events of interest per study. The columns of the data frame include iteration number (iters), the name of studies (study), the names of outcomes (event), the names for all components to be estimated (theta), the labels of the nonfunctional covariates Z (zz)),
+#'          the labels of the functional covariates X (xx), all estimated values for theta: "est", "varest", "varlo", "varhi", "boot_varest", "boot_varlo", "boot_varhi" (val))
+#'          and the time points.
+#'          \item combi.out: a data frame of the difference of the estimated values between a pair of studies for all components ("beta0", "beta1", "alpha1", "Ft", "Ft.predicted")
+#'          at each iteration for the clinical events of interest per a pair of studies.
+#'          The columns of the data frame include the number of iteration (iters), the names for the combinations of studies (study): cohort-predict, cohort-pharos, predict-pharos),
+#'          the names of outcome events (event), the names for all components to be estimated (theta), the labels of the nonfunctional covariates Z (zz), the labels of the functional covariates X (xx),
+#'          all estimated values for theta: "est", "varest", "varlo", "varhi", "boot_varest", "boot_varlo","boot_varhi" (val) and the time points.}
+#'          If write.output=FALSE, jprat.output returns a list whose elements contain the estimated \eqn{beta(t)}, \eqn{alpha(X,t)}, \eqn{Ft(t)} and \eqn{F_{es}(t|X, Z)} for all studies (see \code{null.theta.simus.est.ciboot} for the array from)
+#'           and for a pair of studies (see \code{null.theta.simus.est.ci} for the array form)
+#'          \item{eflag}{an integer number to check if any error comes up while estimation algorithm is processed.
 #'                       If this value is -1, then the marginal distribution \eqn{F_{es}(t|X, Z)} has missing values (NA).}
 #'
 #' @import mgcv
@@ -211,15 +215,12 @@ all_null_theta <- function(theta.names,
 #'
 #' ## See more examples man/example.R
 #'
-#' ## Four options whether study and event are analyzed separately:
-#' ## what.analyzed.separately="studyevent", "event", "study" or "none"
-#'
+#' ## Choose one option whether study and event are analyzed separately:
 #' what.analyzed.separately= "studyevent"
 #'
-#' ## Load your data in the list format: should match order of study.names
-#' ## Choose different list of data depending on the settings such as
-#'
+#' ## Load your data in the list format:
 #' input.data.list=list(cohort=data_cohort, predict=data_predict, pharos=data_pharos);
+#'
 #' ####################################
 #' # For JPRAT estimation: Input data #
 #' ####################################
@@ -313,13 +314,6 @@ jprat.wrapper <- function(
   clusters.are.families<-default.options$clusters.are.families
   use_real_data<-default.options$use_real_data
 
-
-  ###############################################################################
-  ## Data arguments are reformatted:                                           ##
-  ##                         see data.reformatted.for.jprat.analysis in main.R ##
-  ## added on 10/08/19                                                         ##
-  ###############################################################################
-
   ## reformatted.datasets
   reformatted.data<-data.reformatted.for.jprat.analysis(use_real_data,
                                                         study.names,
@@ -352,8 +346,6 @@ jprat.wrapper <- function(
                                                      nonfunctional.covariate.names,
                                                      nonfunctional.covariate.values.for.prediction=nonfunctional.covariate.values.for.prediction,
                                                      functional.covariate.names,
-                                                     #functional.covariate.values.of.interest,
-                                                     #functional.covariate.values.of.interest.ci,
                                                      functional.covariate.values.for.prediction=functional.covariate.values.for.prediction,
                                                      xmin=xmin,
                                                      xmax=xmax,
@@ -368,33 +360,10 @@ jprat.wrapper <- function(
                                                      check.study.equality,
                                                      what.analyzed.separately,
                                                      estimated.parameters.common.for.all.studies,
-                                                     #estimate.variances,
                                                      estimation.when.censoring.depends.on.z,
                                                      glm.link.type,
                                                      use.bootstrap.variance,
                                                      clusters.are.families
-                                                     ##########################
-                                                     ## For plotting results ##
-                                                     ##########################
-                                                     #time.points.of.interest,
-                                                     #time.points.of.interest.ci,
-                                                     #label.for.alpha.values.over.time,
-                                                     #nonfunctional.covariate.comparisons,
-                                                     #plot.parameters,
-                                                     #do.plots,
-                                                     #plot.confidence.intervals,
-                                                     #color.labels,
-                                                     #legend.labels,
-                                                     #event.comparison.table,
-                                                     #functional.covariate.comparisons,
-                                                     #functional.covariate.comparisons.for.sample.size,
-                                                     ################################
-                                                     ## for computing sample sizes ##
-                                                     ################################
-                                                     #type1.error,
-                                                     #type2.error,
-                                                     #treatment.effect,
-                                                     #dropout.rate
   )
 
   ############################
@@ -406,44 +375,44 @@ jprat.wrapper <- function(
   ##Input converted to old notation   ###
   ##used in jprat main estmiation     ###
   #######################################
-  common.param.estimation <- old.names$common.param.estimation ## TRUE
-  analyze.separately <- old.names$analyze.separately # "event"
-  boot <- old.names$boot #100 ## labeling
-  est.cens.depend.z <- old.names$est.cens.depend.z ## False
-  real_data <- old.names$real_data # TRUE ## data
-  time_choice.predicted <- old.names$time_choice.predicted  # NULL
-  time_choice.predicted.toadd <- old.names$time_choice.predicted.toadd # NULL
-  var.boot  <- old.names$var.boot # TRUE
-  arbitrary <- old.names$arbitrary # FALSE
-  beta0int <- old.names$beta0int #0.5
-  a0 <- old.names$a0 #NULL
-  combi.study <- old.names$combi.study # 3
+  common.param.estimation <- old.names$common.param.estimation
+  analyze.separately <- old.names$analyze.separately
+  boot <- old.names$boot
+  est.cens.depend.z <- old.names$est.cens.depend.z
+  real_data <- old.names$real_data
+  time_choice.predicted <- old.names$time_choice.predicted
+  time_choice.predicted.toadd <- old.names$time_choice.predicted.toadd
+  var.boot  <- old.names$var.boot
+  arbitrary <- old.names$arbitrary
+  beta0int <- old.names$beta0int
+  a0 <- old.names$a0
+  combi.study <- old.names$combi.study
   combi.choice <- old.names$combi.choice
-  combi.names  <- old.names$combi.names #"cohort-predict" "cohort-pharos"  "predict-pharos"
-  compute.study.differences <- old.names$compute.study.differences # FALSE
-  family.data <- old.names$family.data # FALSE
-  gamma.param <- old.names$gamma.param # null
-  la <- old.names$la #1
-  lb <- old.names$lb #
-  knot.length <- old.names$knot.length #8
-  link.type <- old.names$link.type  # "logit"
+  combi.names  <- old.names$combi.names
+  compute.study.differences <- old.names$compute.study.differences
+  family.data <- old.names$family.data
+  gamma.param <- old.names$gamma.param
+  la <- old.names$la
+  lb <- old.names$lb
+  knot.length <- old.names$knot.length
+  link.type <- old.names$link.type
   m <- old.names$m
-  method <- old.names$method # "gamm4"
-  maxm <- old.names$maxm     # 1
-  num_study <- old.names$num_study # 3
-  num_time <- old.names$num_time 		#13
-  n <- old.names$n   # 430 915 346
-  np <- old.names$np 	# 1
-  num_xx <- old.names$num_xx  # 18
-  nmax <- old.names$nmax #  915
-  omega.param <- old.names$omega.param # NULL
-  param.label <- old.names$param.label # "beta0" "beta1"
-  par_fu <- old.names$par_fu  # null
-  spline.constrain <- old.names$spline.constrain # TRUE
-  time_val <- old.names$time_val #  40  45  50  55  60  65  70  75  80  85  90  95 100
-  xks  <- old.names$xks       # points for x where to be estimated for each study
+  method <- old.names$method
+  maxm <- old.names$maxm
+  num_study <- old.names$num_study
+  num_time <- old.names$num_time
+  n <- old.names$n
+  np <- old.names$np
+  num_xx <- old.names$num_xx
+  nmax <- old.names$nmax
+  omega.param <- old.names$omega.param
+  param.label <- old.names$param.label
+  par_fu <- old.names$par_fu
+  spline.constrain <- old.names$spline.constrain
+  time_val <- old.names$time_val
+  xks  <- old.names$xks
   zeval  <- old.names$zeval
-  z.choice  <- old.names$z.choice    # 4
+  z.choice  <- old.names$z.choice
 
 
 
@@ -452,135 +421,53 @@ jprat.wrapper <- function(
   ##Input converted to old notation   ###
   ## obtain null array                ###
   #######################################
-
-  s.names <- old.names$s.names   ## event names # "hdage_nobase"
-  simus <- old.names$simus # 1  NUMBER OF SIMULATION
-  theta.names <- old.names$theta.names  # "beta"   "alphas" "Ft"
-  theta.names.combi <- old.names$theta.names.combi  # "beta"   "alphas" "Ft"
-  x_lab_names  <- old.names$x_lab_names  ## xx 36, xx37.4. ..x44..... xx 50
-  z_lab_names  <- old.names$z_lab_names   # A, B, C, D
+  s.names <- old.names$s.names
+  simus <- old.names$simus
+  theta.names <- old.names$theta.names
+  theta.names.combi <- old.names$theta.names.combi
+  x_lab_names  <- old.names$x_lab_names
+  z_lab_names  <- old.names$z_lab_names
 
   ###################################################
   ## Form dataset for real data or simulated data  ##
   ###################################################
-  axmod <- old.names$axmod  #$cohort
-  beta0 <- old.names$beta0  # 1
-  censorrate <- old.names$censorrate # NULL
-  delta_tmp.list <- old.names$delta_tmp.list # 0 or 1 for each study
-  frform <- old.names$frform  # NULL
-  fzrform <- old.names$fzrform # NULL
-  fxform <- old.names$fxform # NULL
-  gtmod <- old.names$gtmod  # null
+  axmod <- old.names$axmod
+  beta0 <- old.names$beta0
+  censorrate <- old.names$censorrate
+  delta_tmp.list <- old.names$delta_tmp.list
+  frform <- old.names$frform
+  fzrform <- old.names$fzrform
+  fxform <- old.names$fxform
+  gtmod <- old.names$gtmod
   gen.cens.depend.z <- old.names$gen.cens.depend.z  #null
-  mix_n <- old.names$mix_n 	# null
-  s_tmp.list <- old.names$s_tmp.list # CAG repeat length for all subject for each study
-  type_fr <- old.names$type_fr    # null
+  mix_n <- old.names$mix_n
+  s_tmp.list <- old.names$s_tmp.list
+  type_fr <- old.names$type_fr
   use.random.effects  <- old.names$use.random.effects
-  x_tmp.list  <- old.names$x_tmp.list ## all values for x_tmp for each study
+  x_tmp.list  <- old.names$x_tmp.list
 
   ##############################
   # labeling for results data ##
   ##############################
-  iseed <- old.names$iseed #1
-
-
-
+  iseed <- old.names$iseed
 
 
   ################################################
   # Generating fixed effects for simulated data ##
   # (not used)                                  ##
   ################################################
-  lb.max <- old.names$lb.max # 1
-  par1_fzr <- old.names$par1_fzr # parameter each covar # null
-  par2_fzr <- old.names$par2_fzr  # null
-  par1_fx <- old.names$par1_fx  # null
-  par2_fx <- old.names$par2_fx  # null
-  par1_fr <- old.names$par1_fr  # null
-  par2_fr <- old.names$par2_fr  # null
-  par1_fr2 <- old.names$par1_fr2  # null
-  par2_fr2 <- old.names$par2_fr2  # null
-  type_fzr <- old.names$type_fzr  # null
-  type_fx <- old.names$type_fx    # null
-  z_tmp.list  <- old.names$z_tmp.list # all values for z_tmp (BASE AGE) for each study
-
-
-
-
-  ########################################
-  ## Not used parameters in JPRAT  ##
-  ########################################
-
-  ##################
-  ## from results ##
-  ##################
-  #alpha.cut <- old.names$alpha.cut    ## NULL
-  #add.second.legend <- old.names$add.second.legend ## TRUE
-  #alphax_lab <- old.names$alphax_lab # 1,2,3
-  #beta.cut <- old.names$beta.cut #NULL
-  #boot.ci <- old.names$boot.ci # FALSE
-  #convert.x <- old.names$convert.x #TRUE
-  #legend.position.use <- old.names$legend.position.use # topright
-  #round.set <- old.names$round.set # 2
-  #plot.nw <- old.names$plot.nw #FALSE
-  #study.ylab <- old.names$study.ylab #"Probability"
-  #study.xlab <- old.names$study.xlab #"Age (years)"
-  #time.cut  <- old.names$time.cut #NULL
-  #ylim.key <- old.names$ylim.key # ylim for different covariate
-  #ylim.setting <- old.names$ylim.setting #beta0  -10   8
-  #beta1   -1   1
-  #alphax -10  10
-  #alphat -10  10
-  #Ft       0   1
-
-  #z_lab  <- old.names$z_lab #  "zza" "zzb" "zzc" "zzd"
-  #alphax.ylab <- old.names$alphax.ylab # "Effect on Outcome"
-  #alphax.xlab <- old.names$alphax.xlab  #"CAG repeats"
-  #alphat.ylab <- old.names$alphat.ylab  # "Effect on Outcome"
-  #alphat.xlab <- old.names$alphat.xlab  # "Age (years)"
-
-
-
-  #######################################
-  ##Input converted to old notation   ###
-  #######################################
-
-
-  #alphat_lab <- old.names$alphat_lab ## 45, 55
-  #colors.use <- old.names$colors.use  #hdage_nobase
-  #"firebrick1"
-
-
-  #par3_fr <- old.names$par3_fr # null
-  #plot.KM <- old.names$plot.KM #FALSE
-  #randomeffects.covariate.dependent <- old.names$randomeffects.covariate.dependent  # NULL
-  #var.lo  <- old.names$var.lo   # "varlo"
-  #var.hi  <- old.names$var.hi   # "varhi"
-  #beta_lab  <- old.names$beta_lab
-  #common.param.data <- old.names$common.param.data # NULL
-  #gamm.orig <- old.names$gamm.orig # false
-  #xx_choice.ci  <- old.names$xx_choice   # 42, 44, 46
-  #zeval.tmp  <- old.names$zeval.tmp     #   base_age_kmeans
-  #	  A        28.11354
-  #		B        37.37259
-  #		C        46.57556
-  #		D        58.28165
-  #conf.int.use <- old.names$conf.int.use		## TRUE
-  #nn.comparison <- old.names$nn.comparison  ## nc1: 1
-  #s.names.short  <- old.names$s.names.short #hdage_nobase
-  #"Motor Diagnosis (DCL=4)"
-  #time_choice <- old.names$time_choice ## 45, 55
-  #time_choice.ci <- old.names$time_choice.ci ## 40 45 50 55 60
-
-  #xx_choice  <- old.names$xx_choice # 42, 44, 46
-  #var.est  <- old.names$var.est # "est"
-  #zz_comp  <- old.names$zz_comp # 1 1
-  #xx_comp <- old.names$xx_comp	# 42, 46
-  #xx_choice.sample.size <- old.names$xx_choice.sample.size  ## 42
-
-
-
-
+  lb.max <- old.names$lb.max
+  par1_fzr <- old.names$par1_fzr
+  par2_fzr <- old.names$par2_fzr
+  par1_fx <- old.names$par1_fx
+  par2_fx <- old.names$par2_fx
+  par1_fr <- old.names$par1_fr
+  par2_fr <- old.names$par2_fr
+  par1_fr2 <- old.names$par1_fr2
+  par2_fr2 <- old.names$par2_fr2
+  type_fzr <- old.names$type_fzr
+  type_fx <- old.names$type_fx
+  z_tmp.list  <- old.names$z_tmp.list
 
 
 
@@ -591,22 +478,17 @@ jprat.wrapper <- function(
   ##all_null_theta : array to store all estimates. set to NULL values
 
 
-
-
-  ##################################
-  # no examples but add documentations
-  ##################################
   null.theta <- all_null_theta(theta.names,
                                study.names,
-                               event.names=s.names,  #"hdage_nobase"
-                               z_lab_names,          # base_age: A, B, C,D
-                               x_lab_names,         ## points for CAG repeats
+                               event.names=s.names,
+                               z_lab_names,
+                               x_lab_names,
                                label.dim.simus=simus,
                                label.name.simus=paste("iter",1:simus,sep=""),
-                               time_val,  ## 40  45  50  55  60  65  70  75  80  85  90  95 100
-                               param.label,  ## beta0 beta1
-                               time_choice.predicted,time_choice.predicted.toadd, ## null
-                               la  # 1
+                               time_val,
+                               param.label,
+                               time_choice.predicted,time_choice.predicted.toadd,
+                               la
   )
 
   ## get combi null theta arrays
@@ -618,18 +500,10 @@ jprat.wrapper <- function(
                                      label.dim.simus=simus,
                                      label.name.simus=paste("iter",1:simus,sep=""),
                                      time_val,
-                                     param.label, ## beta0 beta1
+                                     param.label,
                                      time_choice.predicted,time_choice.predicted.toadd,
                                      la)
 
-
-  #, , zz = B, xx = xx44.4, time = t100
-
-  #event
-  #study            hdage_nobase
-  #cohort-predict            0
-  #cohort-pharos             0
-  #predict-pharos            0
 
   ## for bootstrap
   boot.null.theta <- all_null_theta(theta.names,
@@ -681,6 +555,8 @@ jprat.wrapper <- function(
     Ftbootci.store <- NULL
   }
 
+
+
   ## Ft predicted terms
   Ftest.predicted.store <-  null.theta$null.theta.simus.est.ciboot$Ft.predicted  ## NULL
 
@@ -698,8 +574,6 @@ jprat.wrapper <- function(
   count.store.outside <- NULL
 
 
-
-
   ######################################################################
   ## get true values                                                  ##
   ## (only relevant for simulated data. Otherwise, this is not used)  ##
@@ -713,7 +587,6 @@ jprat.wrapper <- function(
     sigmar=par2_fr[1],sigmau=par_fu["sd"],gtmod,use.random.effects,
     null.theta,combi.null.theta)
 
-  ## difference is 0?
   betadiff.store <- truth$beta.diff
   alphasdiff.store <- truth$alphas.diff
   Ftdiff.store <- truth$Ft.diff
@@ -735,9 +608,6 @@ jprat.wrapper <- function(
                                           real_data,
                                           x_tmp.list,
                                           z_tmp.list)
-
-
-
 
   #+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#++#+#+#+#+#++#+#+#+#+#+
   #+
@@ -761,88 +631,87 @@ jprat.wrapper <- function(
       x=fixed.effects$x,
       z=fixed.effects$z,
       delta_tmp.list,
-      s_tmp.list, ## CAG repeat length?
-      a0,##null
-      axmod, ##"real"
-      num_time, ## 13
-      censorrate,## null
-      frform, ## null
-      type_fr, ## null
+      s_tmp.list,
+      a0,
+      axmod,
+      num_time,
+      censorrate,
+      frform,
+      type_fr,
       par1_fr,par2_fr,par1_fr2,par2_fr2,mix_n, par_fu, ## null
-      real_data,   ## true
-      time_val,    ## 40, 45, 50, ...100
-      beta0int, ## 0.5
+      real_data,
+      time_val,
+      beta0int,
       beta0,
-      gamma.param,omega.param,## null
-      n, ## number of sample size
+      gamma.param,omega.param,
+      n,
       nmax,
-      m, ## observed event 0 or 1
+      m,
       maxm,
       la,lb,
       num_study,
       np,
-      gtmod, ## null
-      use.random.effects, ## null
-      gen.cens.depend.z)	## null
+      gtmod,
+      use.random.effects,
+      gen.cens.depend.z)
 
 
 
     #####################################
     # no examples but add documentations#
     #####################################
-    jprat.out<-jprat.main.estimates(method="gamm4",  ## conditional paramters to estimate using gamm4
-                                    compute.study.differences=compute.study.differences, ## conditional parameter to do boostrap procedure
-                                    var.boot=var.boot, ## conditional parameter to do boostrap procedure
+    jprat.out<-jprat.main.estimates(method="gamm4",
+                                    compute.study.differences=compute.study.differences,
+                                    var.boot=var.boot,
                                     ########################
                                     # For main estimation function
                                     ########################
-                                    arbitrary, ## FALSE
+                                    arbitrary,
                                     num_study,np,
-                                    count.store, # null
-                                    count.store.outside, # null
-                                    data, #=data, ## data from simu.data.fixed.effects()
-                                    num_time, ## 13
-                                    time_val, ## specific time value 40, 45, ..., 90, 95, 100
-                                    time_choice.predicted, ## null
-                                    time_choice.predicted.toadd, ## null
+                                    count.store,
+                                    count.store.outside,
+                                    data,
+                                    num_time,
+                                    time_val,
+                                    time_choice.predicted,
+                                    time_choice.predicted.toadd,
                                     n,nmax,m,maxm,
                                     la,lb,
-                                    xks, ## 0, 0.1, ....0.7, ..., 0.9, 1
-                                    truth, #=truth, ## where do we define?
-                                    num_xx,  ## 18
-                                    knot.length, ## 8, where do we define?
-                                    real_data, ## TRUE
-                                    family.data, ## FALSE
-                                    zeval, ## at which points were estimated: k-means group
-                                    z.choice, ## 4
-                                    param.label, ## "beta0" "beta1"
-                                    beta0int, ## 0.5
-                                    gamma.param,omega.param, ## null
-                                    spline.constrain, ## TRUE
-                                    common.param.estimation, ## TRUE
-                                    est.cens.depend.z, ## FALSE
-                                    par_fu, ## null
-                                    analyze.separately, ## "event"
-                                    link.type, ## "logit"
-                                    null.theta, #=null.theta, ## why do we need it?
-                                    z.proportions=NULL, ## null
+                                    xks,
+                                    truth,
+                                    num_xx,
+                                    knot.length,
+                                    real_data,
+                                    family.data,
+                                    zeval,
+                                    z.choice,
+                                    param.label,
+                                    beta0int,
+                                    gamma.param,omega.param,
+                                    spline.constrain,
+                                    common.param.estimation,
+                                    est.cens.depend.z,
+                                    par_fu,
+                                    analyze.separately,
+                                    link.type,
+                                    null.theta,
+                                    z.proportions=NULL,
                                     ###########################
-                                    #For jprat estimation
+                                    ###For jprat estimation ###
                                     ###########################
                                     betaest.store,
                                     alphasest.store,
                                     Ftest.store,
                                     Ftest.predicted.store,
-                                    #combi.null.theta,
                                     ###########################
-                                    #For bootstraps estimation
+                                    #For bootstraps estimation#
                                     ###########################
                                     combi.study,
                                     combi.choice,
                                     combi.names,
                                     boot=boot,
                                     boot.null.theta=boot.null.theta,
-                                    boot.combi.null.theta=boot.combi.null.theta, #=boot.combi.null.theta,
+                                    boot.combi.null.theta=boot.combi.null.theta,
                                     betabootci.store=betabootci.store,
                                     alphasbootci.store=alphasbootci.store,
                                     Ftbootci.store=Ftbootci.store,
@@ -872,11 +741,6 @@ jprat.wrapper <- function(
   alphasbootci.store<-jprat.out$alphasbootci.store
   Ftbootci.store<-jprat.out$Ftbootci.store
 
-  ## No need to report these.
-  #count.store<-jprat.out$count.store
-  #count.store.outside<-jprat.out$count.store.outside
-
-
 
   #+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#++#+#+#+#+#++#+#+#+#+#+
   #+
@@ -899,7 +763,7 @@ jprat.wrapper <- function(
   if(write.output==TRUE){
 
   ## get all dimension to save results with their names: beta, alphas, Ft, Ft.predicted
-  dim.order.all <- get.all.dim.order(theta.names)   ## name of dimension order
+  dim.order.all <- get.all.dim.order(theta.names)
   ## theta.names: Ft, Ft.predicted
   flatten.theta.name <- get.flatten.theta.name(theta.names)
 
@@ -908,7 +772,6 @@ jprat.wrapper <- function(
 
     truth.colm.names <- c("study","event","theta","zz","xx","time0",
                           paste("t",time_val,sep=""))
-
     theta.colm.names <- c("iters","study","event","theta","zz","xx","val","time0",
                           paste("t",time_val,sep=""))
 
@@ -916,7 +779,6 @@ jprat.wrapper <- function(
 
     truth.colm.names <- c("study","event","theta","zz","xx",
                           paste("t",time_val,sep=""))
-
     theta.colm.names <- c("iters","study","event","theta","zz","xx","val",
                           paste("t",time_val,sep=""))
 
@@ -926,14 +788,10 @@ jprat.wrapper <- function(
                         paste("t",time_val,sep=""))
 
 
-
-
   ###########
   ## truth ##
   ###########
-
-  ## flatten along time components,
-  ## ulc: not sure  exactly what flatten means?
+  ## flatten along time components
   truth.out.tmp <- get.theta.output(all.est.store=truth,
                                     dim.order=dim.order.all$dim.order,
                                     flatten.name="time",
@@ -945,9 +803,6 @@ jprat.wrapper <- function(
   truth.out <- truth.out[,truth.colm.names]
 
 
-  ##########################
-  ## beta/alpha/Ft/Ftpred ##
-  ##########################
   #######################################
   ### return restuls from jpart.out()  ##
   #######################################
@@ -974,6 +829,7 @@ jprat.wrapper <- function(
   ## Compare studies ##
   #####################
   if(num_study > 1){
+
     combi.theta.est.list <- list(beta.tmp=betabootci.store,
                                  alphas.tmp=alphasbootci.store,
                                  Ft.tmp=Ftbootci.store)
@@ -995,49 +851,22 @@ jprat.wrapper <- function(
   }
 
 
-  ### compare
-  #write.csv(combi.out, file="original_while_loop_results_combi_out.csv")
-  #write.csv(combi.out, file="newcode_while_loop_results_combi_out.csv")
-  #write.csv(combi.out, file="speudo_combi_out.csv")
-  #write.csv(theta.out, file="speudo_theta_out.csv")
-  #write.csv(Ftest.store, file="speudo_Ftstore.csv")
-
-
   #########################
   ## filename for output ##
   #########################
   filename <- paste("output_iseed_",iseed,".dat",sep="")
-
-  #if(use_real_data==TRUE){
   filename <- paste("real_",filename,sep="")
-  #}
 
-    #write.table(truth.out,paste("out_truth_",filename,sep=""),
-    #            col.names=FALSE,row.names=FALSE)
+  write.table(theta.out, paste("out_thetaest_",filename,sep=""), col.names=FALSE, row.names=FALSE)
+  write.table(combi.out, paste("out_combi_",filename,sep=""),col.names=FALSE,row.names=FALSE,na="0")
 
-    write.table(theta.out,
-                paste("out_thetaest_",filename,sep=""), col.names=FALSE, row.names=FALSE)
-
-    write.table(combi.out,
-                paste("out_combi_",filename,sep=""),col.names=FALSE,row.names=FALSE,na="0")
-
-   # write.table(jprat.out$count.store,
-   #              paste("out_count_",filename,sep=""),col.names=FALSE,row.names=FALSE,na="0")
-
-   #  write.table(jprat.out$count.store.outside,
-   #              paste("out_outside_count_",filename,sep=""),col.names=FALSE,row.names=FALSE,na="0")
-
-
-    jprat.output<- list(data.theta=theta.out, data.combi=combi.out)
+  jprat.output<- list(data.theta=theta.out, data.combi=combi.out)
 
   }else{
-
-    #perm.alphaest.store <- aperm(alphasest.store,c("iters","study","event","time","xx","theta","val")) ## permutation  of alpha.array with the following order
 
       jprat.output=list(
       beta.array=betaest.store,
       alpha.array=alphasest.store,
-      #alpha.array.new=perm.alphaest.store,
       Ft.array=Ftest.store,
       Ft.predicted.array=Ftest.predicted.store,
       beta.diff.array=betabootci.store,
@@ -1050,12 +879,6 @@ jprat.wrapper <- function(
 
 
 
-  list(#truth.out=truth.out,
-       jprat.output=jprat.output,
-      # theta.out=theta.out,
-      # combi.out=combi.out,
-       #count.store=count.store,
-       #count.store.outside=count.store.outside,
-      # Ftest.store=Ftest.store,
+  list(jprat.output=jprat.output,
        eflag=eflag)
 }

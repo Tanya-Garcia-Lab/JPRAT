@@ -81,18 +81,7 @@ If this is FALSE, the only option is  "none" (no variances are estimated). The d
 \item{write.output}{A logical value whether outputs should be saved into data files. The default option is TRUE.}
 }
 \value{
-A list of
-         \item{jprat.output}{A list of estimated values. If write.output=TRUE, the list contains data.theta and combi.out, where theta.out is the data frame of the estimated values for all components ("beta0", "beta1",  "alpha1", "Ft", "Ft.predicted")
-                          at each iteration for the clinical events of interest per study. The columns of the data frame include iters (iteration number), study(names of studies), event (the names of outcome events), theta (names for all components to be estimated), zz (the labels of the nonfunctional covariates Z),
-                          xx (the labels of the functional covariates X), val (all estimated values for theta: "est”, "varest”, "varlo”, "varhi”, "boot_varest”, "boot_varlo”, "boot_varhi”)
-                          and the flatten time points, and combi.out is a data frame of the difference of the estimated values between a pair of studies for all components ("beta0", "beta1", "alpha1", "Ft", "Ft.predicted")
-                          at each iteration for the clinical events of interest per a pair of studies.
-                          The columns of the data frame include iters (iteration number), study(names for the combinations of studies: cohort-predict, cohort-pharos, predict-pharos),
-                          event (the names of outcome events), theta (names for all components to be estimated), zz (the labels of the nonfunctional covariates Z), xx (the labels of the functional covariates X),
-                          val (all estimated values for theta: "est", "varest", "varlo", "varhi", "boot_varest", "boot_varlo",
-                          "boot_varhi") and the flatten time points.}
-         \item{eflag}{an integer number to check if any error comes up while estimation algorithm is processed.
-                      If this value is -1, then the marginal distribution \eqn{F_{es}(t|X, Z)} has missing values (NA).}
+
 }
 \description{
 This function is to call and run JPRAT algorithm.
@@ -116,15 +105,12 @@ The Joint Progression of Risk Assessment Tool (JPRAT) evaluates and compares all
 
 ## See more examples man/example.R
 
-## Four options whether study and event are analyzed separately:
-## what.analyzed.separately="studyevent", "event", "study" or "none"
-
+## Choose one option whether study and event are analyzed separately:
 what.analyzed.separately= "studyevent"
 
-## Load your data in the list format: should match order of study.names
-## Choose different list of data depending on the settings such as
-
+## Load your data in the list format:
 input.data.list=list(cohort=data_cohort, predict=data_predict, pharos=data_pharos);
+
 ####################################
 # For JPRAT estimation: Input data #
 ####################################

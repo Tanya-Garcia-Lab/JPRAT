@@ -90,19 +90,23 @@ A list of zero arrays will be created to store those estimates of \eqn{\beta_{es
 }
 \examples{
 
+library(JPRAT)
 
-theta.names=c("beta", "alphas", "Ft")
-study.names=c("cohort", "predict", "pharos")
+## input parameters
+theta.names=c("beta", "alphas", "Ft");
+study.names=c("cohort", "predict", "pharos");
 event.names=c("hdage_nobase", "mcione", "dep2");
 z_lab_names=c("base_age");
 x_lab_names=c(40, 46);
 simus=5;
-label.name.simus=paste("iter",1:simus,sep="")
-time_val=seq(40, 100, by=5)
+label.name.simus=paste("iter",1:simus,sep="");
+time_val=seq(40, 100, by=5);
 param.label=c("beta0", "beta1");
 time_choice.predicted=NULL;
 time_choice.predicted.toadd=NULL;
-la=1
+la=1;
+
+## List of all components to be estimated; each element has zero arrays.
 
 null.theta <- all_null_theta(theta.names, study.names, event.names=event.names,
                              z_lab_names, x_lab_names, label.dim.simus=simus,
