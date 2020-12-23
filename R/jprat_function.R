@@ -1,7 +1,7 @@
-#' @title Initialization of parameters and coefficients
+#' @title Initialization of Parameters and Coefficients
 #' @description This function constructs a list of all parameters and coefficients. The structure of each parameter or coefficient is a multi-dimensional array,
 #' whose dimension size depends on the number of studies, the number of events, the number of covariates and the length of time points,etc.
-#' This function also initializes all parameters and coefficients (arrays) to zeros.
+#' This function also initializes all parameters and coefficients to zero arrays.
 #'
 #' @param theta.names A character vector of functional parameters' names that will be estimated in the model: "beta" (include intercept), "alphas" and "Ft" (or "Ft.predicted") corresponds to
 #'                     \eqn{\beta_{es}(t)} (\eqn{\beta_0(t)}) ,  \eqn{\alpha(X, t)}, and \eqn{F_{es}(t)}.
