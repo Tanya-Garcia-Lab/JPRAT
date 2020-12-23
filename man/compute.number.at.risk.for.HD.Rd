@@ -20,9 +20,9 @@ compute.number.at.risk.for.HD(
 \arguments{
 \item{study.names}{A character vector of name of studies used in the analysis. e.g., c("cohort", "predict", "pharos").}
 
-\item{input.data.list}{Lists of datasets to be analyzed. In the case, you use datasets given from JPRAT, then there are two options:
-use list(cohort=data_cohort, predict=data_predict, pharos=data_pharos) if you choose \code{what.analyzed.separately}="event" or "eventstudy";
-otherwise use list(study1=simu_data1_model_A, study2=simu_data2_model_A). (See \code{what.analyzed.separately} for option details.)}
+\item{input.data.list}{A list of datasets to be analyzed. In the case, you use datasets given from JPRAT, then there are two options:
+use list(cohort=data_cohort, predict=data_predict, pharos=data_pharos) if you choose \code{what.analyzed.separately="event" or "eventstudy"};
+otherwise use list(study1=simu_data1_model_A, study2=simu_data2_model_A) (See \code{what.analyzed.separately="none" or "study"} for option details).}
 
 \item{event.outcome.names}{A character vector for the name of the time-to-event of interest (outcomes).}
 
@@ -41,7 +41,7 @@ otherwise use list(study1=simu_data1_model_A, study2=simu_data2_model_A). (See \
 \item{write.output}{A logical value whether outputs should be saved into data files. The default option is TRUE.}
 }
 \value{
-a table for the number of subjects whoare at risk for HD for each study at times.(ignores specific covariate values)
+a table for the number of subjects who are at risk for HD for each study at times.(ignores specific covariate values)
 }
 \description{
 compute.number.at.risk.for.HD: This function returns number of subjects who are at risk for HD for each study at times.

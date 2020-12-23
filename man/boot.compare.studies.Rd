@@ -50,85 +50,104 @@ boot.compare.studies(
 )
 }
 \arguments{
-\item{arbitrary}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{arbitrary}{ADD DETAILS HERE!}
 
-\item{combi.study}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{combi.study}{The total number of distinct studies to be compared.}
 
-\item{combi.choice}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{combi.choice}{A matrix of all combination of two pairs of studies to be compared (paired in column-wise), whose dimension is 2 by the total number of studies (\code{combi.study}).}
 
-\item{combi.names}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{combi.names}{A character vector of names for the pairs of study combinations. For example, cohort-predict, cohort-pharos, predict-pharos.}
 
-\item{num_study}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{num_study}{The number of studies used in analyses. If the real data analysis used three studies called "cohort", "predict", "pharos", then number of studies is 3. i.e., \code{num_study=3}.}
 
-\item{boot}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{boot}{The number of bootstrap iterations. The bootstrap procedure is to do hypothesis testing, which compares functional parameters over the time points among studies.
+The default value is 100. See the argument \code{number.of.bootstraps} in the \code{\link{jprat.wrapper}} function.}
 
-\item{np}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{np}{The number of clinical events, which is the length of the character vector for names of time-to-event outcomes (\code{event.outcome.names}) in \code{\link{jprat.wrapper}} function.}
 
-\item{data}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{data}{A data set as starting values used for estimation procedure;
+a list of starting values for binary event status (y_start), the missing indicator of the binary event status (ymiss_ind_start), the nonfunctional covariate Z (z_start),
+the functional covariate X (x_start), the time-to-events or censoring times (s_start), the mixture probabilities for the jack-knife pseudo-values (q_start),
+the censoring indicators (delta_start), the original onset ages (onset_age_orig_start), the indicator of no risk (norisk_ind_start), the counting numbers for the status of each event of interests (count),
+the pseudo-values (ytest).}
 
-\item{num_xx}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{num_xx}{The number of functional covariate values \eqn{X} at which the functional parameters \eqn{\alpha(X, t)} are evaluated.}
 
-\item{num_time}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{num_time}{A length of the vector of time points at which the predicted values of marginal distributions will be estimated.
+See the argument \code{time.points.for.prediction} in the \code{\link{jprat.wrapper}} function.}
 
-\item{time_val}{See the argument in the \code{\link{all_null_theta}} function.}
+\item{time_val}{See the argument \code{time.points.for.prediction} in the \code{\link{jprat.wrapper}} function.}
 
-\item{time_choice.predicted}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{time_choice.predicted}{See the argument \code{time.points.for.conditional.prediction} in the \code{\link{jprat.wrapper}} function.}
 
-\item{time_choice.predicted.toadd}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{time_choice.predicted.toadd}{See the argument \code{time.points.for.conditional.prediction.toadd} in the \code{\link{jprat.wrapper}} function.}
 
-\item{xks}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{xks}{A list of studies whose element of the list is the numeric vector of values for the functional covariates \eqn{X} in smooth functional parameter \eqn{\alpha(X, t)}.}
 
-\item{n}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{n}{A vector of the sample sizes for all studies.}
 
-\item{nmax}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{nmax}{The maximum sample size across all studies.}
 
-\item{m}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{m}{An array of the number of clinical events for each individual and per study,
+whose dimension is the number of studies (\code{num_study})
+by the maximum number of the sample sizes across studies (\code{nmax}).}
 
-\item{maxm}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{maxm}{The maximum value of  the events across all subjects for all studies.}
 
-\item{la}{See the argument in the \code{\link{all_null_theta}} function.}
+\item{la}{A length of smooth functional parameters \eqn{\alpha(X,t)} in the model. The default value is 1 in the data analysis study.}
 
-\item{lb}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{lb}{A list of the number (dimension) for the coefficients of nonfunctional covariate Z (see the argument \code{functional.beta.coefficients}) per study.}
 
-\item{truth}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{truth}{A list of true model coefficients for "beta" (\eqn{\beta_{0}(t), \beta_{es}(t)}), "alphas" \eqn{\alpha(X,t)}, "Ft" (\eqn{F_{es}(t|X,Z)}), "Ft.predicted", "beta.diff", and "Ft.diff".}
 
-\item{real_data}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{real_data}{A logical value whether the real data will be used. The default option is TRUE.}
 
 \item{knot.length}{number of knots used to construct the basis functions.}
 
-\item{family.data}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{family.data}{A logical value if the clusters are families, where each member in the cluster is different.}
 
-\item{zeval}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{zeval}{An array of the values of the nonfunctional covariate Z for all studies,
+where the order of dimensions for this array is the number of studies (\code{num_study}),
+the number of nonfunctional covariate \eqn{Z} (\code{z.choice}),
+the length of the character vector for the names of time-to-event outcomes (\code{event.outcome.names})
+and the number of coefficients of nonfunctional covariate Z (\code{functional.beta.coefficients}) per study.}
 
-\item{z.choice}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{z.choice}{The number of nonfunctional covariate \eqn{Z} used in the analysis.}
 
-\item{param.label}{See the argument in the \code{\link{all_null_theta}} function.}
+\item{param.label}{A character vector of the names for all coefficients of nonfunctional covariate Z in the model.}
 
-\item{beta0int}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{beta0int}{A fixed number for the intercept \eqn{\beta_0(t)} in the model. The default value is 0.25.}
 
-\item{gamma.param}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{gamma.param}{A numeric vector of event specific coefficient, \eqn{\gamma_{e}(t)}. The default value is NULL.}
 
-\item{omega.param}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{omega.param}{A numeric vector of study specific coefficient, \eqn{\omega_s(t)}. The default value is NULL.}
 
-\item{spline.constrain}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{spline.constrain}{A logical value if B-spline is constrained at 0. To keep the design matrix correct, we need to have \eqn{B(0)=0}. The default option is TRUE.}
 
-\item{common.param.estimation}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{common.param.estimation}{A logical value whether the model parameters are the same across studies: The default option is FALSE. See the argument \code{estimated.parameters.common.for.all.studies} in the \code{\link{jprat.wrapper}} function.}
 
-\item{est.cens.depend.z}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{est.cens.depend.z}{A logical value whether the estimation process assumes that a censoring distribution depends on nonfunctional covariates \eqn{Z}.
+If covariates Z does not follow a binomial distribution, then the default option is FALSE. See the argument \code{estimation.when.censoring.depends.on.z} in the \code{\link{jprat.wrapper}} function.}
 
-\item{par_fu}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{par_fu}{A vector of parameters for the normal distribution of random effect for all studies: "mean" and "sd".}
 
-\item{analyze.separately}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{analyze.separately}{A character value to determine whether analysis will be performed separately or jointly: the options are "studyevents" (studies and event), "studies", "events", or "none". See the argument \code{what.analyzed.separately} in the \code{\link{jprat.wrapper}} function.}
 
-\item{link.type}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{link.type}{A character value for the name of the link function for the additive mixed effect model (the generalized linear model): "logit” for proportional odds model or "cloglog" for cox proportional hazards. See the argument \code{glm.link.type} in the \code{\link{jprat.wrapper}} function.}
 
-\item{boot.null.theta}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{boot.null.theta}{A list of "null.theta",  "null.theta.simus", "null.theta.simus.ci", "null.theta.ci",
+"null.theta.simus.est.ci", "null.theta.simus.est.ciboot", and ``null.theta.est.ci", which are return values in the \code{\link{all_null_theta}} function for the bootstrap estimates.
+ The label for simulation dimensions is "boot".}
 
-\item{boot.combi.null.theta}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{boot.combi.null.theta}{A list of "null.theta",  null.theta.simus", "null.theta.simus.ci", "null.theta.ci", "null.theta.simus.est.ci",
+"null.theta.simus.est.ciboot", and "null.theta.est.ci", which are return values in the \code{\link{all_null_theta}} function
+ for comparing bootstrap estimates ("beta”, "alphas”, "Ft” and "Ft.predicted”) among different studies.
+ The label for simulation dimensions is "boot".}
 
-\item{var.boot}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{var.boot}{A logical value whether bootstrap variances are estimated. See the argument \code{use.bootstrap.variance} in the \code{\link{jprat.wrapper}} function. The default option is TRUE.}
 
-\item{compute.study.differences}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{compute.study.differences}{A logical value whether study differences will be estimated: it is only valid when the number of studies (\code{number.of.studies}) are greater than 1,
+when parameters were estimated differently (\code{estimated.parameters.common.for.all.studies=FALSE}), and when estimates are similar across studies (\code{check.study.equality=TRUE}).}
 
 \item{est.values}{a list of arrays of the estimates ("est") for the functional coefficient \eqn{\beta(t)}
 (\code{betaest} in the \code{\link{gamm4.estimates}} function),
@@ -137,7 +156,7 @@ the monotone marginal distribution \eqn{F_{es}(t|X, Z)} (\code{Ft} in the \code{
 and the predicted values of the monotonic marginal distribution \code{F_{es}(t|X, Z, t > t0)}
 (\code{Ft.predicted} in the \code{\link{gamm4.estimates}} function).}
 
-\item{z.proportions}{See the argument in the \code{\link{jprat.main.estimates}} function.}
+\item{z.proportions}{The marginal probability of the nonfunctional coavariate \eqn{Z}. The default value is NULL.}
 }
 \value{
 A list of

@@ -33,62 +33,6 @@ convert.new.notation.to.old.for.jprat(
   clusters.are.families
 )
 }
-\arguments{
-\item{study.names}{See the argument in the \code{\link{jprat.wrapper}} function.}
-
-\item{data.sets.as.list}{See the argument in the \code{\link{jprat.wrapper}} function.}
-
-\item{time.points.for.prediction}{See the argument in the \code{\link{jprat.wrapper}} function.}
-
-\item{time.points.for.conditional.prediction}{See the argument in the \code{\link{jprat.wrapper}} function.}
-
-\item{time.points.for.conditional.prediction.toadd}{See the argument in the \code{\link{jprat.wrapper}} function.}
-
-\item{nonfunctional.covariate.names}{See this argument in the \code{\link{jprat.wrapper}} function.}
-
-\item{nonfunctional.covariate.values.for.prediction}{a data frame of numeric values (nonfunctional covariate value) of the nonfunctional covariate. Default value is 40 for the nonfunctional covariate values for prediction (\code{base_age}).}
-
-\item{functional.covariate.names}{See the argument in the \code{\link{jprat.wrapper}} function.}
-
-\item{functional.covariate.values.for.prediction}{a numeric vector of the functional covariate values \eqn{x \in [0,1]} at which smooth functional parameters \eqn{\alpha(X,t)} will be estimated for each study. If the original covariate values are used, then they will be transformed into a numeric vector in [0,1].}
-
-\item{xmin}{the minimum value for the CAG repeat length.}
-
-\item{xmax}{the maximum value for the CAG repeat length.}
-
-\item{othercovariate.names}{See the argument in the \code{\link{jprat.wrapper}} function.}
-
-\item{event.outcome.names}{See the argument in the \code{\link{jprat.wrapper}} function.}
-
-\item{delta.names}{See the argument in the \code{\link{jprat.wrapper}} function.}
-
-\item{use_real_data}{a logical value whether to use real data. Default is TRUE.}
-
-\item{use.functional.beta.intercept}{See the argument in the \code{\link{jprat.wrapper}} function.}
-
-\item{use.functional.event.coefficients}{See the argument in the \code{\link{jprat.wrapper}} function.}
-
-\item{use.functional.study.coefficients}{See the argument in the \code{\link{jprat.wrapper}} function.}
-
-\item{number.of.bootstraps}{See the argument in the \code{\link{jprat.wrapper}} function.}
-
-\item{check.study.equality}{See the argument in the \code{\link{jprat.wrapper}} function.}
-
-\item{what.analyzed.separately}{See the argument in the \code{\link{jprat.wrapper}} function.}
-
-\item{estimated.parameters.common.for.all.studies}{See the argument in the \code{\link{jprat.wrapper}} function.}
-
-\item{estimation.when.censoring.depends.on.z}{See the argument in the \code{\link{jprat.wrapper}} function.}
-
-\item{glm.link.type}{a character value for the name of the link function for the additive mixed effect model: "logit” for proportional odds model or "cloglog" for cox proportional hazards. Default is ``logit".}
-
-\item{use.bootstrap.variance}{See the argument in the \code{\link{jprat.wrapper}} function.}
-
-\item{clusters.are.families}{a logical value whether pseudo-values will compute differently when clusters are families (i.e., subjects are different people): Default is FALSE.}
-}
-\value{
-FILL IN HERE!!
-}
 \description{
 convert.new.notation.to.old.for.jprat: This code converts the new notation into the original code notation for JPRAT analysis.
 }

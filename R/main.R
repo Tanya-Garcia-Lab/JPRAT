@@ -4,134 +4,135 @@
 ####################################
 ## main jprat estimation function ##
 ####################################
-#' jprat.main.estimates: alogrithm for JPRAT
+#' @title Main Algorithm for JPRAT estimation
+#' @description This function is a main JPRAT estimation algorithm to estimate parameters in an additive logistic mixed effect model and
+#' conduct a bootstrap estimation procedure to do a hypothesis testing, which assesses if functional terms between studies differ over a range of time points
+#' The parameters are estimated by maximizing double penalized quasi-likelihood (DPQL)
+#' and using the generalized approximate cross-validation for the smoothing parameters \eqn{\lambda}.
+#' This can be done using \code{\link[mgcv]{gamm4}} in \code{\link{mgcv}} package in R.
+#' @aliases jprat.wrapper, gamm4.estimates, jprat.main.estimates
 #'
-#' @param method a character value for which estimation procedure will be used to estimate all parameters of time varying fixed effects with the marginal distribution function: "gamm4" or "new".  Default is "gamm4".
-#' @param compute.study.differences a logical value whether study differences will be estimated. Only valid when the number of studies (\code{number.of.studies}) are greater than 1,
-#'                                  when parameters were estimated differently (\code{estimated.parameters.common.for.all.studies=FALSE}), and when estimates are similar across studies (\code{check.study.equality=TRUE})).
-#' @param var.boot a logical value whether bootstrap variances are estimated. See the argument \code{use.bootstrap.variance} in the \code{\link{jprat.wrapper}} function. Default is TRUE.
+#' @param method A character value for which estimation procedure will be used to estimate all parameters of the additive logistic mixed effects model: "gamm4" or "new".
+#' The default option is "gamm4".
+#' @param compute.study.differences A logical value whether study differences will be estimated: it is only valid when the number of studies (\code{number.of.studies}) are greater than 1,
+#'                                  when parameters were estimated differently (\code{estimated.parameters.common.for.all.studies=FALSE}), and when estimates are similar across studies (\code{check.study.equality=TRUE}).
+#' @param var.boot A logical value whether bootstrap variances are estimated. See the argument \code{use.bootstrap.variance} in the \code{\link{jprat.wrapper}} function. The default option is TRUE.
 #' @param arbitrary ADD DETAILS HERE!
-#' @param num_study number of studies used in analyses. If the real data analysis used three studies called "cohort", "predict", "pharos", then number of studies is 3. i.e., \code{num_study=3}.
-#' @param np number of clinical events, which is the length of the character vector for names of time-to-event outcomes (\code{event.outcome.names}) in \code{\link{jprat.wrapper}} function.
-#' @param count.store Null object to store number of event times, which occurs before \eqn{t_0}.
-#' @param count.store.outside Null object to store number of event times, which occurs before \eqn{t_0} for outside [0,1].
-#' @param data a data set as the starting values used for estimation procedure;
-#'             a list of starting values (arrays) for binary event status (y_start), the missing indicator of the binary event status (ymiss_ind_start), the nonfunctional covariate Z (z_start),
+#' @param num_study The number of studies used in analyses. If the real data analysis used three studies called "cohort", "predict", "pharos", then number of studies is 3. i.e., \code{num_study=3}.
+#' @param np The number of clinical events, which is the length of the character vector for names of time-to-event outcomes (\code{event.outcome.names}) in \code{\link{jprat.wrapper}} function.
+#' @param count.store A null object to store number of event times, which occurs before \eqn{t_0}.
+#' @param count.store.outside A null object to store number of event times, which occurs before \eqn{t_0} for outside [0,1].
+#' @param data A data set as starting values used for estimation procedure;
+#'             a list of starting values for binary event status (y_start), the missing indicator of the binary event status (ymiss_ind_start), the nonfunctional covariate Z (z_start),
 #'             the functional covariate X (x_start), the time-to-events or censoring times (s_start), the mixture probabilities for the jack-knife pseudo-values (q_start),
 #'             the censoring indicators (delta_start), the original onset ages (onset_age_orig_start), the indicator of no risk (norisk_ind_start), the counting numbers for the status of each event of interests (count),
 #'             the pseudo-values (ytest).
-#' @param num_time length of the vector of time points at which the predicted values of marginal distributions will be estimated.
+#' @param num_time A length of the vector of time points at which the predicted values of marginal distributions will be estimated.
 #'                 See the argument \code{time.points.for.prediction} in the \code{\link{jprat.wrapper}} function.
-#' @param time_val See this argument in the \code{\link{all_null_theta}} function.
-#' @param time_choice.predicted See this argument in the \code{\link{all_null_theta}} function.
-#' @param time_choice.predicted.toadd See this argument in the \code{\link{all_null_theta}} function.
-#' @param n a vector of the sample sizes for all studies.
-#' @param nmax maximum sample size across all studies.
-#' @param m array of the number of clinical events for each individual and per study,
-#'          where the dimensions of the array is the number of studies (\code{num_study})
+#' @inheritParams all_null_theta
+#' @param n A vector of the sample sizes for all studies.
+#' @param nmax The maximum sample size across all studies.
+#' @param m An array of the number of clinical events for each individual and per study,
+#'          whose dimension is the number of studies (\code{num_study})
 #'          by the maximum number of the sample sizes across studies (\code{nmax}).
-#' @param maxm maximum value of  the events across all subjects for all studies.
-#' @param la See this argument in the \code{\link{all_null_theta}} function.
-#' @param lb a list of the number (dimension) for the coefficients of nonfunctional covariate Z (see the argument \code{functional.beta.coefficients}) per study.
-#' @param xks a list of studies whose element of the list is the numeric vector of values for the functional covariates X in smooth functional parameter \eqn{\alpha(X, t)}.
-#' @param truth a list of true model coefficients for "beta" (\eqn{\beta_{0}(t), \beta_{es}(t)}), "alphas" \eqn{\alpha(X,t)}, "Ft" (\eqn{F_{es}(t|X,Z)}), "Ft.predicted", "beta.diff", and "Ft.diff".
-#' @param num_xx number of functional covariate values X at which the functional parameters \eqn{\alpha(X, t)} are evaluated.
-#' @param knot.length number of knots used to construct the basis functions.
-#' @param real_data a logical value whether the real data will be used. Default is TRUE.
-#' @param family.data a logical value if the clusters are families, where each member in the cluster is different.
-#' @param zeval array of the values of the nonfunctional covariate Z for all studies,
+#' @param maxm The maximum value of  the events across all subjects for all studies.
+#' @param lb A list of the number (dimension) for the coefficients of nonfunctional covariate Z (see the argument \code{functional.beta.coefficients}) per study.
+#' @param xks A list of studies whose element of the list is the numeric vector of values for the functional covariates \eqn{X} in smooth functional parameter \eqn{\alpha(X, t)}.
+#' @param truth A list of true model coefficients for "beta" (\eqn{\beta_{0}(t), \beta_{es}(t)}), "alphas" \eqn{\alpha(X,t)}, "Ft" (\eqn{F_{es}(t|X,Z)}), "Ft.predicted", "beta.diff", and "Ft.diff".
+#' @param num_xx The number of functional covariate values \eqn{X} at which the functional parameters \eqn{\alpha(X, t)} are evaluated.
+#' @param knot.length The number of knots used to construct the basis functions.
+#' @param real_data A logical value whether the real data will be used. The default option is TRUE.
+#' @param family.data A logical value if the clusters are families, where each member in the cluster is different.
+#' @param zeval An array of the values of the nonfunctional covariate Z for all studies,
 #'              where the order of dimensions for this array is the number of studies (\code{num_study}),
-#'              the number of nonfunctional covariate Z (z.choice),
+#'              the number of nonfunctional covariate \eqn{Z} (\code{z.choice}),
 #'              the length of the character vector for the names of time-to-event outcomes (\code{event.outcome.names})
 #'              and the number of coefficients of nonfunctional covariate Z (\code{functional.beta.coefficients}) per study.
-#' @param z.choice number of nonfunctional covariate $Z$ used in the analysis.
-#' @param param.label a character vector of the names for all coefficients of nonfunctional covariate Z in the model.
-#' @param beta0int fixed number for the intercept \eqn{\beta_0(t)} in the model. Default is 0.25 in the analysis.
-#' @param gamma.param  a numeric vector of event specific coefficient, \eqn{\gamma_{e}(t)}. Default is NULL for real data analysis.
-#' @param omega.param a numeric vector of study specific coefficient, \eqn{\omega_s(t)}. Default is NULL for real data analysis.
-#' @param spline.constrain a logical value if B-spline is constrained at 0. To keep the design matrix correct, we need to have \eqn{B(0)=0}. Default is TRUE.
-#' @param common.param.estimation a logical value whether the model parameters are the same across studies: Default is FALSE. See the argument \code{estimated.parameters.common.for.all.studies} in the \code{\link{jprat.wrapper}} function.
-#' @param est.cens.depend.z a logical value whether the estimation process assumes that a censoring distribution depends on nonfunctional covariates Z.
-#'                          If covariates Z does not follow a binomial distribution, then default is FALSE. See the argument \code{estimation.when.censoring.depends.on.z} in the \code{\link{jprat.wrapper}} function.
-#' @param par_fu a vector of parameters for the normal distribution of random effect for all studies: "mean" and "sd".
-#' @param analyze.separately  a character value to determine whether analysis will be performed separately or jointly: the options are "studyevents" (studies and event), "studies", "events", or "none". See the argument \code{what.analyzed.separately} in the \code{\link{jprat.wrapper}} function.
-#' @param link.type a character value for the name of the link function for the additive mixed effect model (the generalized linear model): "logit” for proportional odds model or "cloglog" for cox proportional hazards. See the argument \code{glm.link.type} in the \code{\link{jprat.wrapper}} function.
-#' @param null.theta See this argument in the \code{\link{all_null_theta}} function.
-#' @param z.proportions marginal probability of the nonfunctional coavariate Z. Default is NULL.
-#' @param betaest.store array to store the estimated the functional parameter \eqn{\beta(t)} (beta), see the argument \code{null.theta.simus.est.ciboot}
-#'                      as an element of the list \code{null.theta} in the \code{\link{all_null_theta}} function.
-#' @param alphasest.store array to store the estimated the smooth functional parameter \eqn{\alpha(X,t)} (alphas), see the argument \code{null.theta.simus.est.ciboot} as an element of the list for \code{null.theta} in the \code{\link{all_null_theta}} function.
-#' @param Ftest.store array to store the estimated the marginal distribution \eqn{F_{es}(t)} (Ft), see  see the argument \code{null.theta.simus.est.ciboot} as an element of the list for \code{null.theta} in the \code{\link{all_null_theta}} function.
-#' @param Ftest.predicted.store array of values for the predicted monotone marginal distributions \eqn{F_{es}(t|X, Z, t>t_{0})}
-#'                              beyond time \eqn{t_0} (\code{Ftest.predicted}) in the \code{\link{gamm4.estimates}} function
-#'                              and the argument \code{Ft.predicted.var.boot} in the \code{\link{boot.compare.studies}} function at each iteration.
-#'                              See the argument \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimensions of the array.
-#' @param combi.study total number of distinct studies to be compared.
-#' @param combi.choice a matrix of all combination of two pairs of studies to be compared (paired in column-wise), whose dimension is 2 by the total number of studies (\code{combi.study}).
-#' @param combi.names a character vector of names for the pairs of study combinations. (For example, cohort-predict, cohort-pharos, predict-pharos)
-#' @param boot  number of bootstrap iterations. The bootstrap procedure is to do hypothesis testing, which compares functional parameters over a time points among studies.
-#'              Default is 100. See the argument \code{number.of.bootstraps} in the \code{\link{jprat.wrapper}} function.
-#' @param boot.null.theta a list of "null.theta",  "null.theta.simus", "null.theta.simus.ci", "null.theta.ci",
-#'                        "null.theta.simus.est.ci", "null.theta.simus.est.ciboot", and ``null.theta.est.ci" in the \code{\link{all_null_theta}} function for bootstrap estimates.
+#' @param z.choice The number of nonfunctional covariate \eqn{Z} used in the analysis.
+#' @param param.label A character vector of the names for all coefficients of nonfunctional covariate Z in the model.
+#' @param beta0int A fixed number for the intercept \eqn{\beta_0(t)} in the model. The default value is 0.25.
+#' @param gamma.param  A numeric vector of event specific coefficient, \eqn{\gamma_{e}(t)}. The default value is NULL.
+#' @param omega.param A numeric vector of study specific coefficient, \eqn{\omega_s(t)}. The default value is NULL.
+#' @param spline.constrain A logical value if B-spline is constrained at 0. To keep the design matrix correct, we need to have \eqn{B(0)=0}. The default option is TRUE.
+#' @param common.param.estimation A logical value whether the model parameters are the same across studies: The default option is FALSE. See the argument \code{estimated.parameters.common.for.all.studies} in the \code{\link{jprat.wrapper}} function.
+#' @param est.cens.depend.z A logical value whether the estimation process assumes that a censoring distribution depends on nonfunctional covariates \eqn{Z}.
+#'                          If covariates Z does not follow a binomial distribution, then the default option is FALSE. See the argument \code{estimation.when.censoring.depends.on.z} in the \code{\link{jprat.wrapper}} function.
+#' @param par_fu A vector of parameters for the normal distribution of random effect for all studies: "mean" and "sd".
+#' @param analyze.separately  A character value to determine whether analysis will be performed separately or jointly: the options are "studyevents" (studies and event), "studies", "events", or "none". See the argument \code{what.analyzed.separately} in the \code{\link{jprat.wrapper}} function.
+#' @param link.type A character value for the name of the link function for the additive mixed effect model (the generalized linear model): "logit” for proportional odds model or "cloglog" for cox proportional hazards. See the argument \code{glm.link.type} in the \code{\link{jprat.wrapper}} function.
+#' @param z.proportions The marginal probability of the nonfunctional coavariate \eqn{Z}. The default value is NULL.
+#' @param betaest.store An array to store the estimated functional parameters \eqn{\beta(t)} (beta) at each time point. See the return value \code{null.theta.simus.est.ciboot}
+#'                       in the \code{\link{all_null_theta}} function.
+#' @param alphasest.store An array to store the estimated smooth functional parameter \eqn{\alpha(X,t)} (alphas). See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimension of this array.
+#' @param Ftest.store An array to store the estimated marginal distribution \eqn{F_{es}(t)} (Ft). See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimension of this array.
+#' @param Ftest.predicted.store An array of values for the predicted monotone marginal distributions \eqn{F_{es}(t|X, Z, t>t_{0})}
+#'                              beyond time \eqn{t_{0}} (\code{Ftest.predicted}) in the \code{\link{gamm4.estimates}} function
+#'                              and the return value \code{Ft.predicted.var.boot} in the \code{\link{boot.compare.studies}} function at each iteration.
+#'                              See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimensions of the array.
+#' @param combi.study The total number of distinct studies to be compared.
+#' @param combi.choice A matrix of all combination of two pairs of studies to be compared (paired in column-wise), whose dimension is 2 by the total number of studies (\code{combi.study}).
+#' @param combi.names A character vector of names for the pairs of study combinations. For example, cohort-predict, cohort-pharos, predict-pharos.
+#' @param boot  The number of bootstrap iterations. The bootstrap procedure is to do hypothesis testing, which compares functional parameters over the time points among studies.
+#'              The default value is 100. See the argument \code{number.of.bootstraps} in the \code{\link{jprat.wrapper}} function.
+#' @param boot.null.theta A list of "null.theta",  "null.theta.simus", "null.theta.simus.ci", "null.theta.ci",
+#'                        "null.theta.simus.est.ci", "null.theta.simus.est.ciboot", and ``null.theta.est.ci", which are return values in the \code{\link{all_null_theta}} function for the bootstrap estimates.
 #'                         The label for simulation dimensions is "boot".
-#' @param boot.combi.null.theta a list of "null.theta",  null.theta.simus", "null.theta.simus.ci", "null.theta.ci", "null.theta.simus.est.ci",
-#'                              "null.theta.simus.est.ciboot", and "null.theta.est.ci" in the \code{\link{all_null_theta}} function
+#' @param boot.combi.null.theta A list of "null.theta",  null.theta.simus", "null.theta.simus.ci", "null.theta.ci", "null.theta.simus.est.ci",
+#'                              "null.theta.simus.est.ciboot", and "null.theta.est.ci", which are return values in the \code{\link{all_null_theta}} function
 #'                               for comparing bootstrap estimates ("beta”, "alphas”, "Ft” and "Ft.predicted”) among different studies.
 #'                               The label for simulation dimensions is "boot".
-#' @param betabootci.store zero array to store the bootstrap estimated functional parameter \eqn{\beta(t)} for comparing study differences.
-#' @param alphasbootci.store zero array to store the bootstrap estimated smooth functional parameter \eqn{\alpha(X, t)} for comparing study differences.
-#' @param Ftbootci.store zero array to store the bootstrap estimated marginal distribution \eqn{Ft_{es}(t|X, Z)} for comparing study differences.
-#' @param betadiff.store zero array to store the differences of the functional parameters \eqn{\beta(t)}
-#'                       between a pair of studies (cohort-predict, cohort-pharos, predict-pharos)  at each time point (\code{time_val}) for each clinical event per study.
-#' @param alphasdiff.store zero array to store the differences of the smooth functional parameters \eqn{\alpha(X, t)}
+#' @param betabootci.store A zero array to store the bootstrap estimated functional parameters \eqn{\beta(t)} for comparing study differences.
+#' @param alphasbootci.store A zero array to store the bootstrap estimated smooth functional parameters \eqn{\alpha(X, t)} for comparing study differences.
+#' @param Ftbootci.store A zero array to store the bootstrap estimated marginal distributions \eqn{Ft_{es}(t|X, Z)} for comparing study differences.
+#' @param betadiff.store A zero array to store the differences of the functional parameters \eqn{\beta(t)}
+#'                       between a pair of studies (cohort-predict, cohort-pharos, predict-pharos) at each time point (\code{time_val}) for each clinical event per study.
+#' @param alphasdiff.store A zero array to store the differences of the smooth functional parameters \eqn{\alpha(X, t)}
 #'                         between a pair of studies (cohort-predict, cohort-pharos, predict-pharos) at each time point (\code{time_val}) for each clinical event per study.
-#' @param Ftdiff.store zero array to store the true values for the differences of the monotone marginal distribution \eqn{F_{es}(t|X,Z)}  between a pair of studies (cohort-predict, cohort-pharos, predict-pharos) at each time point (\code{time_val}) and different covariate values of X and Z for each clinical event per study.
-#' @param iters number of iterations for the while loop; the main part of the estimating procedure.
+#' @param Ftdiff.store A zero array to store the true values for the differences of the monotone marginal distribution \eqn{F_{es}(t|X,Z)}  between a pair of studies (cohort-predict, cohort-pharos, predict-pharos) at each time point (\code{time_val}) and different covariate values of \eqn{X} and \eqn{Z} for each clinical event per study.
+#' @param iters The number of iterations for while loops.
 #'
 #'
 #'
 #' @return A list of
 #'
-#' \item{eflag}{See the argument in the \code{\link{jprat.wrapper}} function.}
-#' \item{iters}{See the argument in the \code{\link{jprat.wrapper}} function.}
-#' \item{count.store}{See the argument in the \code{\link{jprat.wrapper}} function.}
-#' \item{count.store.outside}{See the argument in the \code{\link{jprat.wrapper}} function.}
-#' \item{betaest.store}{array of values for the estimated \eqn{\beta(t)} (see the argument \code{betaest} in the
-#'       \code{\link{gamm4.estimates}} function and the argument \code{beta.var.boot} in  the \code{\link{boot.compare.studies}} function) at each iteration.
-#'        See the argument \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimensions of the array.}
-#' \item{alphasest.store}{array of values for the estimated smooth functional parameters \eqn{\alpha(X, t)}
-#'      (See the argument \code{alphasest} in the \code{\link{gamm4.estimates}} function and
-#'       the argument \code{alphas.var.boot} in the \code{\link{boot.compare.studies}} function) at each iteration.
-#'       See the argument \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimensions of the array.}
-#' \item{Ftest.store}{array of values for the estimated monotone marginal distributions \eqn{F_{es}(t|X, Z)}.
-#'                   (See the argument \code{Ftest} in the \code{\link{gamm4.estimates} function}
-#'                   and the argument \code{Ft.var.boot} in the  \code{\link{boot.compare.studies}} function) at each iteration.
-#'                   See the arugment \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} for the dimensions of the array.}
-#' \item{Ftest.predicted.store}{array of values for the predicted monotone marginal distributions
-#'                             \eqn{F_{es}(t|X, Z, t>t_{0})} beyond time \eqn{t_0}
-#'                             (See the argument \code{Ftest.predicted} in the \code{\link{gamm4.estimates}} function
-#'                             and the argument \code{Ft.predicted.var.boot} in the \code{\link{boot.compare.studies}} function) at each iteration.
-#'                             See the argument \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} for the dimensions of the array.}
-#' \item{betabootci.store}{array of the estimated functional parameters \eqn{\beta(t)}  for the study differences including their estimates (\code{betadiff.store}) and the bootstrap estimates (\code{betabootci} in the \code{\link{boot.compare.studies}} function) at each iteration.
-#'                         See the argument \code{null.theta.simus.est.ci} in the \code{\link{all_null_theta}}
+#' \item{eflag}{an integer number to check if any error comes up while estimation algorithm is processed. If this value is -1, then the marginal distribution \eqn{F_{es}(t|X, Z)} has missing values (NA).}
+#' \item{iters}{The number of iterations for while loops.}
+#' \item{count.store}{A data frame for the rate of event times for the uncensored, censored, uncensored but zero, and other cases,
+#'         which depend on the binary status of the events for each subject: "zero" (censored), "one" (uncensored), or "others" (missing).
+#'         The event times are counted at all time points (\code{time_val}) for all studies.}
+#'  \item{count.store.outside}{A data frame of the rate of event times for the uncensored and the censored,
+#'                                 which depend on the binary status of the events for each subject outside [0,1]:
+#'                                  "zero" (censored), "one" (uncensored).  The event times are counted at all time points (\code{time_val})
+#'                                  for all studies.}
+#' \item{betaest.store}{An array of values for \eqn{\hat\beta(t)} at each iteration. (See the return value \code{betaest} in the
+#'       \code{\link{gamm4.estimates}} function and the return value \code{beta.var.boot} in  the \code{\link{boot.compare.studies}} function.)
+#'        See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimensions of this array.}
+#' \item{alphasest.store}{An array of values for the estimated smooth functional parameters \eqn{\alpha(X, t)}
+#'      (See the return value \code{alphasest} in the \code{\link{gamm4.estimates}} function and
+#'       the return value \code{alphas.var.boot} in the \code{\link{boot.compare.studies}} function) at each iteration.
+#'       See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimensions of this array.}
+#' \item{Ftest.store}{An array of values for the estimated monotone marginal distributions \eqn{F_{es}(t|X, Z)} at each iteration.
+#'                   (See the return value \code{Ftest} in the \code{\link{gamm4.estimates}} function
+#'                   and the return value \code{Ft.var.boot} in the  \code{\link{boot.compare.studies}} function.)
+#'                   See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} for the dimensions of this array.}
+#' \item{Ftest.predicted.store}{An array of values for the predicted monotone marginal distributions
+#'                             \eqn{F_{es}(t|X, Z, t>t_{0})} beyond time \eqn{t_0} at each iteration.
+#'                             (See the return value \code{Ftest.predicted} in the \code{\link{gamm4.estimates}} function
+#'                             and the return value \code{Ft.predicted.var.boot} in the \code{\link{boot.compare.studies}} function.)
+#'                             See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} for the dimensions of this array.}
+#' \item{betabootci.store}{An array of the estimated functional parameters \eqn{\beta(t)} for the study differences
+#' including their estimates (\code{betadiff.store}) and the bootstrap estimates at each iteration (See the return value \code{betabootci} in the \code{\link{boot.compare.studies}} function).
+#'                         See the return value \code{null.theta.simus.est.ci} in the \code{\link{all_null_theta}} function
 #'                         for the dimension of this array.}
-#' \item{alphasbootci.store}{array of the estimated smooth functional parameters \eqn{\alpha(X, t)} for the study differences including their estimates (\code{alphasdiff.store}) and the bootstrap estimates (\code{alphasbootci} in the \code{\link{boot.compare.studies}} function) at each iteration.
-#'                       (See the argument \code{alphasbootci} in the \code{\link{boot.compare.studies}} function) at each iteration.
-#'                        and the argument \code{null.theta.simus.est.ci} in the \code{\link{all_null_theta}} function for the dimension of this array.}
-#' \item{Ftbootci.store}{array of the estimated monotone marginal distribution \eqn{F_{es}(t|X,Z)}
+#' \item{alphasbootci.store}{An array of the estimated smooth functional parameters \eqn{\alpha(X, t)} for the study differences including their estimates (\code{alphasdiff.store}) and the bootstrap estimates (see the return value \code{alphasbootci} in the \code{\link{boot.compare.studies}} function) at each iteration.
+#'                       See the return value \code{null.theta.simus.est.ci} in the \code{\link{all_null_theta}} function for the dimension of this array.}
+#' \item{Ftbootci.store}{An array of the estimated monotone marginal distribution \eqn{F_{es}(t|X,Z)}
 #'                      for the study differences including their estimates (\code{Ftdiff.store})
-#'                      and the bootstrap estimates (\code{Ftbootci} in the \code{\link{boot.compare.studies}})
+#'                      and the bootstrap estimates (see return value \code{Ftbootci} in the \code{\link{boot.compare.studies}} function)
 #'                      at each iteration. See \code{null.theta.simus.est.ci} in the \code{\link{all_null_theta}}
 #'                      function for the dimension of this array.}
 #' @import abind
 #' @import gamm4
-#' @export
-#'
-#'
-#'
-## @examples
-#'
-#'
 #'
 
 
@@ -139,42 +140,42 @@
 # no examples but add documentations#
 #####################################
 
-jprat.main.estimates<-function(method="gamm4",  ## conditional paramters to estimate using gamm4
-                               compute.study.differences=compute.study.differences, ## conditional parameter to do boostrap procedure
-                               var.boot=var.boot, ## conditional parameter to do boostrap procedure
+jprat.main.estimates<-function(method="gamm4",
+                               compute.study.differences=compute.study.differences,
+                               var.boot=var.boot,
                                ########################
                                # For main estimation function
                                ########################
-                               arbitrary, ## FALSE
+                               arbitrary,
                                num_study,np,
-                               count.store, # null
-                               count.store.outside, # null
-                               data, #=data, ## data from simu.data.fixed.effects()
-                               num_time, ## 13
-                               time_val, ## specific time value 40, 45, ..., 90, 95, 100
-                               time_choice.predicted, ## null
-                               time_choice.predicted.toadd, ## null
+                               count.store,
+                               count.store.outside,
+                               data,
+                               num_time,
+                               time_val,
+                               time_choice.predicted,
+                               time_choice.predicted.toadd,
                                n,nmax,m,maxm,
                                la,lb,
-                               xks, ## 0, 0.1, ....0.7, ..., 0.9, 1
-                               truth, ## where do we define?
-                               num_xx,  ## 18
-                               knot.length, ## 8, where do we define?
-                               real_data, ## TRUE
-                               family.data, ## FALSE
-                               zeval, ## at which points were estimated: k-means group
-                               z.choice, ## 4
-                               param.label, ## "beta0" "beta1"
-                               beta0int, ## 0.5
-                               gamma.param,omega.param, ## null
-                               spline.constrain, ## TRUE
-                               common.param.estimation, ## TRUE
-                               est.cens.depend.z, ## FALSE
-                               par_fu, ## null
-                               analyze.separately, ## "event"
-                               link.type, ## "logit"
-                               null.theta, ## why do we need it?
-                               z.proportions=NULL, ## null
+                               xks,
+                               truth,
+                               num_xx,
+                               knot.length,
+                               real_data,
+                               family.data,
+                               zeval,
+                               z.choice,
+                               param.label,
+                               beta0int,
+                               gamma.param,omega.param,
+                               spline.constrain,
+                               common.param.estimation,
+                               est.cens.depend.z,
+                               par_fu,
+                               analyze.separately,
+                               link.type,
+                               null.theta,
+                               z.proportions=NULL,
                                ###########################
                                #For jprat estimation
                                ###########################
@@ -182,7 +183,6 @@ jprat.main.estimates<-function(method="gamm4",  ## conditional paramters to esti
                                alphasest.store,
                                Ftest.store,
                                Ftest.predicted.store,
-                               #combi.null.theta,
                                ###########################
                                #For bootstraps estimation
                                ###########################
@@ -190,8 +190,8 @@ jprat.main.estimates<-function(method="gamm4",  ## conditional paramters to esti
                                combi.choice,
                                combi.names,
                                boot=boot,
-                               boot.null.theta=boot.null.theta, #=boot.null.theta, #=NULL, =boot.null.theta,
-                               boot.combi.null.theta=boot.combi.null.theta, #=NULL, #=boot.combi.null.theta,
+                               boot.null.theta=boot.null.theta,
+                               boot.combi.null.theta=boot.combi.null.theta,
                                betabootci.store=betabootci.store,
                                alphasbootci.store=alphasbootci.store,
                                Ftbootci.store= Ftbootci.store,
@@ -204,8 +204,6 @@ jprat.main.estimates<-function(method="gamm4",  ## conditional paramters to esti
                                iters=iters
 ){
 
-  #print(boot.null.theta);
-  #print(boot.combi.null.theta);
   #################
   ## get Pr(Z=z) ##
   #################
@@ -219,38 +217,40 @@ jprat.main.estimates<-function(method="gamm4",  ## conditional paramters to esti
     # no examples but add documentations#
     #####################################
 
-    gamm4.est <- gamm4.estimates(arbitrary, ## FALSE
+    gamm4.est <- gamm4.estimates(arbitrary,
                                  num_study,np,
-                                 count.store, # null
-                                 count.store.outside, # null
-                                 data, #=data, ## data from simu.data.fixed.effects()
-                                 num_time, ## 13
-                                 time_val, ## specific time value 40, 45, ..., 90, 95, 100
-                                 time_choice.predicted, ## null
-                                 time_choice.predicted.toadd, ## null
+                                 count.store,
+                                 count.store.outside,
+                                 data,
+                                 num_time,
+                                 time_val,
+                                 time_choice.predicted,
+                                 time_choice.predicted.toadd,
                                  n,nmax,m,maxm,
                                  la,lb,
-                                 xks, ## 0, 0.1, ....0.7, ..., 0.9, 1
-                                 truth, ## where do we define?
-                                 num_xx,  ## 18
-                                 knot.length, ## 8, where do we define?
-                                 real_data, ## TRUE
-                                 family.data, ## FALSE
-                                 zeval, ## at which points were estimated: k-means group
-                                 z.choice, ## 4
-                                 param.label, ## "beta0" "beta1"
-                                 beta0int, ## 0.5
-                                 gamma.param,omega.param, ## null
-                                 spline.constrain, ## TRUE
-                                 common.param.estimation, ## TRUE
-                                 est.cens.depend.z, ## FALSE
-                                 par_fu, ## null
-                                 analyze.separately, ## "event"
-                                 link.type, ## "logit"
-                                 null.theta, ## why do we need it?
-                                 z.proportions=z.proportions)  ## estimation one run
+                                 xks,
+                                 truth,
+                                 num_xx,
+                                 knot.length,
+                                 real_data,
+                                 family.data,
+                                 zeval,
+                                 z.choice,
+                                 param.label,
+                                 beta0int,
+                                 gamma.param,omega.param,
+                                 spline.constrain,
+                                 common.param.estimation,
+                                 est.cens.depend.z,
+                                 par_fu,
+                                 analyze.separately,
+                                 link.type,
+                                 null.theta,
+                                 z.proportions=z.proportions)
 
-    eflag <- gamm4.est$eflag  ## 0
+
+    ## Check if there is no error in estimation procedure; 0
+    eflag <- gamm4.est$eflag
 
 
     if(eflag!=-1){
@@ -276,8 +276,7 @@ jprat.main.estimates<-function(method="gamm4",  ## conditional paramters to esti
       #
       ##################################
 
-      if(compute.study.differences==TRUE | var.boot==TRUE){  ## compute.study.differences=FALSE --> NO bootstrap
-        ## assumes no common alpha, beta across studies in estimation
+      if(compute.study.differences==TRUE | var.boot==TRUE){
 
         if(!is.null(time_choice.predicted)){
           Ftest.predicted.tmp <- adrop(Ftest.predicted.store[iters,,,,,,,
@@ -289,12 +288,12 @@ jprat.main.estimates<-function(method="gamm4",  ## conditional paramters to esti
         }
 
         est.values <- list(betaest.est=adrop(betaest.store[iters,,,,,"est",drop=FALSE],
-                                             drop=c(1,6)),  ## study by event by time by theta=beta0. beta1
+                                             drop=c(1,6)),
                            alphasest.est=adrop(alphasest.store[iters,,,,,,
-                                                               "est",drop=FALSE],drop=c(1,7)), ## study by event by xx by  time by theta=alpha1
+                                                               "est",drop=FALSE],drop=c(1,7)),
                            Ftest.est=adrop(Ftest.store[iters,,,,,,"est",drop=FALSE],drop=c(1,7)),
-                           Ftest.predicted.est= Ftest.predicted.tmp) ## study by event by zz by xx by time
-        #print(est.values);
+                           Ftest.predicted.est= Ftest.predicted.tmp)
+
 
 
         #####################################
@@ -302,7 +301,7 @@ jprat.main.estimates<-function(method="gamm4",  ## conditional paramters to esti
         #####################################
 
         my.boot <- boot.compare.studies(arbitrary,
-                                        combi.study,combi.choice,combi.names, # s.names,
+                                        combi.study,combi.choice,combi.names,
                                         num_study,boot,np,data,num_xx,num_time,
                                         time_val,time_choice.predicted,
                                         time_choice.predicted.toadd,
@@ -317,8 +316,8 @@ jprat.main.estimates<-function(method="gamm4",  ## conditional paramters to esti
                                         boot.null.theta, boot.combi.null.theta,
                                         var.boot,
                                         compute.study.differences,
-                                        est.values , #=est.values,
-                                        z.proportions) #=z.proportions)
+                                        est.values ,
+                                        z.proportions)
 
         if(compute.study.differences==TRUE){
           betabootci.store[iters,,,,,c("est")] <- betadiff.store
@@ -333,11 +332,11 @@ jprat.main.estimates<-function(method="gamm4",  ## conditional paramters to esti
 
         if(var.boot==TRUE){
           betaest.store[iters,,,,,c("boot_varest", "boot_varlo","boot_varhi")] <-
-            my.boot$beta.var.boot	     ## iter by study by event by time by theta (=beta0. beta1) by val (varest, varlo, varhi)
+            my.boot$beta.var.boot
           alphasest.store[iters,,,,,,c("boot_varest", "boot_varlo","boot_varhi")] <-
-            my.boot$alphas.var.boot  ## ## iter by study by event by xx by  time by theta=alpha1, val (varest. varlo, varhi)
+            my.boot$alphas.var.boot
           Ftest.store[iters,,,,,,c("boot_varest", "boot_varlo","boot_varhi")] <-
-            my.boot$Ft.var.boot ## iter by study by event by zz by xx by time, val (varest. varlo, varhi)
+            my.boot$Ft.var.boot
 
           if(!is.null(time_choice.predicted)){
 
@@ -345,7 +344,7 @@ jprat.main.estimates<-function(method="gamm4",  ## conditional paramters to esti
                                                 "boot_varlo","boot_varhi")] <-
               my.boot$Ft.predicted.var.boot
 
-            ###??
+
             Ftest.predicted.store[iters,,,,,,,c("varest", "varlo","varhi")] <-
               my.boot$Ft.predicted.var.boot
           }
@@ -353,7 +352,7 @@ jprat.main.estimates<-function(method="gamm4",  ## conditional paramters to esti
       }
       count.store <- gamm4.est$count.store
       count.store.outside <- gamm4.est$count.store.outside
-      #iters <- iters + 1
+
     }  else{
       if(real_data==TRUE){
         stop("Data is not good.")
@@ -385,42 +384,8 @@ jprat.main.estimates<-function(method="gamm4",  ## conditional paramters to esti
 #####################################
 #' gamm4.estimates: used to get ``gamm4" estimate
 #'
-#' @param arbitrary See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param num_study See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param np See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param count.store See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param count.store.outside See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param data See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param num_time See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param time_val See the argument in the \code{\link{all_null_theta}} function.
-#' @param time_choice.predicted See the argument in the \code{\link{all_null_theta}} function.
-#' @param time_choice.predicted.toadd See the argument in the \code{\link{all_null_theta}} function.
-#' @param n See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param nmax See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param m See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param maxm See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param la See the argument in the \code{\link{all_null_theta}} function.
-#' @param lb See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param xks See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param truth See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param num_xx See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param knot.length See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param real_data See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param family.data See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param zeval See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param z.choice See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param param.label See the argument in the \code{\link{all_null_theta}} function.
-#' @param beta0int See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param gamma.param See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param omega.param See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param spline.constrain See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param common.param.estimation See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param est.cens.depend.z See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param par_fu See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param analyze.separately See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param link.type See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param null.theta See the argument in the \code{\link{all_null_theta}} function.
-#' @param z.proportions See the argument in the \code{\link{jprat.main.estimates}} function.
+#' @inheritParams jprat.main.estimates
+#' @inheritParams all_null_theta
 #'
 #' @details The estimates depend on whether analysis will be performed separately or jointly. See the argument \code{analyze.separately}
 #'          \code{\link{jprat.main.estimates}}.
@@ -551,53 +516,15 @@ gamm4.estimates <- function(arbitrary, num_study, np,
 ##################################
 #' boot.compare.studies: This function estimates the bootstrap estimates for study comparison.
 #'
-#' @param arbitrary See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param combi.study See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param combi.choice See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param combi.names See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param num_study See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param boot See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param np See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param data See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param num_xx See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param num_time See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param time_val See the argument in the \code{\link{all_null_theta}} function.
-#' @param time_choice.predicted See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param time_choice.predicted.toadd See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param xks See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param n See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param nmax See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param m See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param maxm See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param la See the argument in the \code{\link{all_null_theta}} function.
-#' @param lb See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param truth See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param real_data See the argument in the \code{\link{jprat.main.estimates}} function.
+#' @inheritParams jprat.main.estimates
+#' @inheritParams all_null_theta
 #' @param knot.length number of knots used to construct the basis functions.
-#' @param family.data See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param zeval See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param z.choice See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param param.label See the argument in the \code{\link{all_null_theta}} function.
-#' @param beta0int See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param gamma.param See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param omega.param See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param spline.constrain See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param common.param.estimation See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param est.cens.depend.z See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param par_fu See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param analyze.separately See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param link.type See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param boot.null.theta See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param boot.combi.null.theta See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param var.boot See the argument in the \code{\link{jprat.main.estimates}} function.
-#' @param compute.study.differences See the argument in the \code{\link{jprat.main.estimates}} function.
 #' @param est.values a list of arrays of the estimates ("est") for the functional coefficient \eqn{\beta(t)}
 #'        (\code{betaest} in the \code{\link{gamm4.estimates}} function),
 #'        the smooth functional coefficient \eqn{\alpha(X,t)} (\code{alphas} in the \code{\link{gamm4.estimates}} function),
 #'        the monotone marginal distribution \eqn{F_{es}(t|X, Z)} (\code{Ft} in the \code{\link{gamm4.estimates}}) function
 #'        and the predicted values of the monotonic marginal distribution \code{F_{es}(t|X, Z, t > t0)}
 #'        (\code{Ft.predicted} in the \code{\link{gamm4.estimates}} function).
-#' @param z.proportions See the argument in the \code{\link{jprat.main.estimates}} function.
 #'
 #' @details This function uses bootstrap-based joint confidence interval to determine which model
 #'          (joint model with distinct study parameters, shared study parameter model, separate study model)
@@ -1530,9 +1457,9 @@ get.cis <- function(out,flatten.name,
 #' compute.number.at.risk.for.HD: This function returns number of subjects who are at risk for HD for each study at times.
 #' @inheritParams jprat.wrapper
 #'
-#' @return a table for the number of subjects whoare at risk for HD for each study at times.(ignores specific covariate values)
+#' @return a table for the number of subjects who are at risk for HD for each study at times.(ignores specific covariate values)
 #' @import survival
-#' @export
+#'
 #'
 ## @examples
 #'
@@ -2315,38 +2242,6 @@ data.reformatted.for.analysis.results<-function(study.names, event.outcome.names
 
 #' convert.new.notation.to.old.for.jprat: This code converts the new notation into the original code notation for JPRAT analysis.
 #'
-#' @param study.names See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param data.sets.as.list  See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param time.points.for.prediction  See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param time.points.for.conditional.prediction  See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param time.points.for.conditional.prediction.toadd  See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param nonfunctional.covariate.names See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param nonfunctional.covariate.values.for.prediction  a data frame of numeric values (nonfunctional covariate value) of the nonfunctional covariate. Default value is 40 for the nonfunctional covariate values for prediction (\code{base_age}).
-#' @param functional.covariate.names See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param functional.covariate.values.for.prediction a numeric vector of the functional covariate values \eqn{x \in [0,1]} at which smooth functional parameters \eqn{\alpha(X,t)} will be estimated for each study. If the original covariate values are used, then they will be transformed into a numeric vector in [0,1].
-#' @param xmin  the minimum value for the CAG repeat length.
-#' @param xmax  the maximum value for the CAG repeat length.
-#' @param othercovariate.names See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param event.outcome.names See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param delta.names See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param use_real_data a logical value whether to use real data. Default is TRUE.
-#' @param use.functional.beta.intercept See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param use.functional.event.coefficients See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param use.functional.study.coefficients See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param number.of.bootstraps See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param check.study.equality See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param what.analyzed.separately See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param estimated.parameters.common.for.all.studies See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param estimation.when.censoring.depends.on.z See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param glm.link.type  a character value for the name of the link function for the additive mixed effect model: "logit” for proportional odds model or "cloglog" for cox proportional hazards. Default is ``logit".
-#' @param use.bootstrap.variance See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param clusters.are.families a logical value whether pseudo-values will compute differently when clusters are families (i.e., subjects are different people): Default is FALSE.
-#'
-#' @return FILL IN HERE!!
-#' @export
-#'
-## @examples
-#'
 convert.new.notation.to.old.for.jprat <- function(study.names,
                                                   data.sets.as.list,
                                                   time.points.for.prediction,
@@ -2998,53 +2893,6 @@ convert.new.notation.to.old.for.jprat <- function(study.names,
 #######################################################################
 #######################################################################
 #' convert.new.notation.to.old.for.get.results: This code converts the new notation into the original code notation for getting results (plots)
-#' @param study.names See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param time.points.for.prediction See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param time.points.for.conditional.prediction See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param time.points.for.conditional.prediction.toadd See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param nonfunctional.covariate.names See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param nonfunctional.covariate.values.for.prediction See the argument in the \code{\link{convert.new.notation.to.old.for.jprat}} function.
-#' @param functional.covariate.names See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param functional.covariate.values.of.interest See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param functional.covariate.values.of.interest.ci See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param functional.covariate.values.for.prediction See the argument in the \code{\link{convert.new.notation.to.old.for.jprat}} function.
-#' @param xmin See the argument in the \code{\link{convert.new.notation.to.old.for.jprat}} function.
-#' @param xmax See the argument in the \code{\link{convert.new.notation.to.old.for.jprat}} function.
-#' @param event.outcome.names See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param use_real_data See the argument in the \code{\link{convert.new.notation.to.old.for.jprat}} function.
-#' @param use.functional.beta.intercept See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param use.functional.event.coefficients See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param use.functional.study.coefficients See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param number.of.bootstraps See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param what.analyzed.separately See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param estimated.parameters.common.for.all.studies See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param glm.link.type  a character value for the name of the link function for the additive mixed effect model;
-#'                       : "logit” for proportional odds model or "cloglog" for cox proportional hazards.
-#'                       Default is "logit".
-#' @param use.bootstrap.variance See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param time.points.of.interest ADD DETAILS HERE!!
-#' @param time.points.of.interest.ci a vector of time points at which confidence intervals of
-#'                                  \eqn{\alpha(X,t)} are predicted. These time points are used to be labeled for the plot.
-#' @param label.for.alpha.values.over.time  a vector of specific time points at which the smooth functional parameters \eqn{\alpha(X,t)} will be predicted. These time points are used to be labeled for the plot.
-#' @param nonfunctional.covariate.comparisons a list of comparison sets where the predictions for nonfunctional covariates Z will be compared. Default is no comparison made for the type of analysis "7c" and "7c-converters".
-#' @param add.number.at.risk.legend See the argument in the \code{\link{view.all.results}} function.
-#' @param ylabel.for.plots.comparing.studies See the argument in the \code{\link{view.all.results}} function.
-#' @param xlabel.for.plots.comparing.studies See the argument in the \code{\link{view.all.results}} function.
-#' @param plot.confidence.intervals ADD DETAILS HERE!
-#' @param color.labels See the argument in the \code{\link{view.all.results}} function.
-#' @param legend.labels See the argument in the \code{\link{view.all.results}} function.
-#' @param event.comparison.table a list of values corresponding to the event of interest outcomes. Default is a list of nc1, which contains a vector of values 1, 2, 3, 4.
-#' @param functional.covariate.comparisons See the argument in the \code{\link{view.all.results}} function.
-#' @param functional.covariate.comparisons.for.sample.size See the argument in the \code{\link{view.all.results}} function.
-## @param type1.error ADD DETAILS HERE!
-## @param type2.error See the argument in the \code{\link{view.all.results}} function.
-## @param treatment.effect See the argument in the \code{\link{view.all.results}} function.
-## @param dropout.rate See the argument in the \code{\link{view.all.results}} function.
-#'
-#' @return FILL IN HERE!!
-#' @export
-#'
-## @examples
 #'
 convert.new.notation.to.old.for.get.results <- function(study.names,
                                                         #data.sets.as.list,
@@ -3902,15 +3750,6 @@ flatten.array <- function(x,dim.order,flatten.name,theta=NULL){
 
 ## convert uniform CAG to real CAG
 #' This function converts the uniformly distributed values (CAG repeats length) on [0,1] to the original values (CAG repeats length from real data).
-#'
-#' @param x any length of numeric vector for the CAG repeats length, which follows uniform distribution on [0,1].
-#' @param xmin See the argument in the \code{\link{convert.new.notation.to.old.for.jprat}} function.
-#' @param xmax See the argument in the \code{\link{convert.new.notation.to.old.for.jprat}} function.
-#'
-#' @return FILL IN HERE!
-#' @export
-#'
-## @examples
 #'
 convert.cag <- function(x,xmin=xmin,xmax=xmax){
   xorig <- x*(xmax-xmin)+xmin
@@ -6055,298 +5894,6 @@ gen.cens.depend.z){
        norisk_ind_start=norisk_ind,count=count,
        ytest=ytest)
 }
-
-
-
-# simu.data <- function(randomeffects.covariates.dependent,
-#                       z_tmp.list,
-#                       x_tmp.list,
-#                       delta_tmp.list,
-#                       s_tmp.list,
-#                       a0,axmod,num_time,censorrate,
-#                       frform,fzrform,fxform,
-#                       type_fr,type_fzr,type_fx,
-#                       par1_fr,par2_fr,
-#                       par_fu,
-#                       par1_fr2,par2_fr2,mix_n,
-#                       par1_fx,par2_fx,
-#                       par1_fzr,par2_fzr,
-#                       real_data,time_val,
-#                       beta0int,beta,gamma.param,omega.param,
-#                       n,nmax,m,maxm,la,lb,num_study,np,gtmod,use.random.effects,
-#                       gen.cens.depend.z,lb.max){
-#
-#   tol <- 1e-6
-#
-#   ##########################
-#   ## set values for output ##
-#   ############################
-#   y <- array(0,dim=c(num_study,num_time,nmax,maxm),
-#              dimnames=list(
-#                paste("ss",1:num_study,sep=""),
-#                paste("t",time_val,sep=""),
-#                paste("n",1:nmax,sep=""),
-#                paste("m",1:maxm,sep="")))
-#
-#   ymiss_ind<- y
-#   ytest <- y   ## for testing pseudo-values
-#
-#   lb.max <- max(lb)
-#   z <- array(0,dim=c(num_study,nmax,np,lb.max),
-#              dimnames=list(
-#                paste("ss",1:num_study,sep=""),
-#                paste("n",1:nmax,sep=""),
-#                paste("np",1:np,sep=""),
-#                paste("lb",1:lb.max,sep="")))
-#
-#   x.tmp <- array(0,dim=c(num_study,nmax),
-#                  dimnames=list(
-#                    paste("ss",1:num_study,sep=""),
-#                    paste("n",1:nmax,sep="")
-#                  ))
-#
-#   s <- array(0,dim=c(num_study,nmax,maxm),
-#              dimnames=list(
-#                paste("ss",1:num_study,sep=""),
-#                paste("n",1:nmax,sep=""),
-#                paste("m",1:maxm,sep="")))
-#
-#   delta <- s
-#   onset_age_orig <- s
-#   norisk_ind <- s
-#
-#   count <- array(0,dim=c(num_study,num_time,3),
-#                  dimnames=list(
-#                    paste("ss",1:num_study,sep=""),
-#                    paste("t",time_val,sep=""),
-#                    c("one","zero","other")))
-#
-#   q <- array(0,dim=c(num_study,np,nmax,maxm),
-#              dimnames=list(
-#                paste("ss",1:num_study,sep=""),
-#                paste("p",1:np,sep=""),
-#                paste("n",1:nmax,sep=""),
-#                paste("m",1:maxm,sep="")))
-#
-#   #######################
-#   ## additional values ##
-#   #######################
-#   x <- x.tmp
-#   r <- x.tmp
-#   bb <- x.tmp
-#
-#   etas_z <- s
-#   etas_x <- s
-#   Ft <- s
-#   onset_age <- s
-#   cens <- s
-#
-#   ##############################################
-#   ## mixture probabilities for km jack method ##
-#   ##############################################
-#   for(ss in 1:num_study){
-#     for(i in 1:n[ss]){
-#       for(j in 1:m[ss,i]){
-#         q[ss,j,i,j]  <- 1
-#       }
-#     }
-#   }
-#
-#   if(real_data==FALSE){
-#     if(!is.null(par_fu)){
-#       ## u_s random effect (random effect for study)
-#       fs <- make.normal(mean=par_fu["mean"],sd=par_fu["sd"],type=type_fr)
-#
-#       ## generate random effect
-#       us <- fs(num_study,par_fu["mean"],par_fu["sd"])
-#
-#       ## center random effect
-#       us <- us - mean(us)
-#     } else {
-#       us <- rep(0,num_study)
-#     }
-#
-#     if(use.random.effects==FALSE){ ## no random effects
-#       us <- rep(0,num_study)
-#     }
-#
-#     for(ss in 1:num_study){
-#       ##########################################
-#       ## set up functions for generating data ##
-#       ##########################################
-#       ## distribution for f_R
-#
-#       if(frform=="norm"){
-#         ## R ~ Normal(mean.fr,sd.fr^2)
-#         fr <- make.normal(mean=par1_fr[ss],sd=par2_fr[ss],type=type_fr)
-#       } else if(frform=="gamm"){
-#         ## R ~ Gamma
-#         fr <- make.gamma(shape=par1_fr[ss],scale=par2_fr[ss],type=type_fr)
-#       } else if(frform=="unif"){
-#         ## R ~ uniform
-#         fr <- make.uniform(min=par1_fr[ss],max=par2_fr[ss],type=type_fr)
-#       } else if(frform=="tdis"){
-#         ## R ~ t
-#         fr <- make.t(df=par1_fr[ss],ncp=par2_fr[ss],type=type_fr)
-#       } else if(frform=="mixn"){
-#         ## R ~ mixture of Normals
-#         fr <- make.mixture.normals(mean1=par1_fr[ss],sd1=par1_fr[ss],
-#                                    mean2=par2_fr2[ss],sd2=par2_fr2[ss],mix=mix_n[ss],type=type_fr)
-#       }
-#
-#
-#       ## Set distribution f_Z
-#       if(fzrform=="norm"){
-#         ## Z|R ~Normal
-#         fzr <- make.normal(mean=par1_fzr[ss],sd=par2_fzr[ss],type=type_fzr)   # to forn birnak dustribution
-#       } else if(fzrform=="unif"){
-#         fzr <- make.uniform(min=par1_fzr[ss],max=par2_fzr[ss],type=type_fzr)
-#       } else if(fzrform=="binom"){
-#         fzr <- make.binom(size=par1_fzr[ss],prob=par2_fzr[ss],type=type_fzr)
-#       }
-#
-#       ## Set distribution f_X
-#       if(fxform=="norm"){
-#         ## Z|R ~Normal
-#         fx <- make.normal(mean=par1_fx[ss],sd=par2_fx[ss],type=type_fx)
-#       } else if(fxform=="unif"){
-#         fx <- make.uniform(min=par1_fx[ss],max=par2_fx[ss],type=type_fx)
-#       }
-#
-#       ####################
-#       ## simulated data ##
-#       ####################
-#       if(randomeffects.covariates.dependent==TRUE){
-#         ## add dependence
-#         bb[ss,1:n[ss]] <- rnorm(n[ss],sd=0.05)
-#       } else {
-#         bb[ss,1:n[ss]] <- rep(0,n[ss])
-#       }
-#
-#       ############################
-#       ## generate random effect ##
-#       ############################
-#       if(use.random.effects==TRUE){ ## we generate random effects
-#         r[ss,1:n[ss]] <- fr(n[ss],par1_fr[ss],par2_fr[ss]) + bb[ss,1:n[ss]]
-#       }
-#
-#       ## center random effect, within each study
-#       #r[ss,1:n[ss]] <- r[ss,1:n[ss]] - mean(r[ss,1:n[ss]])
-#     }
-#
-#     ## center random effect
-#     r <- r - mean(r)
-#
-#     for(ss in 1:num_study){
-#       for(i in 1:n[ss]){
-#         ##print(i)
-#         ## generate deviate for z-covariates
-#         for(k in 1:np){
-#           z[ss,i,k,1:lb[[ss]][[k]]] <- fzr(lb[[ss]][[k]],par1_fzr[ss],par2_fzr[ss]) + bb[ss,i]
-#         }
-#
-#         ## generate deviate for x-covariates
-#         x[ss,i] <- fx(1,par1_fx[ss],par2_fx[ss]) + bb[ss,i]
-#
-#         ## form z_etas and x_etas
-#         etas_z[ss,i,1:m[ss,i]] <- get.z.etas(m[ss,i],lb[[ss]],beta0int,beta[[ss]],
-#                                              gamma.param,omega.param[ss],
-#                                              adrop(z[ss,i,,,drop=FALSE],drop=c(1,2)))
-#         etas_x[ss,i,1:m[ss,i]] <- get.x.etas(m[ss,i],a0[[ss]],axmod[[ss]],
-#                                              x[ss,i])
-#
-#         ########################
-#         ## generate onset age ##
-#         ########################
-#         Ft[ss,i,] <- get.unif.Ft(m[ss,i])
-#         onset_age[ss,i,] <- invFt(m[ss,i],
-#                                   adrop(etas_z[ss,i,,drop=FALSE],drop=c(1,2)),
-#                                   adrop(etas_x[ss,i,,drop=FALSE],drop=c(1,2)),
-#                                   r[ss,i]+us[ss],
-#                                   adrop(Ft[ss,i,,drop=FALSE],drop=c(1,2)),gtmod)
-#
-#         for(j in 1:m[ss,i]){
-#           if(gen.cens.depend.z==FALSE){
-#             cens.z <- NULL
-#           } else {
-#             cens.z <- sum(z[ss,i,j,])  ## works for all, but targeting lb=1
-#           }
-#           cens[ss,i,j] <- genc(onset_age[ss,i,j],censorrate=censorrate[ss],z=cens.z)
-#
-#           if(onset_age[ss,i,j] <= cens[ss,i,j]){
-#             s[ss,i,j] <- onset_age[ss,i,j]
-#             delta[ss,i,j] <- 1
-#           } else {
-#             s[ss,i,j] <- cens[ss,i,j]
-#             delta[ss,i,j] <- 0
-#           }
-#         }
-#       }
-#     }
-#   } else {
-#     ###############
-#     ## real data ##
-#     ###############
-#     for(ss in 1:num_study){
-#       for(k in 1:np){
-#         z[ss,1:n[ss],k,1:lb[[ss]][[k]]] <- z_tmp.list[[ss]][1:n[ss],k,1:1:lb[[ss]][[k]]]
-#       }
-#       x[ss,1:n[ss]] <- x_tmp.list[[ss]]
-#       s[ss,1:n[ss],1:max(m[ss,])] <- s_tmp.list[[ss]]
-#       delta[ss,1:n[ss],1:max(m[ss,])] <- delta_tmp.list[[ss]]
-#     }
-#   }
-#
-#   ##################
-#   ## form Y terms ##
-#   ##################
-#   for(ss in 1:num_study){
-#     for(i in 1:n[ss]){
-#       for(j in 1:m[ss,i]){
-#         for(tt in 1:num_time){
-#           if(delta[ss,i,j] > tol){
-#             ## person not censored
-#             if(s[ss,i,j] <= time_val[tt]){
-#               y[ss,tt,i,j] <- 1
-#               count[ss,tt,1] <- count[ss,tt,1] + 1
-#
-#               #ytest[ss,tt,i,j] <- 999  ## in no censoring case, pseudo-values agree with 0/1 output
-#               #ymiss_ind[ss,tt,i,j] <- 1
-#
-#             } else {
-#               y[ss,tt,i,j] <- 0
-#               count[ss,tt,2] <- count[ss,tt,2] + 1
-#
-#               #ytest[ss,tt,i,j] <- 999
-#               #ymiss_ind[ss,tt,i,j] <- 1
-#
-#
-#             }
-#           } else {
-#
-#             ## person is censored
-#             if(s[ss,i,j] >= time_val[tt]){
-#               # c_ij >= t_0
-#               y[ss,tt,i,j] <- 0
-#               count[ss,tt,2] <- count[ss,tt,2] + 1
-#             } else {
-#               ## value not observed
-#               y[ss,tt,i,j] <- 999
-#               ymiss_ind[ss,tt,i,j] <- 1
-#               count[ss,tt,3] <- count[ss,tt,3] + 1
-#             }
-#           }
-#         }
-#       }
-#     }
-#   }
-#
-#   list(y_start=y,ymiss_ind_start=ymiss_ind,
-#        z_start=z,x_start=x,s_start=s,q_start=q,delta_start=delta,
-#        onset_age_orig_start=onset_age_orig,
-#        norisk_ind_start=norisk_ind,count=count,
-#        ytest=ytest)
-# }
 
 
 
@@ -11730,280 +11277,6 @@ cap.distribution <- function(t,cag,age0){
   out <- 1-out
   return(out)
 }
-
-
-
-## compute number of cases in each study
-#compute.number.events.in.study <- function(
-#			       	data.for.training,
-#				data.for.testing,
-#			       	event.outcome.names,
-#				delta.names,
-#				functional.covariate.names,
-#				nonfunctional.covariate.names,
-#				othercovariate.names,
-#				study.names,
-#				dropout,
-#				Ftest.store,
-#				time.points.for.prediction,
-#				nonfunctional.covariate.values.for.prediction,
-#				start.date,
-#				start.age,
-#				end.date,
-#				predict.beyond.study.observation=FALSE,
-#				kmean_groups=4,
-#				grouping.to.use.suffix="_quart"
-#				){
-#
-#
-#  #################
-#   ## Get CAP fit ##
-#   #################
-#   cap.fit <- get.cap.model(data.use=data.for.training,
-#                                event.name=event.outcome.names,
-#                                delta.name=delta.names)
-#
-#
-#    ###################################
-#    ## we do stratified Kaplan-Meier ##
-#    ###################################
-#    ## we first extract all combinations between
-#    ## functional.covariate.names, nonfunctional.covariate.names
-#    variables.use <- ##c(functional.covariate.names)
-#    		       c(functional.covariate.names,nonfunctional.covariate.names)
-#
-#
-#
-#    ###################################################################
-#    ## 7/10/2018: We don't use the combinations of quartiles anymore.
-#    ## Instead we will use kmeans clustering.
-#    ## It makes more sense.
-#    #################################################################
-#    if(grouping.to.use.suffix=="_quart"){
-#      variables.use.quart <- c("CAG_quart","base_age_quart")
-#      combinations.to.use <- get.empty.list(variables.use.quart)
-#      if(predict.beyond.study.observation==FALSE){
-#        data.training.testing.combined <- rbind(data.for.training,data.for.testing)
-#      } else {
-#        data.training.testing.combined <- data.for.training
-#      }
-#
-#      for(ll in 1:length(combinations.to.use)){
-#        combinations.to.use[[ll]] <-
-#        	sort(unique(data.training.testing.combined[,variables.use.quart[ll]]))
-#      }
-#      all.combinations <- expand.grid(combinations.to.use)
-#    } else if(grouping.to.use.suffix=="_kmeans"){
-#      all.combinations <- NULL
-#      for(kk in 1:kmean_groups){
-#       ###########################
-#       ## Extract relevant data ##
-#       ###########################
-#       data.subset <- data.for.training[which(data.for.training[,"kmeans_group"]==kk),]
-#       all.combinations <- rbind(all.combinations,
-#                       data.subset[1,paste0(c(nonfunctional.covariate.names,
-#                    functional.covariate.names),grouping.to.use.suffix)])
-#     }
-#     colnames(all.combinations) <- paste0(c(nonfunctional.covariate.names,
-#                                                functional.covariate.names),"_kmeans")
-#     rownames(all.combinations) <- 1:kmean_groups
-#    }
-#
-#    ## keep.index: which individuals in the test data set did not
-#    ## 		   experience motor conversion?
-#    keep.index <- rep(1,nrow(data.for.testing))
-#    if(predict.beyond.study.observation==TRUE){
-#	## we are computing probabilities beyond the study observation period
-#	## we only want to see the new converters. Thus
-#	## these were people who were censored at the end of the study periods.
-#	## We remove people who converted by the end of the study period.
-#	make.zero <- which(data.for.testing[,delta.names]==1)
-#	keep.index[make.zero] <- 0
-#    }
-#    data.out <- data.frame(data.for.testing,KM.converter=0,JPRAT.converter=0,
-#					Langbehn.converter=0,
-#					CAP.converter=0,
-#					CAP.new.converter=0)
-#
-#    for(ii in 1:nrow(data.for.testing)){
-#      if(keep.index[ii]==1){
-#    	study.use <- as.character(data.for.testing[ii,"study"])
-#        km.numerator <- 0
-#      	km.denominator <- 0
-#	jprat.numerator <- 0
-#	jprat.denominator <- 0
-#	langbehn.numerator <- 0
-#	langbehn.denominator <- 0
-#	cap.numerator <- 0
-#	cap.denominator <- 0
-#	cap.new.numerator <- 0
-#	cap.new.denominator <- 0
-#      	starting.age <- data.for.testing[ii,start.age]
-#
-#      	  future.age <- starting.age +
-#			    end.date[study.use]-
-#			    data.for.testing[ii,start.date]
-#
-#	#############################
-#	## do kaplan meier version ##
-#	#############################
-#
-#        for(aa in 1:nrow(all.combinations)){
-#	  if(grouping.to.use.suffix=="_quart"){
-#          ## 7/10/2018: WE don't use quartiles anymore. We use kmeans clustering.
-#	  data.subset <- subset(data.for.training,
-#      	  	  CAG_quart==all.combinations[aa,"CAG_quart"] &
-#	  	   base_age_quart==all.combinations[aa,"base_age_quart"])
-#          } else if(grouping.to.use.suffix=="_kmeans"){
-#	    data.subset <- subset(data.for.training,
-#	  	      	 kmeans_group==aa)
-#	  }
-#
-#	  weight <- nrow(data.subset)/nrow(data.for.training)
-#
-#	  ##############################################
-#	  ## get KM function to compute probabilities ##
-#	  ##############################################
-#	  if(nrow(data.subset)>1){
-#	    survest <- get.kaplan.meier(data.subset,event.outcome.names,delta.names)
-#	  } else {
-#	    survest <- function(x){return(0)}
-#	  }
-#	  km.numerator <- km.numerator + weight * (survest(starting.age) -
-#		     	       	 survest(future.age))
-#	  km.denominator <- km.denominator + weight * survest(starting.age)
-#
-#
-#	  ###################
-#	  ## JPRAT version ##
-#	  ###################
-#	  CAG.use <- all.combinations[aa,paste0("CAG",grouping.to.use.suffix)]
-#	  base.age.use <- all.combinations[aa,
-#				paste0("base_age",grouping.to.use.suffix)]
-#	  z.index <- which(nonfunctional.covariate.values.for.prediction==base.age.use)
-#
-#
-#	  ## because we combine study data, all estimates are the same from every study
-#	  jprat.tmp <- Ftest.store[1,study.use,event.outcome.names,z.index,
-#			paste0("xx",CAG.use),,"est"]
-#	  ## add 0 and 1 to bottom and top, respectively
-#	  jprat.tmp <- c(0,jprat.tmp,1)
-#
-#	  ## linearly interpolate the results
-#	  make.interpolate.jprat <- function(jprat.tmp,time.points.for.prediction){
-#	    function(x){
-#	      out <- approx(x=c(0,time.points.for.prediction,
-#	      	     max(time.points.for.prediction) + 200),
-#		     	   y= jprat.tmp,xout=x)$y
-#	     return(out)
-#	    }
-#	  }
-#	  jprat.interpolate <- make.interpolate.jprat(jprat.tmp,
-#	  		    time.points.for.prediction)
-#
-#
-#	  jprat.numerator <- jprat.numerator +
-#	  		  weight *(jprat.interpolate(future.age)-
-#				   jprat.interpolate(starting.age))
-#
-#	  jprat.denominator <- jprat.denominator +
-#	  		     weight * (1-jprat.interpolate(starting.age))
-#
-#
-#
-#
-#	  ##################################
-#	  ## get Langbehn model estimator ##
-#	  ##################################
-#	  langbehn.numerator <- langbehn.numerator +
-#	  		    weight* (langbehn.distribution(future.age,CAG.use)-
-#			      langbehn.distribution(starting.age,CAG.use))
-#
-#	  langbehn.denominator <- langbehn.denominator +
-#	  		  weight*(1-langbehn.distribution(starting.age,CAG.use))
-#
-#	  #######################
-#	  ## get CAP estimator ##
-#	  #######################
-#	  cap.numerator <- cap.numerator +
-#	  		   weight * (cap.distribution(future.age,CAG.use,base.age.use)-
-#			   	    cap.distribution(starting.age,CAG.use,base.age.use))
-#	  cap.denominator <- cap.denominator +
-#	  		  weight * (1-cap.distribution(starting.age,CAG.use,base.age.use))
-#
-#	  #########################################
-#	  ## get CAP estimator based on data fit ##
-#	  #########################################
-#	  cap.new.numerator <- cap.new.numerator +
-#
-#
-#	  		   weight * (fit.cap.model.Ft(cap.fit,time.use=future.age,
-#					CAG.use=CAG.use,
-#					base_age.use=base.age.use,
-#					data.use=data.for.training,
-#					event.name=event.outcome.names,
-#					delta.name=delta.names)$Ft.estimate-
-#			   	    fit.cap.model.Ft(cap.fit,
-#					time.use=starting.age,
-#					CAG.use=CAG.use,
-#					base_age.use=base.age.use,
-#					data.use=data.for.training,
-#					event.name=event.outcome.names,
-#					delta.name=delta.names)$Ft.estimate)
-#	  cap.new.denominator <- cap.new.denominator +
-#	  		  weight * (1-fit.cap.model.Ft(cap.fit,
-#					time.use=starting.age,
-#					CAG.use=CAG.use,
-#					base_age.use=base.age.use,
-#					data.use=data.for.training,
-#					event.name=event.outcome.names,
-#					delta.name=delta.names)$Ft.estimate)
-#
-#	}
-#
-#       data.out[ii,"KM.converter"] <- km.numerator/km.denominator
-#	data.out[ii,"JPRAT.converter"] <- jprat.numerator/jprat.denominator
-#	data.out[ii,"Langbehn.converter"] <- langbehn.numerator/langbehn.denominator
-#	data.out[ii,"CAP.converter"] <- cap.numerator/cap.denominator
-#	data.out[ii,"CAP.new.converter"] <- cap.new.numerator/cap.new.denominator
-#
-#     }
-#   }
-#
-#
-#
-#        ## get number of events in each study
-#        out <- array(0,dim=c(length(study.names),2,5),
-#                dimnames=list(study.names,c("orig.cases","new.cases"),
-#				c("Kaplan-Meier","JPRAT","Langbehn", "CAP","CAP_new")))
-#
-#
-#
-#        for(ss in 1:length(study.names)){
-#                subset.data <- subset(data.out, study==study.names[ss])
-#	        out[ss,"orig.cases",] <-
-#                  sum(subset.data[,delta.names],na.rm=TRUE)
-#                out[ss,"new.cases","Kaplan-Meier"] <-
-#		  sum(subset.data[,"KM.converter"],na.rm=TRUE)
-#
-#		out[ss,"new.cases","JPRAT"] <-
-#		  sum(subset.data[,"JPRAT.converter"],na.rm=TRUE)
-#
-#		out[ss,"new.cases","Langbehn"] <-
-#		  sum(subset.data[,"Langbehn.converter"],na.rm=TRUE)
-#
-#		out[ss,"new.cases","CAP"] <-
-#		  sum(subset.data[,"CAP.converter"],na.rm=TRUE)
-#
-#		out[ss,"new.cases","CAP_new"] <-
-#		  sum(subset.data[,"CAP.new.converter"],na.rm=TRUE)
-#       }
-
-#       out[,"new.cases",] <- out[,"new.cases",] *(1-dropout)
-#
-#        return(list(data.out=data.out,converted.number=out))
-#}
-
 
 
 

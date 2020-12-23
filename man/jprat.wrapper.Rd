@@ -2,6 +2,8 @@
 % Please edit documentation in R/jprat_function.R
 \name{jprat.wrapper}
 \alias{jprat.wrapper}
+\alias{jprat.main.estimates}
+\alias{gamm4.estimates}
 \title{JPRAT algorithm}
 \usage{
 jprat.wrapper(
@@ -33,9 +35,9 @@ jprat.wrapper(
 \arguments{
 \item{study.names}{A character vector of name of studies used in the analysis. e.g., c("cohort", "predict", "pharos").}
 
-\item{input.data.list}{Lists of datasets to be analyzed. In the case, you use datasets given from JPRAT, then there are two options:
-use list(cohort=data_cohort, predict=data_predict, pharos=data_pharos) if you choose \code{what.analyzed.separately}="event" or "eventstudy";
-otherwise use list(study1=simu_data1_model_A, study2=simu_data2_model_A). (See \code{what.analyzed.separately} for option details.)}
+\item{input.data.list}{A list of datasets to be analyzed. In the case, you use datasets given from JPRAT, then there are two options:
+use list(cohort=data_cohort, predict=data_predict, pharos=data_pharos) if you choose \code{what.analyzed.separately="event" or "eventstudy"};
+otherwise use list(study1=simu_data1_model_A, study2=simu_data2_model_A) (See \code{what.analyzed.separately="none" or "study"} for option details).}
 
 \item{nonfunctional.covariate.names}{A character vector for the name of the nonfunctional covariates that is used in the analysis.}
 
@@ -49,9 +51,9 @@ otherwise use list(study1=simu_data1_model_A, study2=simu_data2_model_A). (See \
 
 \item{time.points.for.prediction}{A vector of time points at which the predicted values of marginal distribution will be estimated. Users may encounter a warning message that "Not enough data at time points (e.g., base_age);  May have divergent in the integration while bootstrapping." We recommend that users evaluate the proportional odds model at the average of nonfunctional covariate (e.g., base_age) across all subjects in each study. This may get rid of the warning messages.}
 
-\item{time.points.for.conditional.prediction}{A vector of time points \eqn{t} at which the predicted values of conditional distribution \eqn{Pr(T <t + t_0| T>t)} will be estimated.}
+\item{time.points.for.conditional.prediction}{A vector of time points \eqn{t} at which the predicted values of conditional distribution \eqn{Pr(T <t + t_{0}| T>t)} will be estimated.}
 
-\item{time.points.for.conditional.prediction.toadd}{A vector of future time points \eqn{t_0} at which the predicted values of conditional distribution \eqn{Pr(T <t + t_0 | T>t)} will be estimated.}
+\item{time.points.for.conditional.prediction.toadd}{A vector of future time points \eqn{t_{0}} at which the predicted values of conditional distribution \eqn{Pr(T <t + t_{0} | T>t)} will be estimated.}
 
 \item{nonfunctional.covariate.value}{A numeric value interested for the nonfunctional covariate. e.g., 40 for \code{base_age}, which will be used for prediction.}
 
@@ -59,11 +61,11 @@ otherwise use list(study1=simu_data1_model_A, study2=simu_data2_model_A). (See \
 
 \item{number.of.bootstraps}{The number of bootstrap iterations. The bootstrap procedure is to do a hypothesis testing, which compares functional parameters over interested time points among studies.}
 
-\item{use.functional.beta.intercept}{A logical value whether a functional intercept \eqn{\beta_0(t)} is included in the time-varying proportional odds model. The default option is TRUE.}
+\item{use.functional.beta.intercept}{A logical value whether a functional intercept \eqn{\beta_{0}(t)} is included in the time-varying proportional odds model. The default option is TRUE.}
 
-\item{use.functional.event.coefficients}{A logical value whether the event specific effect \eqn{\gamma_e(t)} will be used in the time-varying proportional odds model. The default option is TRUE.}
+\item{use.functional.event.coefficients}{A logical value whether the event specific effect \eqn{\gamma_{e}(t)} will be used in the time-varying proportional odds model. The default option is TRUE.}
 
-\item{use.functional.study.coefficients}{A logical value whether the study specific effect \eqn{\omega_s(t)} will be used in the time-varying proportional odds model. The default option is TRUE.}
+\item{use.functional.study.coefficients}{A logical value whether the study specific effect \eqn{\omega_{s}(t)} will be used in the time-varying proportional odds model. The default option is TRUE.}
 
 \item{check.study.equality}{A logical value whether estimates are similar across studies: The default option is TRUE when what.analyzed.separately is "none"; otherwise, FALSE.}
 
@@ -81,7 +83,22 @@ If this is FALSE, the only option is  "none" (no variances are estimated). The d
 \item{write.output}{A logical value whether outputs should be saved into data files. The default option is TRUE.}
 }
 \value{
-
+A list of
+         \item{jprat.output}{A list of estimated values. If write.output=TRUE, the list contains simulation results as data.theta and combi.out;
+         \itemize{
+         \item theta.out: a data frame of the estimated values for all components ("beta0", "beta1",  "alphas", "Ft", "Ft.predicted")
+         at each iteration for the clinical events of interest per study. The columns of the data frame include iteration number (iters), the name of studies (study), the names of outcomes (event), the names for all components to be estimated (theta), the labels of the nonfunctional covariates Z (zz)),
+         the labels of the functional covariates X (xx), all estimated values for theta: "est", "varest", "varlo", "varhi", "boot_varest", "boot_varlo", "boot_varhi" (val)
+         and the time points.
+         \item combi.out: a data frame of the difference of the estimated values between a pair of studies for all components ("beta0", "beta1", "alphas", "Ft", "Ft.predicted")
+         at each iteration for the clinical events of interest per a pair of studies.
+         The columns of the data frame include the number of iteration (iters), the names for the combinations of studies (study): cohort-predict, cohort-pharos, predict-pharos),
+         the names of outcome events (event), the names for all components to be estimated (theta), the labels of the nonfunctional covariates Z (zz), the labels of the functional covariates X (xx),
+         all estimated values for theta: "est", "varest", "varlo", "varhi", "boot_varest", "boot_varlo","boot_varhi" (val) and the time points.}
+         If write.output=FALSE, jprat.output returns a list whose elements contain the estimated values for \eqn{beta(t)}, \eqn{alpha(X,t)}, \eqn{Ft(t)} and \eqn{F_{es}(t|X, Z)} for each study (see \code{null.theta.simus.est.ciboot} for the array from)
+          and for a pair of studies for comparison (see \code{null.theta.simus.est.ci} for the array form)}
+         \item{eflag}{an integer number to check if any error comes up while estimation algorithm is processed.
+                      If this value is -1, then the marginal distribution \eqn{F_{es}(t|X, Z)} has missing values (NA).}
 }
 \description{
 This function is to call and run JPRAT algorithm.
@@ -168,9 +185,12 @@ jprat.estimat.results<-jprat.wrapper(study.names=study.names,
 }
 \references{
 To see the detailed description for the JPRAT estimation procedure, we refer to
-         Garcia, T. P., Marder, K., Wang, Y. (2017). Time-varying proportional odds model for mega-analysis of clustered event
+         \itemize{
+         \item Garcia, T. P., Marder, K., Wang, Y. (2017). Time-varying proportional odds model for mega-analysis of clustered event
          times. Biostatistics, 20(1), 129-146.
+         }
          To see the detailed real data analysis, we refer to
-         Garcia, T.P., Wang, Y., Shoulson, I., Paulsen, J.S. and Marder, K. (2018). Disease progression in Huntington disease:
-         An analysis of multiple longitudinal outcomes. Journal of Huntington's disease, 7, 337-344
+         \itemize{
+         \item Garcia, T.P., Wang, Y., Shoulson, I., Paulsen, J.S. and Marder, K. (2018). Disease progression in Huntington disease:
+         An analysis of multiple longitudinal outcomes. Journal of Huntington's disease, 7, 337-344}
 }

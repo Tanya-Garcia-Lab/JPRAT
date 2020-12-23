@@ -6,16 +6,6 @@
 \usage{
 convert.cag(x, xmin = xmin, xmax = xmax)
 }
-\arguments{
-\item{x}{any length of numeric vector for the CAG repeats length, which follows uniform distribution on [0,1].}
-
-\item{xmin}{See the argument in the \code{\link{convert.new.notation.to.old.for.jprat}} function.}
-
-\item{xmax}{See the argument in the \code{\link{convert.new.notation.to.old.for.jprat}} function.}
-}
-\value{
-FILL IN HERE!
-}
 \description{
 This function converts the uniformly distributed values (CAG repeats length) on [0,1] to the original values (CAG repeats length from real data).
 }

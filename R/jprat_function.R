@@ -1,6 +1,7 @@
 #' @title Initialization of parameters and coefficients
-#' @description This function is to initialize a list of all components to be estimated to zeros. The structure of each component is a multi-dimensional array, whose dimension size depends on the number of studies, the number of events,
-#' the number of covariates, and the length of time points where estimates will be evaluated, etc.
+#' @description This function constructs a list of all parameters and coefficients. The structure of each parameter or coefficient is a multi-dimensional array,
+#' whose dimension size depends on the number of studies, the number of events, the number of covariates and the length of time points,etc.
+#' This function also initializes all parameters and coefficients (arrays) to zeros.
 #'
 #' @param theta.names A character vector of functional parameters' names that will be estimated in the model: "beta" (include intercept), "alphas" and "Ft" (or "Ft.predicted") corresponds to
 #'                     \eqn{\beta_{es}(t)} (\eqn{\beta_0(t)}) ,  \eqn{\alpha(X, t)}, and \eqn{F_{es}(t)}.
@@ -141,10 +142,12 @@ all_null_theta <- function(theta.names,
 #' @title JPRAT algorithm
 #' @description This function is to call and run JPRAT algorithm.
 #'
+#' @aliases jprat.wrapper jprat.main.estimates  gamm4.estimates
+#'
 #' @param study.names A character vector of name of studies used in the analysis. e.g., c("cohort", "predict", "pharos").
-#' @param input.data.list Lists of datasets to be analyzed. In the case, you use datasets given from JPRAT, then there are two options:
-#' use list(cohort=data_cohort, predict=data_predict, pharos=data_pharos) if you choose \code{what.analyzed.separately}="event" or "eventstudy";
-#' otherwise use list(study1=simu_data1_model_A, study2=simu_data2_model_A). (See \code{what.analyzed.separately} for option details.)
+#' @param input.data.list A list of datasets to be analyzed. In the case, you use datasets given from JPRAT, then there are two options:
+#' use list(cohort=data_cohort, predict=data_predict, pharos=data_pharos) if you choose \code{what.analyzed.separately="event" or "eventstudy"};
+#' otherwise use list(study1=simu_data1_model_A, study2=simu_data2_model_A) (See \code{what.analyzed.separately="none" or "study"} for option details).
 #'
 #' @param nonfunctional.covariate.names A character vector for the name of the nonfunctional covariates that is used in the analysis.
 #' @param functional.covariate.names A character vector for the name of the functional covariates that is used in the analysis.
@@ -154,14 +157,14 @@ all_null_theta <- function(theta.names,
 #' @param delta.names A character vector for the name of the censoring indicator for the time-to-event outcomes.
 #'
 #' @param time.points.for.prediction A vector of time points at which the predicted values of marginal distribution will be estimated. Users may encounter a warning message that "Not enough data at time points (e.g., base_age);  May have divergent in the integration while bootstrapping." We recommend that users evaluate the proportional odds model at the average of nonfunctional covariate (e.g., base_age) across all subjects in each study. This may get rid of the warning messages.
-#' @param time.points.for.conditional.prediction A vector of time points \eqn{t} at which the predicted values of conditional distribution \eqn{Pr(T <t + t_0| T>t)} will be estimated.
-#' @param time.points.for.conditional.prediction.toadd A vector of future time points \eqn{t_0} at which the predicted values of conditional distribution \eqn{Pr(T <t + t_0 | T>t)} will be estimated.
+#' @param time.points.for.conditional.prediction A vector of time points \eqn{t} at which the predicted values of conditional distribution \eqn{Pr(T <t + t_{0}| T>t)} will be estimated.
+#' @param time.points.for.conditional.prediction.toadd A vector of future time points \eqn{t_{0}} at which the predicted values of conditional distribution \eqn{Pr(T <t + t_{0} | T>t)} will be estimated.
 #' @param nonfunctional.covariate.value A numeric value interested for the nonfunctional covariate. e.g., 40 for \code{base_age}, which will be used for prediction.
 #' @param functional.covariate.values.of.interest A vector of specific functional covariate values \eqn{X=x} where the smooth functional parameter \eqn{\alpha(X=x,t)} will be estimated. For example, we set \eqn{x=46,48,50} in the analysis. We recommend that the specific functional covariate values \eqn{X=x} should be chosen between the minimum and the maximum of functional covariate values. Otherwise, users may encounter a warning message.
 #' @param number.of.bootstraps The number of bootstrap iterations. The bootstrap procedure is to do a hypothesis testing, which compares functional parameters over interested time points among studies.
-#' @param use.functional.beta.intercept A logical value whether a functional intercept \eqn{\beta_0(t)} is included in the time-varying proportional odds model. The default option is TRUE.
-#' @param use.functional.event.coefficients A logical value whether the event specific effect \eqn{\gamma_e(t)} will be used in the time-varying proportional odds model. The default option is TRUE.
-#' @param use.functional.study.coefficients A logical value whether the study specific effect \eqn{\omega_s(t)} will be used in the time-varying proportional odds model. The default option is TRUE.
+#' @param use.functional.beta.intercept A logical value whether a functional intercept \eqn{\beta_{0}(t)} is included in the time-varying proportional odds model. The default option is TRUE.
+#' @param use.functional.event.coefficients A logical value whether the event specific effect \eqn{\gamma_{e}(t)} will be used in the time-varying proportional odds model. The default option is TRUE.
+#' @param use.functional.study.coefficients A logical value whether the study specific effect \eqn{\omega_{s}(t)} will be used in the time-varying proportional odds model. The default option is TRUE.
 #' @param check.study.equality A logical value whether estimates are similar across studies: The default option is TRUE when what.analyzed.separately is "none"; otherwise, FALSE.
 #' @param estimated.parameters.common.for.all.studies A logical value whether the model parameters are same across studies. The default option is FALSE.
 #' @param what.analyzed.separately A character value to determine whether the event information from all studies is analyzed jointly or separately with distinct or shared study parameters in the model: the options are "studyevent" (studies and event), "study", "event", or "none".
@@ -186,27 +189,29 @@ all_null_theta <- function(theta.names,
 #'}
 #'
 #'@references To see the detailed description for the JPRAT estimation procedure, we refer to
-#'          Garcia, T. P., Marder, K., Wang, Y. (2017). Time-varying proportional odds model for mega-analysis of clustered event
+#'          \itemize{
+#'          \item Garcia, T. P., Marder, K., Wang, Y. (2017). Time-varying proportional odds model for mega-analysis of clustered event
 #'          times. Biostatistics, 20(1), 129-146.
+#'          }
 #'          To see the detailed real data analysis, we refer to
-#'          Garcia, T.P., Wang, Y., Shoulson, I., Paulsen, J.S. and Marder, K. (2018). Disease progression in Huntington disease:
-#'          An analysis of multiple longitudinal outcomes. Journal of Huntington's disease, 7, 337-344
+#'          \itemize{
+#'          \item Garcia, T.P., Wang, Y., Shoulson, I., Paulsen, J.S. and Marder, K. (2018). Disease progression in Huntington disease:
+#'          An analysis of multiple longitudinal outcomes. Journal of Huntington's disease, 7, 337-344}
 #'
 #' @return  A list of
 #'          \item{jprat.output}{A list of estimated values. If write.output=TRUE, the list contains simulation results as data.theta and combi.out;
-#'
 #'          \itemize{
-#'          \item theta.out: a data frame of the estimated values for all components ("beta0", "beta1",  "alpha1", "Ft", "Ft.predicted")
+#'          \item theta.out: a data frame of the estimated values for all components ("beta0", "beta1",  "alphas", "Ft", "Ft.predicted")
 #'          at each iteration for the clinical events of interest per study. The columns of the data frame include iteration number (iters), the name of studies (study), the names of outcomes (event), the names for all components to be estimated (theta), the labels of the nonfunctional covariates Z (zz)),
-#'          the labels of the functional covariates X (xx), all estimated values for theta: "est", "varest", "varlo", "varhi", "boot_varest", "boot_varlo", "boot_varhi" (val))
+#'          the labels of the functional covariates X (xx), all estimated values for theta: "est", "varest", "varlo", "varhi", "boot_varest", "boot_varlo", "boot_varhi" (val)
 #'          and the time points.
-#'          \item combi.out: a data frame of the difference of the estimated values between a pair of studies for all components ("beta0", "beta1", "alpha1", "Ft", "Ft.predicted")
+#'          \item combi.out: a data frame of the difference of the estimated values between a pair of studies for all components ("beta0", "beta1", "alphas", "Ft", "Ft.predicted")
 #'          at each iteration for the clinical events of interest per a pair of studies.
 #'          The columns of the data frame include the number of iteration (iters), the names for the combinations of studies (study): cohort-predict, cohort-pharos, predict-pharos),
 #'          the names of outcome events (event), the names for all components to be estimated (theta), the labels of the nonfunctional covariates Z (zz), the labels of the functional covariates X (xx),
 #'          all estimated values for theta: "est", "varest", "varlo", "varhi", "boot_varest", "boot_varlo","boot_varhi" (val) and the time points.}
-#'          If write.output=FALSE, jprat.output returns a list whose elements contain the estimated \eqn{beta(t)}, \eqn{alpha(X,t)}, \eqn{Ft(t)} and \eqn{F_{es}(t|X, Z)} for all studies (see \code{null.theta.simus.est.ciboot} for the array from)
-#'           and for a pair of studies (see \code{null.theta.simus.est.ci} for the array form)
+#'          If write.output=FALSE, jprat.output returns a list whose elements contain the estimated values for \eqn{beta(t)}, \eqn{alpha(X,t)}, \eqn{Ft(t)} and \eqn{F_{es}(t|X, Z)} for each study (see \code{null.theta.simus.est.ciboot} for the array from)
+#'           and for a pair of studies for comparison (see \code{null.theta.simus.est.ci} for the array form)}
 #'          \item{eflag}{an integer number to check if any error comes up while estimation algorithm is processed.
 #'                       If this value is -1, then the marginal distribution \eqn{F_{es}(t|X, Z)} has missing values (NA).}
 #'

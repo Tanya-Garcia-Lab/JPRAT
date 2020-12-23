@@ -2,7 +2,9 @@
 % Please edit documentation in R/main.R
 \name{jprat.main.estimates}
 \alias{jprat.main.estimates}
-\title{jprat.main.estimates: alogrithm for JPRAT}
+\alias{jprat.wrapper,}
+\alias{gamm4.estimates,}
+\title{Main Algorithm for JPRAT estimation}
 \usage{
 jprat.main.estimates(
   method = "gamm4",
@@ -64,178 +66,186 @@ jprat.main.estimates(
 )
 }
 \arguments{
-\item{method}{a character value for which estimation procedure will be used to estimate all parameters of time varying fixed effects with the marginal distribution function: "gamm4" or "new".  Default is "gamm4".}
+\item{method}{A character value for which estimation procedure will be used to estimate all parameters of the additive logistic mixed effects model: "gamm4" or "new".
+The default option is "gamm4".}
 
-\item{compute.study.differences}{a logical value whether study differences will be estimated. Only valid when the number of studies (\code{number.of.studies}) are greater than 1,
-when parameters were estimated differently (\code{estimated.parameters.common.for.all.studies=FALSE}), and when estimates are similar across studies (\code{check.study.equality=TRUE})).}
+\item{compute.study.differences}{A logical value whether study differences will be estimated: it is only valid when the number of studies (\code{number.of.studies}) are greater than 1,
+when parameters were estimated differently (\code{estimated.parameters.common.for.all.studies=FALSE}), and when estimates are similar across studies (\code{check.study.equality=TRUE}).}
 
-\item{var.boot}{a logical value whether bootstrap variances are estimated. See the argument \code{use.bootstrap.variance} in the \code{\link{jprat.wrapper}} function. Default is TRUE.}
+\item{var.boot}{A logical value whether bootstrap variances are estimated. See the argument \code{use.bootstrap.variance} in the \code{\link{jprat.wrapper}} function. The default option is TRUE.}
 
 \item{arbitrary}{ADD DETAILS HERE!}
 
-\item{num_study}{number of studies used in analyses. If the real data analysis used three studies called "cohort", "predict", "pharos", then number of studies is 3. i.e., \code{num_study=3}.}
+\item{num_study}{The number of studies used in analyses. If the real data analysis used three studies called "cohort", "predict", "pharos", then number of studies is 3. i.e., \code{num_study=3}.}
 
-\item{np}{number of clinical events, which is the length of the character vector for names of time-to-event outcomes (\code{event.outcome.names}) in \code{\link{jprat.wrapper}} function.}
+\item{np}{The number of clinical events, which is the length of the character vector for names of time-to-event outcomes (\code{event.outcome.names}) in \code{\link{jprat.wrapper}} function.}
 
-\item{count.store}{Null object to store number of event times, which occurs before \eqn{t_0}.}
+\item{count.store}{A null object to store number of event times, which occurs before \eqn{t_0}.}
 
-\item{count.store.outside}{Null object to store number of event times, which occurs before \eqn{t_0} for outside [0,1].}
+\item{count.store.outside}{A null object to store number of event times, which occurs before \eqn{t_0} for outside [0,1].}
 
-\item{data}{a data set as the starting values used for estimation procedure;
-a list of starting values (arrays) for binary event status (y_start), the missing indicator of the binary event status (ymiss_ind_start), the nonfunctional covariate Z (z_start),
+\item{data}{A data set as starting values used for estimation procedure;
+a list of starting values for binary event status (y_start), the missing indicator of the binary event status (ymiss_ind_start), the nonfunctional covariate Z (z_start),
 the functional covariate X (x_start), the time-to-events or censoring times (s_start), the mixture probabilities for the jack-knife pseudo-values (q_start),
 the censoring indicators (delta_start), the original onset ages (onset_age_orig_start), the indicator of no risk (norisk_ind_start), the counting numbers for the status of each event of interests (count),
 the pseudo-values (ytest).}
 
-\item{num_time}{length of the vector of time points at which the predicted values of marginal distributions will be estimated.
+\item{num_time}{A length of the vector of time points at which the predicted values of marginal distributions will be estimated.
 See the argument \code{time.points.for.prediction} in the \code{\link{jprat.wrapper}} function.}
 
-\item{time_val}{See this argument in the \code{\link{all_null_theta}} function.}
+\item{time_val}{See the argument \code{time.points.for.prediction} in the \code{\link{jprat.wrapper}} function.}
 
-\item{time_choice.predicted}{See this argument in the \code{\link{all_null_theta}} function.}
+\item{time_choice.predicted}{See the argument \code{time.points.for.conditional.prediction} in the \code{\link{jprat.wrapper}} function.}
 
-\item{time_choice.predicted.toadd}{See this argument in the \code{\link{all_null_theta}} function.}
+\item{time_choice.predicted.toadd}{See the argument \code{time.points.for.conditional.prediction.toadd} in the \code{\link{jprat.wrapper}} function.}
 
-\item{n}{a vector of the sample sizes for all studies.}
+\item{n}{A vector of the sample sizes for all studies.}
 
-\item{nmax}{maximum sample size across all studies.}
+\item{nmax}{The maximum sample size across all studies.}
 
-\item{m}{array of the number of clinical events for each individual and per study,
-where the dimensions of the array is the number of studies (\code{num_study})
+\item{m}{An array of the number of clinical events for each individual and per study,
+whose dimension is the number of studies (\code{num_study})
 by the maximum number of the sample sizes across studies (\code{nmax}).}
 
-\item{maxm}{maximum value of  the events across all subjects for all studies.}
+\item{maxm}{The maximum value of  the events across all subjects for all studies.}
 
-\item{la}{See this argument in the \code{\link{all_null_theta}} function.}
+\item{la}{A length of smooth functional parameters \eqn{\alpha(X,t)} in the model. The default value is 1 in the data analysis study.}
 
-\item{lb}{a list of the number (dimension) for the coefficients of nonfunctional covariate Z (see the argument \code{functional.beta.coefficients}) per study.}
+\item{lb}{A list of the number (dimension) for the coefficients of nonfunctional covariate Z (see the argument \code{functional.beta.coefficients}) per study.}
 
-\item{xks}{a list of studies whose element of the list is the numeric vector of values for the functional covariates X in smooth functional parameter \eqn{\alpha(X, t)}.}
+\item{xks}{A list of studies whose element of the list is the numeric vector of values for the functional covariates \eqn{X} in smooth functional parameter \eqn{\alpha(X, t)}.}
 
-\item{truth}{a list of true model coefficients for "beta" (\eqn{\beta_{0}(t), \beta_{es}(t)}), "alphas" \eqn{\alpha(X,t)}, "Ft" (\eqn{F_{es}(t|X,Z)}), "Ft.predicted", "beta.diff", and "Ft.diff".}
+\item{truth}{A list of true model coefficients for "beta" (\eqn{\beta_{0}(t), \beta_{es}(t)}), "alphas" \eqn{\alpha(X,t)}, "Ft" (\eqn{F_{es}(t|X,Z)}), "Ft.predicted", "beta.diff", and "Ft.diff".}
 
-\item{num_xx}{number of functional covariate values X at which the functional parameters \eqn{\alpha(X, t)} are evaluated.}
+\item{num_xx}{The number of functional covariate values \eqn{X} at which the functional parameters \eqn{\alpha(X, t)} are evaluated.}
 
-\item{knot.length}{number of knots used to construct the basis functions.}
+\item{knot.length}{The number of knots used to construct the basis functions.}
 
-\item{real_data}{a logical value whether the real data will be used. Default is TRUE.}
+\item{real_data}{A logical value whether the real data will be used. The default option is TRUE.}
 
-\item{family.data}{a logical value if the clusters are families, where each member in the cluster is different.}
+\item{family.data}{A logical value if the clusters are families, where each member in the cluster is different.}
 
-\item{zeval}{array of the values of the nonfunctional covariate Z for all studies,
+\item{zeval}{An array of the values of the nonfunctional covariate Z for all studies,
 where the order of dimensions for this array is the number of studies (\code{num_study}),
-the number of nonfunctional covariate Z (z.choice),
+the number of nonfunctional covariate \eqn{Z} (\code{z.choice}),
 the length of the character vector for the names of time-to-event outcomes (\code{event.outcome.names})
 and the number of coefficients of nonfunctional covariate Z (\code{functional.beta.coefficients}) per study.}
 
-\item{z.choice}{number of nonfunctional covariate $Z$ used in the analysis.}
+\item{z.choice}{The number of nonfunctional covariate \eqn{Z} used in the analysis.}
 
-\item{param.label}{a character vector of the names for all coefficients of nonfunctional covariate Z in the model.}
+\item{param.label}{A character vector of the names for all coefficients of nonfunctional covariate Z in the model.}
 
-\item{beta0int}{fixed number for the intercept \eqn{\beta_0(t)} in the model. Default is 0.25 in the analysis.}
+\item{beta0int}{A fixed number for the intercept \eqn{\beta_0(t)} in the model. The default value is 0.25.}
 
-\item{gamma.param}{a numeric vector of event specific coefficient, \eqn{\gamma_{e}(t)}. Default is NULL for real data analysis.}
+\item{gamma.param}{A numeric vector of event specific coefficient, \eqn{\gamma_{e}(t)}. The default value is NULL.}
 
-\item{omega.param}{a numeric vector of study specific coefficient, \eqn{\omega_s(t)}. Default is NULL for real data analysis.}
+\item{omega.param}{A numeric vector of study specific coefficient, \eqn{\omega_s(t)}. The default value is NULL.}
 
-\item{spline.constrain}{a logical value if B-spline is constrained at 0. To keep the design matrix correct, we need to have \eqn{B(0)=0}. Default is TRUE.}
+\item{spline.constrain}{A logical value if B-spline is constrained at 0. To keep the design matrix correct, we need to have \eqn{B(0)=0}. The default option is TRUE.}
 
-\item{common.param.estimation}{a logical value whether the model parameters are the same across studies: Default is FALSE. See the argument \code{estimated.parameters.common.for.all.studies} in the \code{\link{jprat.wrapper}} function.}
+\item{common.param.estimation}{A logical value whether the model parameters are the same across studies: The default option is FALSE. See the argument \code{estimated.parameters.common.for.all.studies} in the \code{\link{jprat.wrapper}} function.}
 
-\item{est.cens.depend.z}{a logical value whether the estimation process assumes that a censoring distribution depends on nonfunctional covariates Z.
-If covariates Z does not follow a binomial distribution, then default is FALSE. See the argument \code{estimation.when.censoring.depends.on.z} in the \code{\link{jprat.wrapper}} function.}
+\item{est.cens.depend.z}{A logical value whether the estimation process assumes that a censoring distribution depends on nonfunctional covariates \eqn{Z}.
+If covariates Z does not follow a binomial distribution, then the default option is FALSE. See the argument \code{estimation.when.censoring.depends.on.z} in the \code{\link{jprat.wrapper}} function.}
 
-\item{par_fu}{a vector of parameters for the normal distribution of random effect for all studies: "mean" and "sd".}
+\item{par_fu}{A vector of parameters for the normal distribution of random effect for all studies: "mean" and "sd".}
 
-\item{analyze.separately}{a character value to determine whether analysis will be performed separately or jointly: the options are "studyevents" (studies and event), "studies", "events", or "none". See the argument \code{what.analyzed.separately} in the \code{\link{jprat.wrapper}} function.}
+\item{analyze.separately}{A character value to determine whether analysis will be performed separately or jointly: the options are "studyevents" (studies and event), "studies", "events", or "none". See the argument \code{what.analyzed.separately} in the \code{\link{jprat.wrapper}} function.}
 
-\item{link.type}{a character value for the name of the link function for the additive mixed effect model (the generalized linear model): "logit” for proportional odds model or "cloglog" for cox proportional hazards. See the argument \code{glm.link.type} in the \code{\link{jprat.wrapper}} function.}
+\item{link.type}{A character value for the name of the link function for the additive mixed effect model (the generalized linear model): "logit” for proportional odds model or "cloglog" for cox proportional hazards. See the argument \code{glm.link.type} in the \code{\link{jprat.wrapper}} function.}
 
-\item{null.theta}{See this argument in the \code{\link{all_null_theta}} function.}
+\item{z.proportions}{The marginal probability of the nonfunctional coavariate \eqn{Z}. The default value is NULL.}
 
-\item{z.proportions}{marginal probability of the nonfunctional coavariate Z. Default is NULL.}
+\item{betaest.store}{An array to store the estimated functional parameters \eqn{\beta(t)} (beta) at each time point. See the return value \code{null.theta.simus.est.ciboot}
+in the \code{\link{all_null_theta}} function.}
 
-\item{betaest.store}{array to store the estimated the functional parameter \eqn{\beta(t)} (beta), see the argument \code{null.theta.simus.est.ciboot}
-as an element of the list \code{null.theta} in the \code{\link{all_null_theta}} function.}
+\item{alphasest.store}{An array to store the estimated smooth functional parameter \eqn{\alpha(X,t)} (alphas). See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimension of this array.}
 
-\item{alphasest.store}{array to store the estimated the smooth functional parameter \eqn{\alpha(X,t)} (alphas), see the argument \code{null.theta.simus.est.ciboot} as an element of the list for \code{null.theta} in the \code{\link{all_null_theta}} function.}
+\item{Ftest.store}{An array to store the estimated marginal distribution \eqn{F_{es}(t)} (Ft). See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimension of this array.}
 
-\item{Ftest.store}{array to store the estimated the marginal distribution \eqn{F_{es}(t)} (Ft), see  see the argument \code{null.theta.simus.est.ciboot} as an element of the list for \code{null.theta} in the \code{\link{all_null_theta}} function.}
+\item{Ftest.predicted.store}{An array of values for the predicted monotone marginal distributions \eqn{F_{es}(t|X, Z, t>t_{0})}
+beyond time \eqn{t_{0}} (\code{Ftest.predicted}) in the \code{\link{gamm4.estimates}} function
+and the return value \code{Ft.predicted.var.boot} in the \code{\link{boot.compare.studies}} function at each iteration.
+See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimensions of the array.}
 
-\item{Ftest.predicted.store}{array of values for the predicted monotone marginal distributions \eqn{F_{es}(t|X, Z, t>t_{0})}
-beyond time \eqn{t_0} (\code{Ftest.predicted}) in the \code{\link{gamm4.estimates}} function
-and the argument \code{Ft.predicted.var.boot} in the \code{\link{boot.compare.studies}} function at each iteration.
-See the argument \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimensions of the array.}
+\item{combi.study}{The total number of distinct studies to be compared.}
 
-\item{combi.study}{total number of distinct studies to be compared.}
+\item{combi.choice}{A matrix of all combination of two pairs of studies to be compared (paired in column-wise), whose dimension is 2 by the total number of studies (\code{combi.study}).}
 
-\item{combi.choice}{a matrix of all combination of two pairs of studies to be compared (paired in column-wise), whose dimension is 2 by the total number of studies (\code{combi.study}).}
+\item{combi.names}{A character vector of names for the pairs of study combinations. For example, cohort-predict, cohort-pharos, predict-pharos.}
 
-\item{combi.names}{a character vector of names for the pairs of study combinations. (For example, cohort-predict, cohort-pharos, predict-pharos)}
+\item{boot}{The number of bootstrap iterations. The bootstrap procedure is to do hypothesis testing, which compares functional parameters over the time points among studies.
+The default value is 100. See the argument \code{number.of.bootstraps} in the \code{\link{jprat.wrapper}} function.}
 
-\item{boot}{number of bootstrap iterations. The bootstrap procedure is to do hypothesis testing, which compares functional parameters over a time points among studies.
-Default is 100. See the argument \code{number.of.bootstraps} in the \code{\link{jprat.wrapper}} function.}
-
-\item{boot.null.theta}{a list of "null.theta",  "null.theta.simus", "null.theta.simus.ci", "null.theta.ci",
-"null.theta.simus.est.ci", "null.theta.simus.est.ciboot", and ``null.theta.est.ci" in the \code{\link{all_null_theta}} function for bootstrap estimates.
+\item{boot.null.theta}{A list of "null.theta",  "null.theta.simus", "null.theta.simus.ci", "null.theta.ci",
+"null.theta.simus.est.ci", "null.theta.simus.est.ciboot", and ``null.theta.est.ci", which are return values in the \code{\link{all_null_theta}} function for the bootstrap estimates.
  The label for simulation dimensions is "boot".}
 
-\item{boot.combi.null.theta}{a list of "null.theta",  null.theta.simus", "null.theta.simus.ci", "null.theta.ci", "null.theta.simus.est.ci",
-"null.theta.simus.est.ciboot", and "null.theta.est.ci" in the \code{\link{all_null_theta}} function
+\item{boot.combi.null.theta}{A list of "null.theta",  null.theta.simus", "null.theta.simus.ci", "null.theta.ci", "null.theta.simus.est.ci",
+"null.theta.simus.est.ciboot", and "null.theta.est.ci", which are return values in the \code{\link{all_null_theta}} function
  for comparing bootstrap estimates ("beta”, "alphas”, "Ft” and "Ft.predicted”) among different studies.
  The label for simulation dimensions is "boot".}
 
-\item{betabootci.store}{zero array to store the bootstrap estimated functional parameter \eqn{\beta(t)} for comparing study differences.}
+\item{betabootci.store}{A zero array to store the bootstrap estimated functional parameters \eqn{\beta(t)} for comparing study differences.}
 
-\item{alphasbootci.store}{zero array to store the bootstrap estimated smooth functional parameter \eqn{\alpha(X, t)} for comparing study differences.}
+\item{alphasbootci.store}{A zero array to store the bootstrap estimated smooth functional parameters \eqn{\alpha(X, t)} for comparing study differences.}
 
-\item{Ftbootci.store}{zero array to store the bootstrap estimated marginal distribution \eqn{Ft_{es}(t|X, Z)} for comparing study differences.}
+\item{Ftbootci.store}{A zero array to store the bootstrap estimated marginal distributions \eqn{Ft_{es}(t|X, Z)} for comparing study differences.}
 
-\item{betadiff.store}{zero array to store the differences of the functional parameters \eqn{\beta(t)}
-between a pair of studies (cohort-predict, cohort-pharos, predict-pharos)  at each time point (\code{time_val}) for each clinical event per study.}
-
-\item{alphasdiff.store}{zero array to store the differences of the smooth functional parameters \eqn{\alpha(X, t)}
+\item{betadiff.store}{A zero array to store the differences of the functional parameters \eqn{\beta(t)}
 between a pair of studies (cohort-predict, cohort-pharos, predict-pharos) at each time point (\code{time_val}) for each clinical event per study.}
 
-\item{Ftdiff.store}{zero array to store the true values for the differences of the monotone marginal distribution \eqn{F_{es}(t|X,Z)}  between a pair of studies (cohort-predict, cohort-pharos, predict-pharos) at each time point (\code{time_val}) and different covariate values of X and Z for each clinical event per study.}
+\item{alphasdiff.store}{A zero array to store the differences of the smooth functional parameters \eqn{\alpha(X, t)}
+between a pair of studies (cohort-predict, cohort-pharos, predict-pharos) at each time point (\code{time_val}) for each clinical event per study.}
 
-\item{iters}{number of iterations for the while loop; the main part of the estimating procedure.}
+\item{Ftdiff.store}{A zero array to store the true values for the differences of the monotone marginal distribution \eqn{F_{es}(t|X,Z)}  between a pair of studies (cohort-predict, cohort-pharos, predict-pharos) at each time point (\code{time_val}) and different covariate values of \eqn{X} and \eqn{Z} for each clinical event per study.}
+
+\item{iters}{The number of iterations for while loops.}
 }
 \value{
 A list of
 
-\item{eflag}{See the argument in the \code{\link{jprat.wrapper}} function.}
-\item{iters}{See the argument in the \code{\link{jprat.wrapper}} function.}
-\item{count.store}{See the argument in the \code{\link{jprat.wrapper}} function.}
-\item{count.store.outside}{See the argument in the \code{\link{jprat.wrapper}} function.}
-\item{betaest.store}{array of values for the estimated \eqn{\beta(t)} (see the argument \code{betaest} in the
-      \code{\link{gamm4.estimates}} function and the argument \code{beta.var.boot} in  the \code{\link{boot.compare.studies}} function) at each iteration.
-       See the argument \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimensions of the array.}
-\item{alphasest.store}{array of values for the estimated smooth functional parameters \eqn{\alpha(X, t)}
-     (See the argument \code{alphasest} in the \code{\link{gamm4.estimates}} function and
-      the argument \code{alphas.var.boot} in the \code{\link{boot.compare.studies}} function) at each iteration.
-      See the argument \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimensions of the array.}
-\item{Ftest.store}{array of values for the estimated monotone marginal distributions \eqn{F_{es}(t|X, Z)}.
-                  (See the argument \code{Ftest} in the \code{\link{gamm4.estimates} function}
-                  and the argument \code{Ft.var.boot} in the  \code{\link{boot.compare.studies}} function) at each iteration.
-                  See the arugment \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} for the dimensions of the array.}
-\item{Ftest.predicted.store}{array of values for the predicted monotone marginal distributions
-                            \eqn{F_{es}(t|X, Z, t>t_{0})} beyond time \eqn{t_0}
-                            (See the argument \code{Ftest.predicted} in the \code{\link{gamm4.estimates}} function
-                            and the argument \code{Ft.predicted.var.boot} in the \code{\link{boot.compare.studies}} function) at each iteration.
-                            See the argument \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} for the dimensions of the array.}
-\item{betabootci.store}{array of the estimated functional parameters \eqn{\beta(t)}  for the study differences including their estimates (\code{betadiff.store}) and the bootstrap estimates (\code{betabootci} in the \code{\link{boot.compare.studies}} function) at each iteration.
-                        See the argument \code{null.theta.simus.est.ci} in the \code{\link{all_null_theta}}
+\item{eflag}{an integer number to check if any error comes up while estimation algorithm is processed. If this value is -1, then the marginal distribution \eqn{F_{es}(t|X, Z)} has missing values (NA).}
+\item{iters}{The number of iterations for while loops.}
+\item{count.store}{A data frame for the rate of event times for the uncensored, censored, uncensored but zero, and other cases,
+        which depend on the binary status of the events for each subject: "zero" (censored), "one" (uncensored), or "others" (missing).
+        The event times are counted at all time points (\code{time_val}) for all studies.}
+ \item{count.store.outside}{A data frame of the rate of event times for the uncensored and the censored,
+                                which depend on the binary status of the events for each subject outside [0,1]:
+                                 "zero" (censored), "one" (uncensored).  The event times are counted at all time points (\code{time_val})
+                                 for all studies.}
+\item{betaest.store}{An array of values for \eqn{\hat\beta(t)} at each iteration. (See the return value \code{betaest} in the
+      \code{\link{gamm4.estimates}} function and the return value \code{beta.var.boot} in  the \code{\link{boot.compare.studies}} function.)
+       See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimensions of this array.}
+\item{alphasest.store}{An array of values for the estimated smooth functional parameters \eqn{\alpha(X, t)}
+     (See the return value \code{alphasest} in the \code{\link{gamm4.estimates}} function and
+      the return value \code{alphas.var.boot} in the \code{\link{boot.compare.studies}} function) at each iteration.
+      See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimensions of this array.}
+\item{Ftest.store}{An array of values for the estimated monotone marginal distributions \eqn{F_{es}(t|X, Z)} at each iteration.
+                  (See the return value \code{Ftest} in the \code{\link{gamm4.estimates}} function
+                  and the return value \code{Ft.var.boot} in the  \code{\link{boot.compare.studies}} function.)
+                  See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} for the dimensions of this array.}
+\item{Ftest.predicted.store}{An array of values for the predicted monotone marginal distributions
+                            \eqn{F_{es}(t|X, Z, t>t_{0})} beyond time \eqn{t_0} at each iteration.
+                            (See the return value \code{Ftest.predicted} in the \code{\link{gamm4.estimates}} function
+                            and the return value \code{Ft.predicted.var.boot} in the \code{\link{boot.compare.studies}} function.)
+                            See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} for the dimensions of this array.}
+\item{betabootci.store}{An array of the estimated functional parameters \eqn{\beta(t)} for the study differences
+including their estimates (\code{betadiff.store}) and the bootstrap estimates at each iteration (See the return value \code{betabootci} in the \code{\link{boot.compare.studies}} function).
+                        See the return value \code{null.theta.simus.est.ci} in the \code{\link{all_null_theta}} function
                         for the dimension of this array.}
-\item{alphasbootci.store}{array of the estimated smooth functional parameters \eqn{\alpha(X, t)} for the study differences including their estimates (\code{alphasdiff.store}) and the bootstrap estimates (\code{alphasbootci} in the \code{\link{boot.compare.studies}} function) at each iteration.
-                      (See the argument \code{alphasbootci} in the \code{\link{boot.compare.studies}} function) at each iteration.
-                       and the argument \code{null.theta.simus.est.ci} in the \code{\link{all_null_theta}} function for the dimension of this array.}
-\item{Ftbootci.store}{array of the estimated monotone marginal distribution \eqn{F_{es}(t|X,Z)}
+\item{alphasbootci.store}{An array of the estimated smooth functional parameters \eqn{\alpha(X, t)} for the study differences including their estimates (\code{alphasdiff.store}) and the bootstrap estimates (see the return value \code{alphasbootci} in the \code{\link{boot.compare.studies}} function) at each iteration.
+                      See the return value \code{null.theta.simus.est.ci} in the \code{\link{all_null_theta}} function for the dimension of this array.}
+\item{Ftbootci.store}{An array of the estimated monotone marginal distribution \eqn{F_{es}(t|X,Z)}
                      for the study differences including their estimates (\code{Ftdiff.store})
-                     and the bootstrap estimates (\code{Ftbootci} in the \code{\link{boot.compare.studies}})
+                     and the bootstrap estimates (see return value \code{Ftbootci} in the \code{\link{boot.compare.studies}} function)
                      at each iteration. See \code{null.theta.simus.est.ci} in the \code{\link{all_null_theta}}
                      function for the dimension of this array.}
 }
 \description{
-jprat.main.estimates: alogrithm for JPRAT
+This function is a main JPRAT estimation algorithm to estimate parameters in an additive logistic mixed effect model and
+conduct a bootstrap estimation procedure to do a hypothesis testing, which assesses if functional terms between studies differ over a range of time points
+The parameters are estimated by maximizing double penalized quasi-likelihood (DPQL)
+and using the generalized approximate cross-validation for the smoothing parameters \eqn{\lambda}.
+This can be done using \code{\link[mgcv]{gamm4}} in \code{\link{mgcv}} package in R.
 }
