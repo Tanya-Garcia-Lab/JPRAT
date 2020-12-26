@@ -101,7 +101,7 @@ A list of
                       If this value is -1, then the marginal distribution \eqn{F_{es}(t|X, Z)} has missing values (NA).}
 }
 \description{
-This function is to call and run JPRAT algorithm.
+This function calls JPRAT algorithm and runs it.
 }
 \details{
 The Joint Progression of Risk Assessment Tool (JPRAT) evaluates and compares all outcomes simultaneously
@@ -122,7 +122,7 @@ The Joint Progression of Risk Assessment Tool (JPRAT) evaluates and compares all
 
 ## See more examples man/example.R
 
-## Choose one option whether study and event are analyzed separately:
+## Study and event are analyzed separately:
 what.analyzed.separately= "studyevent"
 
 ## Load your data in the list format:

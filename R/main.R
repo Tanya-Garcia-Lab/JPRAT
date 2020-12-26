@@ -1,11 +1,12 @@
-############################################################
-# Begin documentation
-############################################################
+#########################
+# Begin documentation  ##
+#########################
 ####################################
 ## main jprat estimation function ##
 ####################################
-#' @title Main Algorithm for JPRAT estimation
-#' @description This function is a main JPRAT estimation algorithm to estimate parameters in an additive logistic mixed effect model and
+#' @title Main Algorithm for JPRAT Estimation
+#'
+#' @description This function estimates and returns all parameters in an additive logistic mixed effect model and
 #' conduct a bootstrap estimation procedure to do a hypothesis testing, which assesses if functional terms between studies differ over a range of time points
 #' The parameters are estimated by maximizing double penalized quasi-likelihood (DPQL)
 #' and using the generalized approximate cross-validation for the smoothing parameters \eqn{\lambda}.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/jprat_function.R
 \name{all_null_theta}
 \alias{all_null_theta}
-\title{Initialization of parameters and coefficients}
+\title{Initialization of Parameters and Coefficients}
 \usage{
 all_null_theta(
   theta.names,
@@ -82,8 +82,9 @@ where each element of the list contains arrays of zeros. Seven dimensions for th
 the estimated bootstrap variances, the lower and upper bounds of bootstrap confidence intervals were added to the last dimensions of arrays in \code{null.theta.simus}.}
 }
 \description{
-This function is to initialize a list of all components to be estimated to zeros. The structure of each component is a multi-dimensional array, whose dimension size depends on the number of studies, the number of events,
-the number of covariates, and the length of time points where estimates will be evaluated, etc.
+This function constructs a list of all parameters and coefficients. The structure of each parameter or coefficient is a multi-dimensional array,
+whose dimension size depends on the number of studies, the number of events, the number of covariates and the length of time points,etc.
+This function also initializes all parameters and coefficients to zero arrays.
 }
 \details{
 A list of zero arrays will be created to store those estimates of \eqn{\beta_{es}(t)} (\eqn{\beta_0(t)}) ,  \eqn{\alpha(X, t)}, and \eqn{F_{es}(t)} in the time varying, proportional odds model.

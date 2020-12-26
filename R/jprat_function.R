@@ -140,7 +140,7 @@ all_null_theta <- function(theta.names,
 
 
 #' @title JPRAT algorithm
-#' @description This function is to call and run JPRAT algorithm.
+#' @description This function calls JPRAT algorithm and runs it.
 #'
 #' @aliases jprat.wrapper jprat.main.estimates  gamm4.estimates
 #'
@@ -220,7 +220,7 @@ all_null_theta <- function(theta.names,
 #'
 #' ## See more examples man/example.R
 #'
-#' ## Choose one option whether study and event are analyzed separately:
+#' ## Study and event are analyzed separately:
 #' what.analyzed.separately= "studyevent"
 #'
 #' ## Load your data in the list format:

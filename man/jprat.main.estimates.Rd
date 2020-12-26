@@ -4,7 +4,7 @@
 \alias{jprat.main.estimates}
 \alias{jprat.wrapper,}
 \alias{gamm4.estimates,}
-\title{Main Algorithm for JPRAT estimation}
+\title{Main Algorithm for JPRAT Estimation}
 \usage{
 jprat.main.estimates(
   method = "gamm4",
@@ -243,7 +243,7 @@ including their estimates (\code{betadiff.store}) and the bootstrap estimates at
                      function for the dimension of this array.}
 }
 \description{
-This function is a main JPRAT estimation algorithm to estimate parameters in an additive logistic mixed effect model and
+This function estimates and returns all parameters in an additive logistic mixed effect model and
 conduct a bootstrap estimation procedure to do a hypothesis testing, which assesses if functional terms between studies differ over a range of time points
 The parameters are estimated by maximizing double penalized quasi-likelihood (DPQL)
 and using the generalized approximate cross-validation for the smoothing parameters \eqn{\lambda}.
