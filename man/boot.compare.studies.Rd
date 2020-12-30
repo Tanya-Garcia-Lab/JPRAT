@@ -2,7 +2,7 @@
 % Please edit documentation in R/main.R
 \name{boot.compare.studies}
 \alias{boot.compare.studies}
-\title{boot.compare.studies: This function estimates the bootstrap estimates for study comparison.}
+\title{Bootstrap to compare studies}
 \usage{
 boot.compare.studies(
   arbitrary,
@@ -102,7 +102,7 @@ by the maximum number of the sample sizes across studies (\code{nmax}).}
 
 \item{real_data}{A logical value whether the real data will be used. The default option is TRUE.}
 
-\item{knot.length}{number of knots used to construct the basis functions.}
+\item{knot.length}{The number of knots used to construct the basis functions.}
 
 \item{family.data}{A logical value if the clusters are families, where each member in the cluster is different.}
 
@@ -149,12 +149,10 @@ If covariates Z does not follow a binomial distribution, then the default option
 \item{compute.study.differences}{A logical value whether study differences will be estimated: it is only valid when the number of studies (\code{number.of.studies}) are greater than 1,
 when parameters were estimated differently (\code{estimated.parameters.common.for.all.studies=FALSE}), and when estimates are similar across studies (\code{check.study.equality=TRUE}).}
 
-\item{est.values}{a list of arrays of the estimates ("est") for the functional coefficient \eqn{\beta(t)}
-(\code{betaest} in the \code{\link{gamm4.estimates}} function),
-the smooth functional coefficient \eqn{\alpha(X,t)} (\code{alphas} in the \code{\link{gamm4.estimates}} function),
-the monotone marginal distribution \eqn{F_{es}(t|X, Z)} (\code{Ft} in the \code{\link{gamm4.estimates}}) function
-and the predicted values of the monotonic marginal distribution \code{F_{es}(t|X, Z, t > t0)}
-(\code{Ft.predicted} in the \code{\link{gamm4.estimates}} function).}
+\item{est.values}{A list of arrays of the estimates ("est") for the functional coefficient \eqn{\beta(t)},
+the smooth functional coefficient \eqn{\alpha(X,t)},
+the monotone marginal distribution \eqn{F_{es}(t|X, Z)},
+and the predicted values of the monotonic marginal distribution \code{F_{es}(t|X, Z, t > t0)}.}
 
 \item{z.proportions}{The marginal probability of the nonfunctional coavariate \eqn{Z}. The default value is NULL.}
 }
@@ -199,10 +197,20 @@ A list of
                                 See the argument "count.store.outside" in the \code{\link{gamm4.estimates}} for details.}
 }
 \description{
-boot.compare.studies: This function estimates the bootstrap estimates for study comparison.
+This function uses the bootstrap-based joint confidence intervals to test if functional parameters between studies differ over a range of time points.
+It determines which model would be suitable for the JPRAT estimation.
 }
 \details{
-This function uses bootstrap-based joint confidence interval to determine which model
-         (joint model with distinct study parameters, shared study parameter model, separate study model)
-         is more suitable.
+This function estimates bootstrap-based joint confidence intervals to test if the functional terms between studies
+         differ over the study time, i.e.,
+         \eqn{H_0:\mu_{es}(t)=\mu_{es'}(t)} for all \eqn{t} vs. \eqn{H_A:\mu_{es}(t) \neq \mu_{es'}(t)} for at least one \eqn{t, s \ne s'}.
+         The \eqn{\mu_{es}(t)} can be
+         \itemize{
+         \item \eqn{F_{es}(t|X, Z)} for fixed covariate values \eqn{X, Z} to test if the marginal distribution for event \eqn{e} differs
+         between study \eqn{s} and \eqn{s'}.
+         \item \eqn{\beta_{es}(t)} to test if the effect associated with \eqn{Z_{eis}} for event \eqn{e} differs between study \eqn{s} and \eqn{s'}.
+         \item \eqn{\alpha_{esk}(X,t)} for a fixed \eqn{x} to test if the effect of \eqn{x} for event \eqn{e} differs between study \eqn{s} and \eqn{s'}.
+         }
+        For the estimated values for the functional coefficient \eqn{\beta(t)}, the smooth functional coefficient \eqn{\alpha(X,t)}, the monotone marginal distribution \eqn{F_{es}(t|X, Z)}
+        and the predicted values of the monotonic marginal distribution \eqn{F_{es}(t|X, Z, t > t0)}, see return values \code{betaest}, \code{alphas}, \code{Ft} and \code{Ft.predicted} in the \code{\link{gamm4.estimates}} function.
 }

@@ -517,21 +517,29 @@ gamm4.estimates <- function(arbitrary, num_study, np,
 ##################################
 ## bootstrap to compare studies ##
 ##################################
-#' boot.compare.studies: This function estimates the bootstrap estimates for study comparison.
-#'
+#' @title Bootstrap to compare studies
+#' @description This function uses the bootstrap-based joint confidence intervals to test if functional parameters between studies differ over a range of time points.
+#' It determines which model would be suitable for the JPRAT estimation.
 #' @inheritParams jprat.main.estimates
 #' @inheritParams all_null_theta
-#' @param knot.length number of knots used to construct the basis functions.
-#' @param est.values a list of arrays of the estimates ("est") for the functional coefficient \eqn{\beta(t)}
-#'        (\code{betaest} in the \code{\link{gamm4.estimates}} function),
-#'        the smooth functional coefficient \eqn{\alpha(X,t)} (\code{alphas} in the \code{\link{gamm4.estimates}} function),
-#'        the monotone marginal distribution \eqn{F_{es}(t|X, Z)} (\code{Ft} in the \code{\link{gamm4.estimates}}) function
-#'        and the predicted values of the monotonic marginal distribution \code{F_{es}(t|X, Z, t > t0)}
-#'        (\code{Ft.predicted} in the \code{\link{gamm4.estimates}} function).
+#' @param knot.length The number of knots used to construct the basis functions.
+#' @param est.values A list of arrays of the estimates ("est") for the functional coefficient \eqn{\beta(t)},
+#'        the smooth functional coefficient \eqn{\alpha(X,t)},
+#'        the monotone marginal distribution \eqn{F_{es}(t|X, Z)},
+#'        and the predicted values of the monotonic marginal distribution \code{F_{es}(t|X, Z, t > t0)}.
 #'
-#' @details This function uses bootstrap-based joint confidence interval to determine which model
-#'          (joint model with distinct study parameters, shared study parameter model, separate study model)
-#'          is more suitable.
+#' @details This function estimates bootstrap-based joint confidence intervals to test if the functional terms between studies
+#'          differ over the study time, i.e.,
+#'          \eqn{H_0:\mu_{es}(t)=\mu_{es'}(t)} for all \eqn{t} vs. \eqn{H_A:\mu_{es}(t) != \mu_{es'}(t)} for at least one \eqn{t, s != s'}.
+#'          The \eqn{\mu_{es}(t)} can be
+#'          \itemize{
+#'          \item \eqn{F_{es}(t|X, Z)} for fixed covariate values \eqn{X=x, Z=z} to test if the marginal distribution for event \eqn{e} differs
+#'          between study \eqn{s} and \eqn{s'}.
+#'          \item \eqn{\beta_{es}(t)} to test if the effect associated with \eqn{Z_{eis}} for event \eqn{e} differs between study \eqn{s} and \eqn{s'}.
+#'          \item \eqn{\alpha_{esk}(X,t)} for a fixed \eqn{x} to test if the effect of \eqn{x} for event \eqn{e} differs between study \eqn{s} and \eqn{s'}.
+#'          }
+#'         For the estimated values for the functional coefficient \eqn{\beta(t)}, the smooth functional coefficient \eqn{\alpha(X,t)}, the monotone marginal distribution \eqn{F_{es}(t|X, Z)}
+#'         and the predicted values of the monotonic marginal distribution \eqn{F_{es}(t|X, Z, t > t0)}, see return values \code{betaest}, \code{alphas}, \code{Ft} and \code{Ft.predicted} in the \code{\link{gamm4.estimates}} function.
 #'
 #' @return A list of
 #'
