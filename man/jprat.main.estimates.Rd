@@ -2,8 +2,8 @@
 % Please edit documentation in R/main.R
 \name{jprat.main.estimates}
 \alias{jprat.main.estimates}
-\alias{jprat.wrapper,}
-\alias{gamm4.estimates,}
+\alias{jprat.wrapper}
+\alias{gamm4.estimates}
 \title{Main Algorithm for JPRAT Estimation}
 \usage{
 jprat.main.estimates(
@@ -186,26 +186,27 @@ The default value is 100. See the argument \code{number.of.bootstraps} in the \c
  for comparing bootstrap estimates ("beta”, "alphas”, "Ft” and "Ft.predicted”) among different studies.
  The label for simulation dimensions is "boot".}
 
-\item{betabootci.store}{A zero array to store the bootstrap estimated functional parameters \eqn{\beta(t)} for comparing study differences.}
+\item{betabootci.store}{A multi-dimensional zero array to store the bootstrap estimated functional parameters \eqn{\beta(t)} for comparing study differences.}
 
-\item{alphasbootci.store}{A zero array to store the bootstrap estimated smooth functional parameters \eqn{\alpha(X, t)} for comparing study differences.}
+\item{alphasbootci.store}{A multi-dimensional zero array to store the bootstrap estimated smooth functional parameters \eqn{\alpha(X, t)} for comparing study differences.}
 
-\item{Ftbootci.store}{A zero array to store the bootstrap estimated marginal distributions \eqn{Ft_{es}(t|X, Z)} for comparing study differences.}
+\item{Ftbootci.store}{A multi-dimensional zero array to store the bootstrap estimated marginal distributions \eqn{Ft_{es}(t|X, Z)} for comparing study differences.}
 
-\item{betadiff.store}{A zero array to store the differences of the functional parameters \eqn{\beta(t)}
+\item{betadiff.store}{A multi-dimensional zero array to store the differences of the functional parameters \eqn{\beta(t)}
 between a pair of studies (cohort-predict, cohort-pharos, predict-pharos) at each time point (\code{time_val}) for each clinical event per study.}
 
-\item{alphasdiff.store}{A zero array to store the differences of the smooth functional parameters \eqn{\alpha(X, t)}
+\item{alphasdiff.store}{A multi-dimensional zero array to store the differences of the smooth functional parameters \eqn{\alpha(X, t)}
 between a pair of studies (cohort-predict, cohort-pharos, predict-pharos) at each time point (\code{time_val}) for each clinical event per study.}
 
-\item{Ftdiff.store}{A zero array to store the true values for the differences of the monotone marginal distribution \eqn{F_{es}(t|X,Z)}  between a pair of studies (cohort-predict, cohort-pharos, predict-pharos) at each time point (\code{time_val}) and different covariate values of \eqn{X} and \eqn{Z} for each clinical event per study.}
+\item{Ftdiff.store}{A multi-dimensional zero array to store the true values for the differences of the monotone marginal distribution \eqn{F_{es}(t|X,Z)}  between a pair of studies (cohort-predict, cohort-pharos, predict-pharos) at each time point (\code{time_val}) and different covariate values of \eqn{X} and \eqn{Z} for each clinical event per study.}
 
 \item{iters}{The number of iterations for while loops.}
 }
 \value{
 A list of
 
-\item{eflag}{an integer number to check if any error comes up while estimation algorithm is processed. If this value is -1, then the marginal distribution \eqn{F_{es}(t|X, Z)} has missing values (NA).}
+\item{eflag}{An integer number to check if any error comes up while the JPRAT algorithm is processed.
+      This value is 0 if there are no errors. If this value is -1, then the marginal distribution of \eqn{F_{es}(t|X, Z)} has missing values (NA).}
 \item{iters}{The number of iterations for while loops.}
 \item{count.store}{A data frame for the rate of event times for the uncensored, censored, uncensored but zero, and other cases,
         which depend on the binary status of the events for each subject: "zero" (censored), "one" (uncensored), or "others" (missing).
@@ -215,37 +216,41 @@ A list of
                                  "zero" (censored), "one" (uncensored).  The event times are counted at all time points (\code{time_val})
                                  for all studies.}
 \item{betaest.store}{An array of values for \eqn{\hat\beta(t)} at each iteration. (See the return value \code{betaest} in the
-      \code{\link{gamm4.estimates}} function and the return value \code{beta.var.boot} in  the \code{\link{boot.compare.studies}} function.)
-       See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimensions of this array.}
+      \code{\link{gamm4.estimates}} function and the return value \code{beta.var.boot} in  the \code{\link{boot.compare.studies}} function.)}
 \item{alphasest.store}{An array of values for the estimated smooth functional parameters \eqn{\alpha(X, t)}
      (See the return value \code{alphasest} in the \code{\link{gamm4.estimates}} function and
       the return value \code{alphas.var.boot} in the \code{\link{boot.compare.studies}} function) at each iteration.
-      See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimensions of this array.}
+      }
 \item{Ftest.store}{An array of values for the estimated monotone marginal distributions \eqn{F_{es}(t|X, Z)} at each iteration.
                   (See the return value \code{Ftest} in the \code{\link{gamm4.estimates}} function
-                  and the return value \code{Ft.var.boot} in the  \code{\link{boot.compare.studies}} function.)
-                  See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} for the dimensions of this array.}
+                  and the return value \code{Ft.var.boot} in the  \code{\link{boot.compare.studies}} function.)}
 \item{Ftest.predicted.store}{An array of values for the predicted monotone marginal distributions
                             \eqn{F_{es}(t|X, Z, t>t_{0})} beyond time \eqn{t_0} at each iteration.
                             (See the return value \code{Ftest.predicted} in the \code{\link{gamm4.estimates}} function
-                            and the return value \code{Ft.predicted.var.boot} in the \code{\link{boot.compare.studies}} function.)
-                            See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} for the dimensions of this array.}
+                            and the return value \code{Ft.predicted.var.boot} in the \code{\link{boot.compare.studies}} function.)}
+
 \item{betabootci.store}{An array of the estimated functional parameters \eqn{\beta(t)} for the study differences
-including their estimates (\code{betadiff.store}) and the bootstrap estimates at each iteration (See the return value \code{betabootci} in the \code{\link{boot.compare.studies}} function).
-                        See the return value \code{null.theta.simus.est.ci} in the \code{\link{all_null_theta}} function
-                        for the dimension of this array.}
-\item{alphasbootci.store}{An array of the estimated smooth functional parameters \eqn{\alpha(X, t)} for the study differences including their estimates (\code{alphasdiff.store}) and the bootstrap estimates (see the return value \code{alphasbootci} in the \code{\link{boot.compare.studies}} function) at each iteration.
-                      See the return value \code{null.theta.simus.est.ci} in the \code{\link{all_null_theta}} function for the dimension of this array.}
+including their estimates (\code{betadiff.store}) and the bootstrap estimates at each iteration (See the return value \code{betabootci}
+in the \code{\link{boot.compare.studies}} function).}
+\item{alphasbootci.store}{An array of the estimated smooth functional parameters \eqn{\alpha(X, t)} for the study differences
+                       including their estimates (\code{alphasdiff.store}) and the bootstrap estimates (see the return value \code{alphasbootci}
+                       in the \code{\link{boot.compare.studies}} function) at each iteration.}
 \item{Ftbootci.store}{An array of the estimated monotone marginal distribution \eqn{F_{es}(t|X,Z)}
                      for the study differences including their estimates (\code{Ftdiff.store})
                      and the bootstrap estimates (see return value \code{Ftbootci} in the \code{\link{boot.compare.studies}} function)
-                     at each iteration. See \code{null.theta.simus.est.ci} in the \code{\link{all_null_theta}}
-                     function for the dimension of this array.}
+                     at each iteration. }
 }
 \description{
-This function estimates and returns all parameters in an additive logistic mixed effect model and
-conduct a bootstrap estimation procedure to do a hypothesis testing, which assesses if functional terms between studies differ over a range of time points
-The parameters are estimated by maximizing double penalized quasi-likelihood (DPQL)
-and using the generalized approximate cross-validation for the smoothing parameters \eqn{\lambda}.
+This function returns the estimated JPRAT parameters in an additive logistic mixed effect model.
+This function also returns a bootstrap estimation procedure to do a hypothesis testing,
+which assesses if functional terms between studies differ over a range of time points.
+It uses the maximizing double penalized quasi-likelihood (DPQL) to estimate the JPRAT parameters and coefficients
+and the generalized approximate cross-validation for the smoothing parameters \eqn{\lambda}.
 This can be done using \code{\link[mgcv]{gamm4}} in \code{\link{mgcv}} package in R.
+}
+\details{
+For the structure of the arrays of \code{betabootci.store}, \code{alphasbootci.store} and \code{Ftbootci.store}, see the return value of \code{null.theta.simus.est.ci}
+          in the \code{\link{all_null_theta}} function.
+         For the structure of the arrays of \code{betaest.store}, \code{alphasest.store},\code{Ftest.store}, and \code{Ftest.predicted.store},
+         see the return value of \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function.
 }

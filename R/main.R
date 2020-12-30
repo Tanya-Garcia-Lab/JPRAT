@@ -6,12 +6,13 @@
 ####################################
 #' @title Main Algorithm for JPRAT Estimation
 #'
-#' @description This function estimates and returns all parameters in an additive logistic mixed effect model and
-#' conduct a bootstrap estimation procedure to do a hypothesis testing, which assesses if functional terms between studies differ over a range of time points
-#' The parameters are estimated by maximizing double penalized quasi-likelihood (DPQL)
-#' and using the generalized approximate cross-validation for the smoothing parameters \eqn{\lambda}.
+#' @description This function returns the estimated JPRAT parameters in an additive logistic mixed effect model.
+#' This function also returns a bootstrap estimation procedure to do a hypothesis testing,
+#' which assesses if functional terms between studies differ over a range of time points.
+#' It uses the maximizing double penalized quasi-likelihood (DPQL) to estimate the JPRAT parameters and coefficients
+#' and the generalized approximate cross-validation for the smoothing parameters \eqn{\lambda}.
 #' This can be done using \code{\link[mgcv]{gamm4}} in \code{\link{mgcv}} package in R.
-#' @aliases jprat.wrapper, gamm4.estimates, jprat.main.estimates
+#' @aliases jprat.wrapper gamm4.estimates jprat.main.estimates
 #'
 #' @param method A character value for which estimation procedure will be used to estimate all parameters of the additive logistic mixed effects model: "gamm4" or "new".
 #' The default option is "gamm4".
@@ -82,21 +83,22 @@
 #'                              "null.theta.simus.est.ciboot", and "null.theta.est.ci", which are return values in the \code{\link{all_null_theta}} function
 #'                               for comparing bootstrap estimates ("beta”, "alphas”, "Ft” and "Ft.predicted”) among different studies.
 #'                               The label for simulation dimensions is "boot".
-#' @param betabootci.store A zero array to store the bootstrap estimated functional parameters \eqn{\beta(t)} for comparing study differences.
-#' @param alphasbootci.store A zero array to store the bootstrap estimated smooth functional parameters \eqn{\alpha(X, t)} for comparing study differences.
-#' @param Ftbootci.store A zero array to store the bootstrap estimated marginal distributions \eqn{Ft_{es}(t|X, Z)} for comparing study differences.
-#' @param betadiff.store A zero array to store the differences of the functional parameters \eqn{\beta(t)}
+#' @param betabootci.store A multi-dimensional zero array to store the bootstrap estimated functional parameters \eqn{\beta(t)} for comparing study differences.
+#' @param alphasbootci.store A multi-dimensional zero array to store the bootstrap estimated smooth functional parameters \eqn{\alpha(X, t)} for comparing study differences.
+#' @param Ftbootci.store A multi-dimensional zero array to store the bootstrap estimated marginal distributions \eqn{Ft_{es}(t|X, Z)} for comparing study differences.
+#' @param betadiff.store A multi-dimensional zero array to store the differences of the functional parameters \eqn{\beta(t)}
 #'                       between a pair of studies (cohort-predict, cohort-pharos, predict-pharos) at each time point (\code{time_val}) for each clinical event per study.
-#' @param alphasdiff.store A zero array to store the differences of the smooth functional parameters \eqn{\alpha(X, t)}
+#' @param alphasdiff.store A multi-dimensional zero array to store the differences of the smooth functional parameters \eqn{\alpha(X, t)}
 #'                         between a pair of studies (cohort-predict, cohort-pharos, predict-pharos) at each time point (\code{time_val}) for each clinical event per study.
-#' @param Ftdiff.store A zero array to store the true values for the differences of the monotone marginal distribution \eqn{F_{es}(t|X,Z)}  between a pair of studies (cohort-predict, cohort-pharos, predict-pharos) at each time point (\code{time_val}) and different covariate values of \eqn{X} and \eqn{Z} for each clinical event per study.
+#' @param Ftdiff.store A multi-dimensional zero array to store the true values for the differences of the monotone marginal distribution \eqn{F_{es}(t|X,Z)}  between a pair of studies (cohort-predict, cohort-pharos, predict-pharos) at each time point (\code{time_val}) and different covariate values of \eqn{X} and \eqn{Z} for each clinical event per study.
 #' @param iters The number of iterations for while loops.
 #'
 #'
 #'
 #' @return A list of
 #'
-#' \item{eflag}{an integer number to check if any error comes up while estimation algorithm is processed. If this value is -1, then the marginal distribution \eqn{F_{es}(t|X, Z)} has missing values (NA).}
+#' \item{eflag}{An integer number to check if any error comes up while the JPRAT algorithm is processed.
+#'       This value is 0 if there are no errors. If this value is -1, then the marginal distribution of \eqn{F_{es}(t|X, Z)} has missing values (NA).}
 #' \item{iters}{The number of iterations for while loops.}
 #' \item{count.store}{A data frame for the rate of event times for the uncensored, censored, uncensored but zero, and other cases,
 #'         which depend on the binary status of the events for each subject: "zero" (censored), "one" (uncensored), or "others" (missing).
@@ -106,32 +108,33 @@
 #'                                  "zero" (censored), "one" (uncensored).  The event times are counted at all time points (\code{time_val})
 #'                                  for all studies.}
 #' \item{betaest.store}{An array of values for \eqn{\hat\beta(t)} at each iteration. (See the return value \code{betaest} in the
-#'       \code{\link{gamm4.estimates}} function and the return value \code{beta.var.boot} in  the \code{\link{boot.compare.studies}} function.)
-#'        See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimensions of this array.}
+#'       \code{\link{gamm4.estimates}} function and the return value \code{beta.var.boot} in  the \code{\link{boot.compare.studies}} function.)}
 #' \item{alphasest.store}{An array of values for the estimated smooth functional parameters \eqn{\alpha(X, t)}
 #'      (See the return value \code{alphasest} in the \code{\link{gamm4.estimates}} function and
 #'       the return value \code{alphas.var.boot} in the \code{\link{boot.compare.studies}} function) at each iteration.
-#'       See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimensions of this array.}
+#'       }
 #' \item{Ftest.store}{An array of values for the estimated monotone marginal distributions \eqn{F_{es}(t|X, Z)} at each iteration.
 #'                   (See the return value \code{Ftest} in the \code{\link{gamm4.estimates}} function
-#'                   and the return value \code{Ft.var.boot} in the  \code{\link{boot.compare.studies}} function.)
-#'                   See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} for the dimensions of this array.}
+#'                   and the return value \code{Ft.var.boot} in the  \code{\link{boot.compare.studies}} function.)}
 #' \item{Ftest.predicted.store}{An array of values for the predicted monotone marginal distributions
 #'                             \eqn{F_{es}(t|X, Z, t>t_{0})} beyond time \eqn{t_0} at each iteration.
 #'                             (See the return value \code{Ftest.predicted} in the \code{\link{gamm4.estimates}} function
-#'                             and the return value \code{Ft.predicted.var.boot} in the \code{\link{boot.compare.studies}} function.)
-#'                             See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} for the dimensions of this array.}
+#'                             and the return value \code{Ft.predicted.var.boot} in the \code{\link{boot.compare.studies}} function.)}
+#'
 #' \item{betabootci.store}{An array of the estimated functional parameters \eqn{\beta(t)} for the study differences
-#' including their estimates (\code{betadiff.store}) and the bootstrap estimates at each iteration (See the return value \code{betabootci} in the \code{\link{boot.compare.studies}} function).
-#'                         See the return value \code{null.theta.simus.est.ci} in the \code{\link{all_null_theta}} function
-#'                         for the dimension of this array.}
-#' \item{alphasbootci.store}{An array of the estimated smooth functional parameters \eqn{\alpha(X, t)} for the study differences including their estimates (\code{alphasdiff.store}) and the bootstrap estimates (see the return value \code{alphasbootci} in the \code{\link{boot.compare.studies}} function) at each iteration.
-#'                       See the return value \code{null.theta.simus.est.ci} in the \code{\link{all_null_theta}} function for the dimension of this array.}
+#' including their estimates (\code{betadiff.store}) and the bootstrap estimates at each iteration (See the return value \code{betabootci}
+#' in the \code{\link{boot.compare.studies}} function).}
+#' \item{alphasbootci.store}{An array of the estimated smooth functional parameters \eqn{\alpha(X, t)} for the study differences
+#'                        including their estimates (\code{alphasdiff.store}) and the bootstrap estimates (see the return value \code{alphasbootci}
+#'                        in the \code{\link{boot.compare.studies}} function) at each iteration.}
 #' \item{Ftbootci.store}{An array of the estimated monotone marginal distribution \eqn{F_{es}(t|X,Z)}
 #'                      for the study differences including their estimates (\code{Ftdiff.store})
 #'                      and the bootstrap estimates (see return value \code{Ftbootci} in the \code{\link{boot.compare.studies}} function)
-#'                      at each iteration. See \code{null.theta.simus.est.ci} in the \code{\link{all_null_theta}}
-#'                      function for the dimension of this array.}
+#'                      at each iteration. }
+#' @details For the structure of the arrays of \code{betabootci.store}, \code{alphasbootci.store} and \code{Ftbootci.store}, see the return value of \code{null.theta.simus.est.ci}
+#'           in the \code{\link{all_null_theta}} function.
+#'          For the structure of the arrays of \code{betaest.store}, \code{alphasest.store},\code{Ftest.store}, and \code{Ftest.predicted.store},
+#'          see the return value of \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function.
 #' @import abind
 #' @import gamm4
 #'
@@ -380,40 +383,39 @@ jprat.main.estimates<-function(method="gamm4",
 
 
 
-#####################################
-## function to get gamm4 estimates ##
-#####################################
-#' gamm4.estimates: used to get ``gamm4" estimate
-#'
+#############################################################################################################
+## function to get gamm4 estimates ##: (JPRAT estimation using the generalized additive mixed model(GAMM)) ##
+#############################################################################################################
+#' @title Obtain gamm4 Estimates
+#' @description This function returns the estimated jack-knife pseudo-values using the Kaplan-Meier estimator
+#' and returns the estimated JPRAT parameters using the generalized additive mixed model (\code{\link{gamm4}}) in \code{\link{mgcv}}.
 #' @inheritParams jprat.main.estimates
 #' @inheritParams all_null_theta
+#
 #'
-#' @details The estimates depend on whether analysis will be performed separately or jointly. See the argument \code{analyze.separately}
-#'          \code{\link{jprat.main.estimates}}.
+#' @return A list of
 #'
-#'
-#'@return A list of
-#'
-#'\item{betaest}{the array of estimates for the functional coefficient \eqn{\beta(t)} (beta0, beta1)
-#'                with its estimates (est), estimated variances (varest), estimated lower bounds (varlo) and upper bounds (varhi)  of confidence intervals at each time point for the event of interest per study, where the dimensions of the array are the number of studies (num\_study), the number of clinical events per study (np), the length of the vector of time points(num\_time), the length of parameter label (param.label) and the length of the name for the values (val="est", "varest", "varlo", "varhi").
-#'                See the argument \code{null.theta.est.ci} in \code{\link{all_null_theta}} for the structure of array.}
-#'\item{alphasest}{the array of estimates for the smooth functional coefficient \eqn{\alpha(X,t)} (alphas)
-#'                  with its estimates (est), estimated variances (varest), estimated lower bounds (varlo)
-#'                  and upper bounds (varhi) of confidence intervals at specific value of x and each time point
-#'                  for the event of interest per study, where the dimensions of the array are the number of studies (\code{num_study}),
-#'                  the number of clinical events per study (np), the length of the functional covariate values of X (\code{num_xx}),
-#'                  the length of the vector of time points(\code{num_time}) and the length of smooth functional parameters \eqn{\alpha(X,t)} (la)
-#'                  and the length of the name for the values (val="est", "varest", "varlo", "varhi").
-#'                  See the argument \code{null.theta.est.ci} in the \code{\link{all_null_theta}} function for the structure of array.}
-#'\item{count.store}{See this argument in the \code{\link{jprat.wrapper}} function.}
-#'\item{count.store.outside}{See this argument in the \code{\link{jprat.wrapper}} function.}
-#'\item{Ftest}{array of estimates for the monotone marginal distribution \eqn{F_{es}(t|X, Z)} (Ft) with its estimates (est),
-#'             estimated variances (varest), estimated lower bounds (varlo) and upper bounds (varhi) of confidence intervals at specific value of covariates Z and X,
-#'             and at each time point for the event of interest per study, where the dimensions of the array are the number of studies (\code{num_study}),
-#'             the number of clinical events per study (\code{np}), the length of nonfunctional covariate values Z (\code{z.choice}),
-#'             the length of functional covariate values X (\code{num_xx}) and
-#'             the length of the name for the values (val="est", "varest", "varlo", "varhi").
-#'             See the argument \code{null.theta.est.ci} in the \code{\link{all_null_theta}} function for the structure of array.}
+#'\item{betaest}{A multi-dimensional array of the estimated functional coefficient \eqn{\beta(t)} (est), its estimated variance(Varest), estimated lower bounds(varlo) and upper bounds(varhi) of
+#'                the confidence intervals at each time point for the event of interest per study.
+#'               The dimensions of the array are the number of studies, the number of clinical events per study (np),
+#'            the length of the vector of time points, the length of parameter label (i.e., beta0, beta1)
+#'                and the length of the character vectors of estimates such as c("est", "varest", "varlo", "varhi").}
+#'\item{alphasest}{A multi-dimensional array of the estimated smooth functional coefficient \eqn{\alpha(X,t)}
+#'                (est), its estimated variances (varest), estimated lower bounds (varlo)
+#'                and upper bounds (varhi) of the confidence intervals at specific value of x and each time point
+#'                for the event of interest per study.
+#'                The dimensions of the array are the number of studies,
+#'                the number of clinical events per study, the length of the functional covariate values of X,
+#'                the length of the vector of time points, the length of smooth functional parameters \eqn{\alpha(X,t)} (la)
+#'                and the length of the character vectors of estimates such as c("est", "varest", "varlo", "varhi").}
+#'\item{count.store}{See the return value of the \code{\link{jprat.main.estimates}} function.}
+#'\item{count.store.outside}{See this return value of the \code{\link{jprat.main.estimates}} function.}
+#'\item{Ftest}{A multi-dimensional array of the estimated monotone marginal distribution \eqn{F_{es}(t|X, Z)} (Ft) (est),
+#'             estimated variances (varest), estimated lower bounds (varlo) and upper bounds (varhi) of the confidence intervals
+#'             at the specific values of covariates Z and X and at each time point for the event of interest per study.
+#'             The dimensions of the array are the number of studies, the number of clinical events per study, the length of nonfunctional covariate values Z,
+#'             the length of functional covariate values X and
+#'             the length of the character vectors of estimates such as c("est", "varest", "varlo", "varhi").}
 #'\item{Ftest.predicted}{array of the predicted values for the monotonic marginal distribution \eqn{F_{es}(t|X, Z, t>t_0)} (Ft)
 #'                       beyond time \eqn{t_0} at each time point for each event of interest per study,
 #'                       where the dimensions of the array are the number of studies (\code{num_study}),
@@ -424,17 +426,17 @@ jprat.main.estimates<-function(method="gamm4",
 #'                       \code{time_choice.predicted}), the choice of time points for prediction
 #'                       (\code{time_choice.predicted}), and the length of the name for the values (val="est", "varest", "varlo", "varhi").
 #'                      See the argument \code{null.theta.est.ci} in the \code{\link{all_null_theta}} function for the structure of array.
-#'                      If there exists some time points for the prediction (\code{time_choice.predicted}), this value exists.
-#'                      See the argument \code{null.theta.est.ci} in the \code{\link{all_null_theta}} function for the structure of array.}
+#'                      If there exists some time points for the prediction (\code{time_choice.predicted}), this value exists.}
+#' \item{eflag}{an integer number to check if any error comes up while gamm4 estimation is processed. This value is 0 if there are no errors.}
 #'
-#'\item{eflag}{See this argument in the \code{\link{jprat.wrapper}} function.
-#'            If this value is -1, then the marginal distribution \code{F_{es}(t|X, Z)} has missing values (NA).}
+#' @details The estimates depend on whether analysis will be performed separately or jointly. See the argument \code{analyze.separately}
+#'          \code{\link{jprat.main.estimates}}.  For the structure of the return values (betaest, alphaest, Ftest, and Ftest.predicted), see the return value \code{null.theta.est.ci}
+#'          in the \code{\link{all_null_theta}} function.
+#'
+#' @seealso jprat.main.estimates, all_null_theta
 #'
 #' @import gamm4
 #' @export
-#'
-#'
-## @examples
 #'
 gamm4.estimates <- function(arbitrary, num_study, np,
                             count.store,
