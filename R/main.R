@@ -383,10 +383,7 @@ jprat.main.estimates<-function(method="gamm4",
 
 
 
-#############################################################################################################
-## function to get gamm4 estimates ##: (JPRAT estimation using the generalized additive mixed model(GAMM)) ##
-#############################################################################################################
-#' @title Obtain gamm4 Estimates
+#' @title gamm4 Estimation
 #' @description This function returns the estimated jack-knife pseudo-values using the Kaplan-Meier estimator
 #' and returns the estimated JPRAT parameters using the generalized additive mixed model (\code{\link{gamm4}}) in \code{\link{mgcv}}.
 #' @inheritParams jprat.main.estimates
@@ -416,18 +413,17 @@ jprat.main.estimates<-function(method="gamm4",
 #'             The dimensions of the array are the number of studies, the number of clinical events per study, the length of nonfunctional covariate values Z,
 #'             the length of functional covariate values X and
 #'             the length of the character vectors of estimates such as c("est", "varest", "varlo", "varhi").}
-#'\item{Ftest.predicted}{array of the predicted values for the monotonic marginal distribution \eqn{F_{es}(t|X, Z, t>t_0)} (Ft)
-#'                       beyond time \eqn{t_0} at each time point for each event of interest per study,
-#'                       where the dimensions of the array are the number of studies (\code{num_study}),
-#'                       the number of clinical events per study (\code{np}),
-#'                       the length of nonfunctional covariate values Z (\code{z.choice}),
-#'                       the length of functional covariate values X (\code{num_xx}),
-#'                       the predicted time points (\code{time_choice.predicted.toadd} is added to
-#'                       \code{time_choice.predicted}), the choice of time points for prediction
-#'                       (\code{time_choice.predicted}), and the length of the name for the values (val="est", "varest", "varlo", "varhi").
-#'                      See the argument \code{null.theta.est.ci} in the \code{\link{all_null_theta}} function for the structure of array.
-#'                      If there exists some time points for the prediction (\code{time_choice.predicted}), this value exists.}
-#' \item{eflag}{an integer number to check if any error comes up while gamm4 estimation is processed. This value is 0 if there are no errors.}
+#'\item{Ftest.predicted}{A multi-dimensional array of the predicted values for the monotonic marginal distribution \eqn{F_{es}(t|X, Z, t>t_0)} (Ft)
+#'                       beyond time \eqn{t_0} at each time point for each event of interest per study.
+#'                       The dimensions of the array are the number of studies (\code{num_study}),
+#'                       the number of clinical events per study,
+#'                       the length of nonfunctional covariate values Z,
+#'                       the length of functional covariate values X,
+#'                       the predicted time points (\code{time_choice.predicted.toadd}), the choice of time points for prediction
+#'                       (\code{time_choice.predicted}), and the length of the name for the estimates (val="est", "varest", "varlo", "varhi").
+#'                      This array exists if there exists some time points for the prediction (\code{time_choice.predicted}).}
+#'
+#' \item{eflag}{an integer number to check errors while gamm4 estimation is processed. This value is 0 if there are no errors.}
 #'
 #' @details The estimates depend on whether analysis will be performed separately or jointly. See the argument \code{analyze.separately}
 #'          \code{\link{jprat.main.estimates}}.  For the structure of the return values (betaest, alphaest, Ftest, and Ftest.predicted), see the return value \code{null.theta.est.ci}
@@ -514,10 +510,8 @@ gamm4.estimates <- function(arbitrary, num_study, np,
 
 
 
-##################################
-## bootstrap to compare studies ##
-##################################
-#' @title Bootstrap to compare studies
+
+#' @title Bootstrap-based testing procedure
 #' @description This function uses the bootstrap-based joint confidence intervals to test if functional parameters between studies differ over a range of time points.
 #' It determines which model would be suitable for the JPRAT estimation.
 #' @inheritParams jprat.main.estimates
@@ -584,7 +578,6 @@ gamm4.estimates <- function(arbitrary, num_study, np,
 #'
 #' @export
 #'
-## @examples
 #'
 boot.compare.studies <- function(arbitrary, ## False
                                  combi.study,
