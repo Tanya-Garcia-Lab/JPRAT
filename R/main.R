@@ -935,11 +935,8 @@ boot.compare.studies <- function(arbitrary,
 # To get results                  ##
 ####################################
 
-####################################################
-## plot of function(a,b) over b at different a    ##
-##   add in number at risk using ggplot           ##
-####################################################
-#' ggplot_at_a_over_b: This function creates ggplots for the estimated functions f(a, b) over b.
+#' @title ggplots
+#' @description  This function creates ggplots for the estimated functions f(a, b) over b at different values of a, which includes the table for the number at risk under the ggplots.
 #'
 #' @param filename a character string for ggplots' file name starting with "gg". Use paste("gg_", filename.set, sep="").
 #'                 The "filename.set" is a character string value for a file name.
