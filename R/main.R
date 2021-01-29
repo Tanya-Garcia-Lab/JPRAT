@@ -422,7 +422,6 @@ jprat.main.estimates<-function(method="gamm4",
 #'                       the predicted time points (\code{time_choice.predicted.toadd}), the choice of time points for prediction
 #'                       (\code{time_choice.predicted}), and the length of the name for the estimates (val="est", "varest", "varlo", "varhi").
 #'                      This array exists if there exists some time points for the prediction (\code{time_choice.predicted}).}
-#'
 #' \item{eflag}{an integer number to check errors while gamm4 estimation is processed. This value is 0 if there are no errors.}
 #'
 #' @details The estimates depend on whether analysis will be performed separately or jointly. See the argument \code{analyze.separately}
@@ -537,35 +536,34 @@ gamm4.estimates <- function(arbitrary, num_study, np,
 #'
 #' @return A list of
 #'
-#' \item{betabootci}{array of the differences of estimated bootstrap functional parameters \eqn{\beta(t)}
+#' \item{betabootci}{A multi-dimensional array for the differences of estimated bootstrap functional parameters \eqn{\beta(t)}
 #'                   between a pair of studies at each time point for each clinical event,
-#'                   which includes values of the estimated bootstrap variances,
-#'                   the lower bound of the bootsrap confidence interval,
-#'                   and the upper bound of confidence intervals for \eqn{\beta(t)}.
-#'                   For the dimension, see the argument \code{null.theta.ci} in the \code{[\link{all_null_theta}}.}
-#' \item{alphasbootci}{array of the differences of estimated bootstrap smooth functional parameters \eqn{\alpha(X, t)}
+#'                   which includes the estimated bootstrap variances,
+#'                   the lower and upper bounds of the bootstrap confidence intervals for \eqn{\beta(t)}.
+#'                   See \code{null.theta.ci} in the \code{[\link{all_null_theta}]} for the dimension of this array.}
+#' \item{alphasbootci}{A multi-dimensional array for the differences of estimated bootstrap smooth functional parameters \eqn{\alpha(X, t)}
 #'                     between a pair of studies at each time point and the functional covariate value X for each clinical event.
-#'                     For the dimension, see the argument \code{null.theta.ci} in the \code{\link{all_null_theta}}.}
-#' \item{Ftbootci}{array of the differences of estimated bootstrap marginal distribution \eqn{Ft_{es}(t|X, Z)}
+#'                     See \code{null.theta.ci} in the \code{[\link{all_null_theta}]} for the dimension of this array.}
+#' \item{Ftbootci}{A multi-dimensional array for the differences of estimated bootstrap marginal distribution \eqn{Ft_{es}(t|X, Z)}
 #'                 between a pair of studies at each time point, each functional covariate value X and
-#'                 each nonfunctional  covariate value Z for each clinical event.
-#'                 For the dimension, see the argument \code{null.theta.ci} in the\code{\link{all_null_theta}}.}
-#' \item{beta.var.boot}{array of the estimated bootstrap functional parameters \eqn{\beta(t)} at each time point
+#'                 each nonfunctional covariate value Z for each clinical event.
+#'                 See \code{null.theta.ci} in the \code{[\link{all_null_theta}]} for the dimension of this array.}
+#' \item{beta.var.boot}{A multi-dimensional array for the estimated bootstrap functional parameters \eqn{\beta(t)} at each time point
 #'                      and each clinical event per study, which includes values of the estimated bootstrap variances,
-#'                      the lower bound of the bootsrap confidence interval, and the upper bound of confidence intervals for \eqn{\beta(t)}.
-#'                      For the dimension, see the argument \code{null.theta.ci} in the \code{\link{all_null_theta}}.}
-#' \item{alphas.var.boot}{array of the estimated bootstrap smooth functional parameters \eqn{\alpha(X, t)} at each time point
+#'                      the lower and the upper bounds of confidence intervals for \eqn{\beta(t)}.
+#'                      See \code{null.theta.ci} in the \code{[\link{all_null_theta}]} for the dimension of this array.}
+#' \item{alphas.var.boot}{A multi-dimensional array for the estimated bootstrap smooth functional parameters \eqn{\alpha(X, t)} at each time point
 #'                        and each functional covariate value X for each clinical event per study.
-#'                        For the dimension, see the argument \code{null.theta.ci} in the \code{\link{all_null_theta}}.}
-#' \item{Ft.var.boot}{array of the estimated bootstrap marginal distribution \eqn{Ft_{es}(t|X, Z)}
+#'                        See \code{null.theta.ci} in the \code{[\link{all_null_theta}]} for the dimension of this array.}
+#' \item{Ft.var.boot}{A multi-dimensional array for the estimated bootstrap marginal distribution \eqn{Ft_{es}(t|X, Z)}
 #'                    at each time point, each functional covariate value X
 #'                    and each nonfunctional covariate value Z for each clinical event per study.
-#'                    For the dimension, see the argument \code{null.theta.ci} in the \code{\link{all_null_theta}}.}
-#' \item{Ft.predicted.var.boot}{array of the estimated predcited bootstrap marginal distribution \eqn{Ft_{es}(t|X, Z, t>t_{0})}
+#'                    See \code{null.theta.ci} in the \code{[\link{all_null_theta}]} for the dimension of this array.}
+#' \item{Ft.predicted.var.boot}{A multi-dimensional array for the estimated predcited bootstrap marginal distribution \eqn{Ft_{es}(t|X, Z, t>t_{0})}
 #'                             at each time \eqn{t},
 #'                             each functional covariate value X and each nonfunctional covariate value Z for each clinical event per study
 #'                             given that a subject does not experience each event by \eqn{t_0}.
-#'                             For the dimension, see the argument \code{null.theta.ci} in the \code{\link{all_null_theta}}.}
+#'                             See \code{null.theta.ci} in the \code{[\link{all_null_theta}]} for the dimension of this array.}
 #' \item{count.store.boot}{a data frame for the bootstrap rate of event times for uncensored, censored, uncensored but zero, and other cases,
 #'                         which depends on the binary status of the event for each subject: "zero" (censored), "one" (uncensored), or "others" (missing).
 #'                         See "count.store" in the \code{\link{gamm4.estimates}} for details.}
@@ -579,46 +577,46 @@ gamm4.estimates <- function(arbitrary, num_study, np,
 #' @export
 #'
 #'
-boot.compare.studies <- function(arbitrary, ## False
+boot.compare.studies <- function(arbitrary,
                                  combi.study,
                                  combi.choice,
-                                 combi.names, ###"cohort"-"predict", cohort-pharos, predict-pharos
+                                 combi.names,
                                  num_study,
-                                 boot, # num. of  boostrap
+                                 boot,
                                  np,
-                                 data,  ##ynew data set for each subject for three studies
-                                 num_xx, ## 18
-                                 num_time, ## 13
+                                 data,
+                                 num_xx,
+                                 num_time,
                                  time_val,
-                                 time_choice.predicted, ## null
-                                 time_choice.predicted.toadd, ## null
-                                 xks,  ## x axis- time points?
+                                 time_choice.predicted,
+                                 time_choice.predicted.toadd,
+                                 xks,
                                  n,
-                                 nmax, ## 915
-                                 m, ## event or not
+                                 nmax,
+                                 m,
                                  maxm,
-                                 la, ## 1
-                                 lb,  ## 1 for each study (listof 1)
-                                 truth, ## true statement for nll
-                                 real_data, ## TRUE
-                                 knot.length,  ## 8
-                                 family.data, ## false
-                                 zeval, ## k-means baseline ages
-                                 z.choice, ## 4
-                                 param.label, ## beta0 beta1
-                                 beta0int, ## 0.5
-                                 gamma.param,omega.param, ## null
-                                 spline.constrain, ## true
-                                 common.param.estimation, ## true
-                                 est.cens.depend.z, ## false
-                                 par_fu, ## null
-                                 analyze.separately, ##"event"
-                                 link.type, # logit
-                                 boot.null.theta,  ## to store estimation
-                                 boot.combi.null.theta, ## to store estimaiton
-                                 var.boot, ## true
-                                 compute.study.differences, ## false
-                                 est.values, ## wehre do we define
+                                 la,
+                                 lb,
+                                 truth,
+                                 real_data,
+                                 knot.length,
+                                 family.data,
+                                 zeval,
+                                 z.choice,
+                                 param.label,
+                                 beta0int,
+                                 gamma.param,omega.param,
+                                 spline.constrain,
+                                 common.param.estimation,
+                                 est.cens.depend.z,
+                                 par_fu,
+                                 analyze.separately,
+                                 link.type,
+                                 boot.null.theta,
+                                 boot.combi.null.theta,
+                                 var.boot,
+                                 compute.study.differences,
+                                 est.values,
                                  z.proportions){ ## null
 
   ##############################
