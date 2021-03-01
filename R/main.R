@@ -138,12 +138,6 @@
 #' @import abind
 #' @import gamm4
 #'
-
-
-#####################################
-# no examples but add documentations#
-#####################################
-
 jprat.main.estimates<-function(method="gamm4",
                                compute.study.differences=compute.study.differences,
                                var.boot=var.boot,
@@ -572,11 +566,6 @@ gamm4.estimates <- function(arbitrary, num_study, np,
 #'                                 which are outside [0,1]: "zero" (censored), "one" (uncensored).
 #'                                 See the argument "count.store.outside" in the \code{\link{gamm4.estimates}} for details.}
 #'
-#'
-#'
-#' @export
-#'
-#'
 boot.compare.studies <- function(arbitrary,
                                  combi.study,
                                  combi.choice,
@@ -934,12 +923,11 @@ boot.compare.studies <- function(arbitrary,
 ####################################
 # To get results                  ##
 ####################################
-
-#' @title ggplots
-#' @description  This function creates ggplots for the estimated functions f(a, b) over b at different values of a, which includes the table for the number at risk under the ggplots.
+#' @title Produce results using ggplots
+#' @description  This function creates ggplots for the estimated probabilities over time (age, years) with a number at risk table.
 #'
-#' @param filename a character string for ggplots' file name starting with "gg". Use paste("gg_", filename.set, sep="").
-#'                 The "filename.set" is a character string value for a file name.
+#' @param filename A character string for the file name starting with "gg". #For example, use paste("gg_", filename.set, sep=""),
+#'                #where filename.set is for a file name that users can choose.
 #' @param estimate  estimated lower bounds for the confidence intervals at specific time points.
 #' @param theta.array.lo estimated lower bounds for the confidence intervals at specific time points.
 #' @param theta.array.hi estimated upper bounds for the confidence intervals at specific time points.
@@ -973,8 +961,6 @@ boot.compare.studies <- function(arbitrary,
 #' @export
 #'
 ## @examples
-#'
-#'
 #'
 ggplot_at_a_over_b <- function(filename,
                                estimate,
