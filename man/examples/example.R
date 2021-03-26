@@ -4,7 +4,8 @@
 
 ## Four options whether study and event are analyzed separately:
 ## what.analyzed.separately="studyevent", "event", "study" or "none"
-    what.analyzed.separately= "none"
+
+     what.analyzed.separately= "none"
 
 
 ## Load your data in the list format: should match order of study.names

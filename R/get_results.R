@@ -1,28 +1,10 @@
 #############################################
 ## R code to read in data and show results ##
 #############################################
-#' This function returns analysis results including plots and tables.
+#' @title Results
 #'
-#' @param study.names See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param input.data.list See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param nonfunctional.covariate.names See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param functional.covariate.names See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param othercovariate.names See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param event.outcome.names See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param delta.names See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param time.points.for.prediction See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param time.points.for.conditional.prediction See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param time.points.for.conditional.prediction.toadd See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param nonfunctional.covariate.value See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param functional.covariate.values.of.interest See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param use.functional.beta.intercept See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param use.functional.event.coefficients See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param use.functional.study.coefficients See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param check.study.equality See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param estimated.parameters.common.for.all.studies See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param what.analyzed.separately See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param estimation.when.censoring.depends.on.z See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param use.bootstrap.variance See this argument in the \code{\link{jprat.wrapper}} function.
+#' @description This function returns ggplots and the results of hypothesis testing.
+#' @inheritParams jprat.wrapper
 #' @param functional.covariate.values.of.interest.ci a vector of specific functional covariate values of X,
 #'         where the confidence interval of smooth functional parameter \eqn{\alpha(X=x,t)} will be estimated.
 #'         For example, we set the values \eqn{x=46, 51} in the analysis.
@@ -39,8 +21,6 @@
 #' @param label.for.alpha.values.over.time  a vector of specific time points at which the smooth functional parameters \eqn{\alpha(X,t)} will be predicted.
 #'                       These time points are used to be labeled for the plot. Currently, we do not make a plot for the smooth functional parameters \eqn{\alpha(X,t)}.
 #'                       Default is NULL.
-# #@param which.nonfunctional.covariate.comparisons  a numeric vector for which nonfunctional covariates will be compared. In our analysis, we only consider one nonfunctional covariate named "base_age", default is c(1, 1).
-# #        Currently, we only consider one nonfunctional covariate and there is nothing to compare between covariates.
 #' @param color.names a character vector to denote which colors will be used for the labels of events of interest in plots. e.g., c("firebrick1", "darkgreen", "black").
 #' @param legend.names a character vector to label event of interests in plots. e.g., c("Motor Diagnosis (DCL=4)",  "Cognitive Impairment" , "Stage II TFC").
 #' @param functional.covariate.comparisons a vector of functional covariate values of X at which the smooth functional parameters \eqn{\alpha(X=x,\cdot)} were estimated and compared.
@@ -54,12 +34,6 @@
 #' @param ylabel.for.plots.comparing.studies a character value for y-label in plots when studies are comparing or event of interests were compared in each study. Default is "Probability".
 #' @param xlabel.for.plots.comparing.studies a character value for x-label in plots when studies are comparing for each event of interest or event of interests were compared in each study. Default is "Age(years)".
 #' @param file.name.for.analysis a character value, which is used as the part of plot names.
-# #@param data.theta data file for the estimated values of all components as a result of analysis. The result file is automatically created if users choose \code{write.output=TRUE}.
-# #                   See return value \code{theta.out} in the \code{\link{jprat.wrapper}} function.
-# # @param data.combi data file for the difference between the estimated values of all components among studies as a result of analysis.
-# #         Default is data.combi and this file is automatically created if users choose \code{write.output=TRUE}.
-# #         See return value \code{combi.out} in the \code{\link{jprat.wrapper}} function.
-#' @param jprat.output list of jprat output. See return value \code{jprat.output} in the \code{\link{jprat.wrapper}} function.
 #' @param nrisk data file for the number of subjects who is at risk at the interested the time points defined by users.
 #'              nrisk results are flattened by time if write.output is TRUE from the function \code{\link{compute.number.at.risk.for.HD}}, otherwise it is not flattened.
 #' @param show.results.description a logical value whether the description of plots and tables will be produced. Default is FALSE.

@@ -923,35 +923,34 @@ boot.compare.studies <- function(arbitrary,
 ####################################
 # To get results                  ##
 ####################################
-#' @title Produce results using ggplots
+#' @title ggplots with "a number at risk" table
 #' @description  This function creates ggplots for the estimated probabilities over time (age, years) with a number at risk table.
 #'
-#' @param filename A character string for the file name starting with "gg". #For example, use paste("gg_", filename.set, sep=""),
-#'                #where filename.set is for a file name that users can choose.
-#' @param estimate  estimated lower bounds for the confidence intervals at specific time points.
-#' @param theta.array.lo estimated lower bounds for the confidence intervals at specific time points.
-#' @param theta.array.hi estimated upper bounds for the confidence intervals at specific time points.
-#' @param index_a index for the functional covariate values X, where to draw plot.
-#' @param bvalues  a vector of values for the x-axis. Here, specifically, a vector of time points for prediction (\code{time_val}).
-#' @param bvalues.cut  a cut off for "bvalues" where tic marks should be drawn.
-#' @param color.list a character vector of default color names, which will be used in plots.
-#' @param nrisk array for the numbers at risk at each time point.
-#'              The dimension of array will be the number of nonfunctional covariate Z used in the analysis (z.choice, here denoted as zz) by the number of time points (\code{num_time}).
-#' @param margin.move margin around entire plot to make y-label closer to y-axis. Defualt is unit(c(0,-10,0,0), "mm").
-#' @param cex.line  magnification of thickness of the line relative to cex. Default is 1.5.
-#' @param cex.size  magnification of size of text in the legend relative to cex. Default is 20.
-#' @param cex.number magnification of size of text in the labels relative to cex. Default is 6.
-#' @param ylim limits of y-axis: minimum and maximum grid of y-axis.
-#' @param conf.int a logical value whether the confidence interval will be plotted.
-#' @param label.names  a character vector of names for labels in plots.
-#' @param ylab.use a character vector for the y-axis label. There are options such as alphax.ylab and study.ylab,
-#'                 which are character value for y-axis label depending on what parameters will be plotted.
+#' @param filename A character string for the file name. Users can choose this file name by setting the input parameter \code{file.name.for.analysis} in the \code{\link{view.all.results}} function. The "gg" is prefixed to the file name that users choose internally.
+#' @param estimate  Estimates to be plotted over specific time points.
+#' @param theta.array.lo Estimated lower bounds for the confidence intervals at specific time points.
+#' @param theta.array.hi Estimated upper bounds for the confidence intervals at specific time points.
+#' @param index_a Index for the functional covariate values X, where to draw plot.
+#' @param bvalues  A vector of values for the x-axis. Here, specifically, a vector of time points for prediction (\code{time_val}).
+#' @param bvalues.cut  A cut off for \code{bvalues} where tic marks should be drawn.
+#' @param color.list A character vector of default color names, which will be used in plots.
+#' @param nrisk Array for the numbers at risk at each time point. This array is returned from the function \code{\link{compute.number.at.risk.for.HD}}. See example in example.R file in /man/example/.
+#'              The dimension of array will be the number of nonfunctional covariate Z used in the analysis (\code{z.choice}) by the number of time points (\code{num_time}).
+#' @param margin.move Margin around entire plot to make y-label closer to y-axis. The default is unit(c(0,-10,0,0), "mm").
+#' @param cex.line  Magnification of thickness of the line relative to cex. The default is 1.5.
+#' @param cex.size  Magnification of size of text in the legend relative to cex. The default is 20.
+#' @param cex.number Magnification of size of text in the labels relative to cex. The default is 6.
+#' @param ylim Limits of y-axis: minimum and maximum grids of y-axis.
+#' @param conf.int A logical value whether the confidence interval will be plotted. The default is FALSE.
+#' @param label.names  A character vector of names for labels in plots.
+#' @param ylab.use A character vector for the y-axis label. There are options such as alphax.ylab and study.ylab,
+#'                 which are character values for y-axis label depending on what parameters will be plotted.
 #'                 See the argument \code{ylabel.for.plots.comparing.studies} in the \code{\link{view.all.results}} function.
-#' @param xlab.use a character vector for the x-axis label. There are options: alphax.xlab and study.xlab, which are character values for x-axis label in plots.
+#' @param xlab.use A character vector for the x-axis label. There are options: alphax.xlab and study.xlab, which are character values for x-axis label in plots.
 #'                 See the argument "xlabel.for.plots.comparing.studies" in the \code{\link{view.all.results}} function.
-#' @param add.second.legend  a logical value whether the second legend will be added in plots.
+#' @param add.second.legend  A logical value whether the second legend will be added in plots.
 #'
-#' @return This function returns all analysis results including plots and tables.
+#' @return This function returns plots with a number at risk table from all analysis results. The default is FALSE.
 #'
 #' @import grDevices
 #' @import ggplot2
@@ -960,7 +959,6 @@ boot.compare.studies <- function(arbitrary,
 #' @import gridExtra
 #' @export
 #'
-## @examples
 #'
 ggplot_at_a_over_b <- function(filename,
                                estimate,
@@ -1177,40 +1175,19 @@ ggplot_at_a_over_b <- function(filename,
 
 
 
-
+#######################
 ## ggplot error bars ##
-
 ###################################################
 ## plot of function(a,b) over b at different a   ##
 ##   add in number at risk using ggplot          ##
 ###################################################
-#' ggplot_error_bars: This function plots the line plots with error bars.
+#' @title Dot plot with error bars
+#' @description  This function creates dot plot (predicted probabilities) with error bars.
+#' @inheritParams ggplot_at_a_over_b
 #'
-#' @param filename See the \code{\link{ggplot_at_a_over_b}} function.
-#' @param estimate array for the estimates (estimated parameters or estimated averaged parameters)
-#'                 with corresponding time points at each event.
-#' @param theta.array.lo See the \code{\link{ggplot_at_a_over_b}} function.
-#' @param theta.array.hi See the \code{\link{ggplot_at_a_over_b}} function.
-#' @param index_a a character vector of names for the clinical events.
-#' @param bvalues See the \code{\link{ggplot_at_a_over_b}} function.
-#' @param color.list See the \code{\link{ggplot_at_a_over_b}} function.
-#' @param cex.line magnification of thickness of the error bar relative to cex. Default is 1.5.
-#' @param cex.size  magnification of size of text in the legend relative to cex. Default is 20.
-#' @param cex.number magnification of size of text in the labels relative to cex. Default is 6.
-#' @param ylim See the \code{\link{ggplot_at_a_over_b}} function.
-#' @param conf.int See the \code{\link{ggplot_at_a_over_b}} function.
-#' @param label.names See the \code{\link{ggplot_at_a_over_b}} function.
-#' @param ylab.use See the \code{\link{ggplot_at_a_over_b}} function.
-#' @param xlab.use See the \code{\link{ggplot_at_a_over_b}} function.
-#'
-#' @return line plots with errors bars for each event occured at specific time points (\code{bvalues}).
+#' @return dot plots for predicted probabilites with errors bars for each event occurred at specific time points (\code{bvalues}).
 #'
 #' @import ggplot2
-#'
-#' @export
-#'
-## @examples
-#'
 #'
 ggplot_error_bars <- function(filename,
                               estimate,
@@ -1305,47 +1282,42 @@ ggplot_error_bars <- function(filename,
 ## get 95\% CI for time points of interest ##
 ##   and lb/xx of interest                 ##
 #############################################
-#' get.cis: This function generates a data frame, which contains the confidence intervals for the estimates,
-#' whether the signs of the lower bounds and upper bounds of the confidence intervals will be changed,
-#' and the length of confidence intervals at each time for specific covariate values for all studies.
-#'
-#' @param out array of estimates to plot.
-#' @param flatten.name a character value of the flatten name.
-#' @param theta a character value for name of the component estimated: "beta" (coefficients of the nonfunctional covariates Z),
+#' @title 95\% Confidence interval for time points of interest
+#' @description  This function generates a data frame, which contains the confidence intervals
+#'               for the estimates and the length of confidence intervals at each time for specific values of covariates for all studies.
+#' @param out An array of estimates to plot.
+#' @param flatten.name A character value of the flatten name.
+#' @param theta A character value for the name of the component estimated: "beta" (coefficients of the nonfunctional covariates Z),
 #'              "alphas" (coefficients of the functional covariates X),  "F" (monotone marginal distributions \eqn{F_{es}(t|Z, X)})
 #'               or "Ft.pred" (the predicted marginal distribution \eqn{F_{es}(t|Z, X, t>t_{0})}.
-#'               Null for the parameter "beta".
-#' @param time_choice  a vector of time points at which confidence intervals of estimates will be predicted over those times. See the argument \code{time.points.of.interest.ci} in the \code{\link{view.all.results}}.
-#' @param xx_val a vector of values for functional covariates X per a study. See the argument \code{functional.covariate.values.for.prediction} in the \code{\link{view.all.results}} function.
-#' @param xmin minimum value for the functional covariate values of X.
-#' @param xmax maximum value for the functional covariate values of X.
-#' @param xx_choose a vector of specific functional covariate values of X
-#'                  at which confidence interval of the smooth functional parameter \eqn{\alpha(x,t)} will be predicted.
-#'                  Null for the parameter "beta".
+#' @param time_choice  A vector of time points at which confidence intervals of estimates will be predicted. See the argument \code{time.points.of.interest.ci} in the \code{\link{view.all.results}}.
+#' @param xx_val A vector of values for the functional covariate values of X per a study. See the argument \code{functional.covariate.values.for.prediction} in the \code{\link{view.all.results}} function.
+#' @param xmin Minimum value for the functional covariate values of X.
+#' @param xmax Maximum value for the functional covariate values of X.
+#' @param xx_choose A vector of specific functional covariate values of X at which confidence interval of the smooth functional parameter \eqn{\alpha(x,t)} will be predicted.
+#'                  The default is "Null" for the parameter "beta".
 #' @param zz_choose a vector of character values for the names of nonfunctional covariates Z.
 #'                  For example, zz_choose=z_lab_names. Null for the parameter "beta" and "alphas".
-#' @param convert a logical value whether the CAG repeat lengths will be scaled into the uniformly distributed values on [0,1].
-#' @param round.set number of significant digits to use in the plot: Default is 2.
-#' @param var.lo a character value for the name of the lower bound for the confidence interval: "varlo".
-#' @param var.hi a character value for the name of the upper bound for the confidence interval: "varhi".
-#' @param est a character value for the estimates, e.g., "est".
-#' @param noshow a character vector of names, which do not show in the data frame.
-#' @param track.sign.change a logical value whether the sign change will be tracking. Default is TRUE.
+#' @param convert A logical value whether the CAG repeat lengths will be scaled into the uniformly distributed values on [0,1].
+#' @param round.set The number of significant digits to use in the plot: Default is 2.
+#' @param var.lo A character value for the name of the lower bound for the confidence intervals: "varlo".
+#' @param var.hi A character value for the name of the upper bound for the confidence intervals: "varhi".
+#' @param est A character value for the estimates, e.g., "est".
+#' @param noshow A character vector of column names, which will not be in the data frame.
+#' @param track.sign.change A logical value whether the sign change will be tracking. The default is TRUE.
 #'
-#' @details The data for "noshow" will not be shown in the data frame.
-#'          If the signs for the lower bounds and upper bounds of the confidence intervals are the same,
-#'          the change of sign (\code{sign.change}) returns TRUE (or 1); otherwise, FALSE (or 0).
-#'          This values will be used to test whether the study results are similar (whether the true model share the study parameters).
+#' @details The data for "noshow" will not be shown in the data frame. To do the confidence interval test,
+#'          the signs of the lower bounds and upper bounds of the confidence intervals will be observed.
+#'          If the signs of the lower bounds and the upper bounds for the confidence intervals are the same,
+#'          the \code{sign.change} returns TRUE (or 1); otherwise, FALSE (or 0).
+#'          Those values will be used to test the hypothesis test whether the study results are similar, i.e., whether the true model shares the study parameters.
 #' @return
-#' \item{out.flatten}{a data frame, created from the array "out" using the \code{flatten.array} function.
-#'                    The data frame contains the confidence intervals for the estimates (ci),
-#'                    whether the signs of the lower bounds and upper bounds of the confidence intervals for the estimates will be changed (\code{sign.change}),
-#'                    and the length of confidence intervals (\code{ci.length}) at specific time points (\code{time_choice}),
-#'                    covarites values (\code{xx_choose}, \code{zz_choose}) and the clinical events of interest for all studies.}
+#' \item{out.flatten}{A data frame, created from the array \code{out} using the \code{flatten.array} function.
+#'                    The data frame contains the confidence intervals for the estimates (ci)
+#'                    (whether the signs of the lower bounds and upper bounds of the confidence intervals for the estimates will be changed (\code{sign.change})),
+#'                    the length of confidence intervals (\code{ci.length}) at specific time points (\code{time_choice}),
+#'                    covariates values (\code{xx_choose}, \code{zz_choose}), and the clinical events of interest for all studies.}
 #' @export
-#'
-## @examples
-#'
 #'
 get.cis <- function(out,flatten.name,
                     theta="alpha",
@@ -1422,23 +1394,12 @@ get.cis <- function(out,flatten.name,
 
 
 
-
-
-
-
-
-
 #######################################
 # data summary                        #
 #######################################
-
-
-
 ####################################
 ## get number at risk for HD data ##
 ####################################
-
-
 #' compute.number.at.risk.for.HD: This function returns number of subjects who are at risk for HD for each study at times.
 #' @inheritParams jprat.wrapper
 #'
@@ -1701,27 +1662,12 @@ compute.number.at.risk.for.HD <- function(study.names,
 #' criteria.time.points.for.jprat.analysis:
 #' This function returns warning message if the criteria are not met for \code{functional.covariate.values.of.interest}, \code{functional.covariate.values.of.interest.ci},
 #' \code{time.points.of.interest}, \code{time.points.of.interest.ci}, \code{functional.covariate.comparisons} and \code{time.points.for.conditional.prediction}.
-#'
-#' @param study.names See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param input.data.list See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param time.points.for.prediction See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param nonfunctional.covariate.names See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param functional.covariate.names See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param nonfunctional.covariate.value See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param time.points.for.conditional.prediction See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param functional.covariate.values.of.interest See this argument in the \code{\link{jprat.wrapper}} function.
-#' @param functional.covariate.values.of.interest.ci See this argument in the \code{\link{view.all.results}} function.
-#' @param functional.covariate.comparisons See this argument in the \code{\link{view.all.results}} function.
-#' @param time.points.of.interest See this argument in the \code{\link{view.all.results}} function.
-#' @param time.points.of.interest.ci See this argument in the \code{\link{view.all.results}} function.
-#'
-#' @return warning messages if the criteria are not met for arguments  \code{functional.covariate.values.of.interest}, \code{functional.covariate.values.of.interest.ci},
+#' @inheritParams jprat.wrapper
+#' @inheritParams view.all.results
+#' @return warning messages if the criteria does not match for arguments  \code{functional.covariate.values.of.interest}, \code{functional.covariate.values.of.interest.ci},
 #' \code{time.points.of.interest}, \code{time.points.of.interest.ci}, \code{functional.covariate.comparisons} and \code{time.points.for.conditional.prediction}.
 #'
 #' @export
-#'
-## @examples
-#'
 #'
 #'
 criteria.time.points.for.jprat.analysis<-function(#data.sets.as.list,
