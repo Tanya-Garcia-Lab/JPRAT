@@ -1,47 +1,53 @@
 #############################################
 ## R code to read in data and show results ##
 #############################################
-#' @title Results
+#' @title Output of JPRAT
 #'
-#' @description This function returns ggplots and the results of hypothesis testing.
+#' @description This function returns the results of JPRAT estimates using ggplots and
+#'              the evaluation of study differences between functional parameters
+#'              using the bootstrap-based joint confidence intervals.
 #' @inheritParams jprat.wrapper
-#' @param functional.covariate.values.of.interest.ci a vector of specific functional covariate values of X,
-#'         where the confidence interval of smooth functional parameter \eqn{\alpha(X=x,t)} will be estimated.
-#'         For example, we set the values \eqn{x=46, 51} in the analysis.
-#'         We recommend users to choose the same vector of functional covariate values X as in the interested functional covariate values (\code{functional.covariate.values.of.interest})
+#' @param functional.covariate.values.of.interest.ci A vector of specific functional covariate values of \eqn{X},
+#'         where the confidence intervals of smooth functional parameter \eqn{\alpha(X=x,t)} will be estimated.
+#'         For example, we set the values \eqn{x=46, 51} at specific times \eqn{t}in the analysis.
+#'         We recommend users to choose the same vector of functional covariate values \eqn{X} as in the interested functional covariate values (\code{functional.covariate.values.of.interest})
 #'        to ease estimation procedure in the analysis.
-#' @param number.of.bootstraps ADD DETAILS HERE!
-#' @param time.points.of.interest a vector of specific time points at which the smooth functional parameters \eqn{\alpha(X,t)}
+#' @param number.of.bootstraps Number of iterations used in bootstrap estimation.
+#' @param time.points.of.interest A vector of specific time points at which the smooth functional parameters \eqn{\alpha(X,t)}
 #'        will be predicted. These time points are used to be labeled for the plot.
 #'        For example, we set the values \eqn{x=46, 56} in the analysis.
 #'        We recommend users to choose these time points vector as the subset of time points for prediction (\code{time.points.for.prediction}).
-#' @param time.points.of.interest.ci a vector of time points at which confidence intervals of \eqn{\alpha(X,t)} are predicted.
+#' @param time.points.of.interest.ci A vector of time points at which confidence intervals of \eqn{\alpha(X,t)} are predicted.
 #'         These time points are used to be labeled for the plot. For example, we set the values \eqn{x=46, 51, 56, 61, 66} in the analysis.
 #'         We recommend that these time points vector should be chosen as the subset of time points for prediction (\code{time.points.for.prediction}) or as the same time points for estimating \eqn{\alpha(X,t)} (\code{time.points.of.interest}).
-#' @param label.for.alpha.values.over.time  a vector of specific time points at which the smooth functional parameters \eqn{\alpha(X,t)} will be predicted.
+#' @param label.for.alpha.values.over.time  A vector of specific time points at which the smooth functional parameters \eqn{\alpha(X,t)} will be predicted.
 #'                       These time points are used to be labeled for the plot. Currently, we do not make a plot for the smooth functional parameters \eqn{\alpha(X,t)}.
-#'                       Default is NULL.
-#' @param color.names a character vector to denote which colors will be used for the labels of events of interest in plots. e.g., c("firebrick1", "darkgreen", "black").
-#' @param legend.names a character vector to label event of interests in plots. e.g., c("Motor Diagnosis (DCL=4)",  "Cognitive Impairment" , "Stage II TFC").
-#' @param functional.covariate.comparisons a vector of functional covariate values of X at which the smooth functional parameters \eqn{\alpha(X=x,\cdot)} were estimated and compared.
+#'                       The default is NULL.
+#' @param color.names A character vector to denote which colors will be used for the labels of events of interest in plots. e.g., c("firebrick1", "darkgreen", "black").
+#' @param legend.names A character vector to label event of interests in plots. e.g., c("Motor Diagnosis (DCL=4)",  "Cognitive Impairment" , "Stage II TFC").
+#' @param functional.covariate.comparisons A vector of functional covariate values of \eqn{X} at which the smooth functional parameters \eqn{\alpha(X=x,\cdot)} were estimated and compared.
 #'        For example, the functional covariate values are \eqn{x=c(46, 51)} and the parameters of \eqn{\alpha(x=46,\cdot)} and \eqn{\alpha(x=51,\cdot)} will be compared.
-#'        We recommend that these covariate values X should be the same as the vector of functional covariate values of X for confidence intervals (\code{functional.covariate.values.of.interest.ci}).
-#' @param functional.covariate.comparisons.for.sample.size a specific functional covariate values of X to use the sample size calculation,
-#'              which will be compared across studies. Currently, we are not interested in sample size calculation. Default is NULL.
-#' @param do.plots a logical value whether the results plot will be generated. Default is TRUE.
-#' @param add.number.at.risk.legend a logical value whether number of subjects who is at risks at the interested time points will be added with legends in plots.
-#' @param plot.confidence.intervals a logical value whether the confidence intervals of the predicted marginal distributions will be shown in the plot. Default is TRUE.
-#' @param ylabel.for.plots.comparing.studies a character value for y-label in plots when studies are comparing or event of interests were compared in each study. Default is "Probability".
-#' @param xlabel.for.plots.comparing.studies a character value for x-label in plots when studies are comparing for each event of interest or event of interests were compared in each study. Default is "Age(years)".
-#' @param file.name.for.analysis a character value, which is used as the part of plot names.
-#' @param nrisk data file for the number of subjects who is at risk at the interested the time points defined by users.
-#'              nrisk results are flattened by time if write.output is TRUE from the function \code{\link{compute.number.at.risk.for.HD}}, otherwise it is not flattened.
-#' @param show.results.description a logical value whether the description of plots and tables will be produced. Default is FALSE.
-#' @param is.nrisk.data.frame a logical value whether output for nrisk is the data frame. If users choose write.output is TRUE from the function \code{\link{compute.number.at.risk.for.HD}}, this argument should be TRUE. Otherwise, FALSE.
-#' @param write.jprat.output a logical value whether output for the jprat function will be created. If write.output=TRUE in  the  \code{\link{jprat.wrapper}} function, then it should be TRUE; FALSE otherwise.
-#' @details The number of risks at each time point will be printed in the plot.
+#'        We recommend that these covariate values \eqn{X} should be the same as the vector of functional covariate values of \eqn{X}
+#'        for confidence intervals (\code{functional.covariate.values.of.interest.ci}).
+#' @param functional.covariate.comparisons.for.sample.size A specific functional covariate values of \eqn{X} to use the sample size calculation,
+#'              which will be compared across studies. Currently, we are not interested in sample size calculation. The default is NULL.
+#' @param do.plots A logical value whether the plot will be generated as results. The default is TRUE.
+#' @param add.number.at.risk.legend A logical value whether number of subjects who are at risks at the interested time points will be added with legends in plots. The default is TRUE.
+#' @param plot.confidence.intervals A logical value whether confidence intervals of the predicted marginal distributions will be shown in the plot. The default is TRUE.
+#' @param ylabel.for.plots.comparing.studies A character value for y-label in plots when studies are comparing or event of interests are compared in each study. The default is "Probability".
+#' @param xlabel.for.plots.comparing.studies A character value for x-label in plots when studies are comparing for each event of interest or event of interests are compared in each study. The default is "Age(years)".
+#' @param file.name.for.analysis A character value, which is used as the part of plot names.
+#' @param nrisk Data file for the number of subjects who are at risk at the interested the time points.
+#' @param show.results.description A logical value whether the description of plots and tables will be produced. The default is FALSE.
+#' @param is.nrisk.data.frame A logical value whether output for nrisk is the data frame. If write.output=TRUE  (see input argument for \code{\link{compute.number.at.risk.for.HD}} function), it should be TRUE; Otherwise, FALSE.
+#' @param write.jprat.output A logical value whether output for the jprat function will be created. If write.output=TRUE (see input argument for \code{\link{jprat.wrapper}} function), then it should be TRUE; Otherwise, FALSE.
 #'
-#' @return This function returns ggplots.
+#' @details We generate two different datasets and apply them to JPRAT algorithm. One is generated by mimicking the real data used in Section 4 (Garcia et al., Biostatistics, 2017) and the other is generated using Model A (Joint model with disticnt study parameters) with parameter setting A.
+#'          The ggplots were shown for:
+#'          \item{1}{Estimated marginal distribution functions with pointwise 95% confidence band for HD motor diagnosis with age at study entry (45 years) and CAG repeat-length (47 repeats).}
+#'          \item{2}{Predicted probability  (and error bars) an individual with 47 CAG repeats who is 46, 51, 56 experiences motor-diagnosis.}
+#'
+#' @return This function returns the results of JPRAT algorithm via ggplots and the results whether study parameters were different using the bootstrap based joint confidence interval.
 #'
 #' @import abind
 #' @import grid
