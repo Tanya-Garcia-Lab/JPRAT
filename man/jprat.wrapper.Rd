@@ -96,7 +96,7 @@ A list of
          the names of outcome events (event), the names for all components to be estimated (theta), the labels of the nonfunctional covariates Z (zz), the labels of the functional covariates X (xx),
          all estimated values for theta: "est", "varest", "varlo", "varhi", "boot_varest", "boot_varlo","boot_varhi" (val) and the time points.}
          If write.output=FALSE, jprat.output returns a list whose elements contain the estimated values for \eqn{beta(t)}, \eqn{alpha(X,t)}, \eqn{Ft(t)} and \eqn{F_{es}(t|X, Z)} for each study (see \code{null.theta.simus.est.ciboot} for the array from)
-          and for a pair of studies for comparison (see \code{null.theta.simus.est.ci} for the array form)}
+          and for a pair of studies for comparison (see \code{null.theta.simus.est.ci} for the array form).}
          \item{eflag}{an integer number to check if any error comes up while estimation algorithm is processed.
                       If this value is -1, then the marginal distribution \eqn{F_{es}(t|X, Z)} has missing values (NA).}
 }

@@ -22,32 +22,46 @@ criteria.time.points.for.jprat.analysis(
 )
 }
 \arguments{
-\item{study.names}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{study.names}{A character vector of name of studies used in the analysis. e.g., c("cohort", "predict", "pharos").}
 
-\item{input.data.list}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{input.data.list}{A list of datasets to be analyzed. In the case, you use datasets given from JPRAT, then there are two options:
+use list(cohort=data_cohort, predict=data_predict, pharos=data_pharos) if you choose \code{what.analyzed.separately="event" or "eventstudy"};
+otherwise use list(study1=simu_data1_model_A, study2=simu_data2_model_A) (See \code{what.analyzed.separately="none" or "study"} for option details).}
 
-\item{time.points.for.prediction}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{time.points.for.prediction}{A vector of time points at which the predicted values of marginal distribution will be estimated. Users may encounter a warning message that "Not enough data at time points (e.g., base_age);  May have divergent in the integration while bootstrapping." We recommend that users evaluate the proportional odds model at the average of nonfunctional covariate (e.g., base_age) across all subjects in each study. This may get rid of the warning messages.}
 
-\item{nonfunctional.covariate.names}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{nonfunctional.covariate.names}{A character vector for the name of the nonfunctional covariates that is used in the analysis.}
 
-\item{functional.covariate.names}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{functional.covariate.names}{A character vector for the name of the functional covariates that is used in the analysis.}
 
-\item{nonfunctional.covariate.value}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{nonfunctional.covariate.value}{A numeric value interested for the nonfunctional covariate. e.g., 40 for \code{base_age}, which will be used for prediction.}
 
-\item{time.points.for.conditional.prediction}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{time.points.for.conditional.prediction}{A vector of time points \eqn{t} at which the predicted values of conditional distribution \eqn{Pr(T <t + t_{0}| T>t)} will be estimated.}
 
-\item{functional.covariate.values.of.interest}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{functional.covariate.values.of.interest}{A vector of specific functional covariate values \eqn{X=x} where the smooth functional parameter \eqn{\alpha(X=x,t)} will be estimated. For example, we set \eqn{x=46,48,50} in the analysis. We recommend that the specific functional covariate values \eqn{X=x} should be chosen between the minimum and the maximum of functional covariate values. Otherwise, users may encounter a warning message.}
 
-\item{functional.covariate.values.of.interest.ci}{See this argument in the \code{\link{view.all.results}} function.}
+\item{functional.covariate.values.of.interest.ci}{A vector of specific functional covariate values of \eqn{X},
+ where the confidence intervals of smooth functional parameter \eqn{\alpha(X=x,t)} will be estimated.
+ For example, we set the values \eqn{x=46, 51} at specific times \eqn{t}in the analysis.
+ We recommend users to choose the same vector of functional covariate values \eqn{X} as in the interested functional covariate values (\code{functional.covariate.values.of.interest})
+to ease estimation procedure in the analysis.}
 
-\item{functional.covariate.comparisons}{See this argument in the \code{\link{view.all.results}} function.}
+\item{functional.covariate.comparisons}{A vector of functional covariate values of \eqn{X} at which the smooth functional parameters \eqn{\alpha(X=x,\cdot)} were estimated and compared.
+For example, the functional covariate values are \eqn{x=c(46, 51)} and the parameters of \eqn{\alpha(x=46,\cdot)} and \eqn{\alpha(x=51,\cdot)} will be compared.
+We recommend that these covariate values \eqn{X} should be the same as the vector of functional covariate values of \eqn{X}
+for confidence intervals (\code{functional.covariate.values.of.interest.ci}).}
 
-\item{time.points.of.interest}{See this argument in the \code{\link{view.all.results}} function.}
+\item{time.points.of.interest}{A vector of specific time points at which the smooth functional parameters \eqn{\alpha(X,t)}
+will be predicted. These time points are used to be labeled for the plot.
+For example, we set the values \eqn{x=46, 56} in the analysis.
+We recommend users to choose these time points vector as the subset of time points for prediction (\code{time.points.for.prediction}).}
 
-\item{time.points.of.interest.ci}{See this argument in the \code{\link{view.all.results}} function.}
+\item{time.points.of.interest.ci}{A vector of time points at which confidence intervals of \eqn{\alpha(X,t)} are predicted.
+These time points are used to be labeled for the plot. For example, we set the values \eqn{x=46, 51, 56, 61, 66} in the analysis.
+We recommend that these time points vector should be chosen as the subset of time points for prediction (\code{time.points.for.prediction}) or as the same time points for estimating \eqn{\alpha(X,t)} (\code{time.points.of.interest}).}
 }
 \value{
-warning messages if the criteria are not met for arguments  \code{functional.covariate.values.of.interest}, \code{functional.covariate.values.of.interest.ci},
+warning messages if the criteria does not match for arguments  \code{functional.covariate.values.of.interest}, \code{functional.covariate.values.of.interest.ci},
 \code{time.points.of.interest}, \code{time.points.of.interest.ci}, \code{functional.covariate.comparisons} and \code{time.points.for.conditional.prediction}.
 }
 \description{

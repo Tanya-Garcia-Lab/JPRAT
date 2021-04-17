@@ -2,7 +2,7 @@
 % Please edit documentation in R/main.R
 \name{gamm4.estimates}
 \alias{gamm4.estimates}
-\title{Obtain gamm4 Estimates}
+\title{gamm4 Estimation}
 \usage{
 gamm4.estimates(
   arbitrary,
@@ -124,6 +124,11 @@ If covariates Z does not follow a binomial distribution, then the default option
 
 \item{link.type}{A character value for the name of the link function for the additive mixed effect model (the generalized linear model): "logit” for proportional odds model or "cloglog" for cox proportional hazards. See the argument \code{glm.link.type} in the \code{\link{jprat.wrapper}} function.}
 
+\item{null.theta}{A list of all estimated parameters and coefficients ("beta", "alphas", "Ft" and ``Ft.predicted") in the model.
+Each element of the list contains arrays of zeros at the specific time points, the values of covariates and the event of interest in each study,
+whose dimension is determined by the length of studies, events, time points
+where prediction occurs, and coefficients of the nonfunctional covariates.}
+
 \item{z.proportions}{The marginal probability of the nonfunctional coavariate \eqn{Z}. The default value is NULL.}
 }
 \value{
@@ -150,18 +155,16 @@ A list of
             The dimensions of the array are the number of studies, the number of clinical events per study, the length of nonfunctional covariate values Z,
             the length of functional covariate values X and
             the length of the character vectors of estimates such as c("est", "varest", "varlo", "varhi").}
-\item{Ftest.predicted}{array of the predicted values for the monotonic marginal distribution \eqn{F_{es}(t|X, Z, t>t_0)} (Ft)
-                      beyond time \eqn{t_0} at each time point for each event of interest per study,
-                      where the dimensions of the array are the number of studies (\code{num_study}),
-                      the number of clinical events per study (\code{np}),
-                      the length of nonfunctional covariate values Z (\code{z.choice}),
-                      the length of functional covariate values X (\code{num_xx}),
-                      the predicted time points (\code{time_choice.predicted.toadd} is added to
-                      \code{time_choice.predicted}), the choice of time points for prediction
-                      (\code{time_choice.predicted}), and the length of the name for the values (val="est", "varest", "varlo", "varhi").
-                     See the argument \code{null.theta.est.ci} in the \code{\link{all_null_theta}} function for the structure of array.
-                     If there exists some time points for the prediction (\code{time_choice.predicted}), this value exists.}
-\item{eflag}{an integer number to check if any error comes up while gamm4 estimation is processed. This value is 0 if there are no errors.}
+\item{Ftest.predicted}{A multi-dimensional array of the predicted values for the monotonic marginal distribution \eqn{F_{es}(t|X, Z, t>t_0)} (Ft)
+                      beyond time \eqn{t_0} at each time point for each event of interest per study.
+                      The dimensions of the array are the number of studies (\code{num_study}),
+                      the number of clinical events per study,
+                      the length of nonfunctional covariate values Z,
+                      the length of functional covariate values X,
+                      the predicted time points (\code{time_choice.predicted.toadd}), the choice of time points for prediction
+                      (\code{time_choice.predicted}), and the length of the name for the estimates (val="est", "varest", "varlo", "varhi").
+                     This array exists if there exists some time points for the prediction (\code{time_choice.predicted}).}
+\item{eflag}{an integer number to check errors while gamm4 estimation is processed. This value is 0 if there are no errors.}
 }
 \description{
 This function returns the estimated jack-knife pseudo-values using the Kaplan-Meier estimator
@@ -170,8 +173,8 @@ and returns the estimated JPRAT parameters using the generalized additive mixed 
 \details{
 The estimates depend on whether analysis will be performed separately or jointly. See the argument \code{analyze.separately}
          \code{\link{jprat.main.estimates}}.  For the structure of the return values (betaest, alphaest, Ftest, and Ftest.predicted), see the return value \code{null.theta.est.ci}
-         in the \code{\link{all_null_theta}} function.
+         in the \code{\link{all.null.theta}} function.
 }
 \seealso{
-jprat.main.estimates, all_null_theta
+jprat.main.estimates, all.null.theta
 }

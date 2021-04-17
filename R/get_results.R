@@ -38,6 +38,8 @@
 #' @param xlabel.for.plots.comparing.studies A character value for x-label in plots when studies are comparing for each event of interest or event of interests are compared in each study. The default is "Age(years)".
 #' @param file.name.for.analysis A character value, which is used as the part of plot names.
 #' @param nrisk Data file for the number of subjects who are at risk at the interested the time points.
+#' @param jprat.output A list of estimated values. See argument \code{write.ouput} in \code{\link{jprat.wrapper}} function. If \code{write.ouput=TRUE}, the jprat function returns the results as a list of dataframes; otherwise, it returns the results as a list of arrays for the estimated values.
+#'                    See return values in \code{\link{jprat.wrapper}} function for details.
 #' @param show.results.description A logical value whether the description of plots and tables will be produced. The default is FALSE.
 #' @param is.nrisk.data.frame A logical value whether output for nrisk is the data frame. If write.output=TRUE  (see input argument for \code{\link{compute.number.at.risk.for.HD}} function), it should be TRUE; Otherwise, FALSE.
 #' @param write.jprat.output A logical value whether output for the jprat function will be created. If write.output=TRUE (see input argument for \code{\link{jprat.wrapper}} function), then it should be TRUE; Otherwise, FALSE.
@@ -127,26 +129,8 @@ view.all.results <- function(
   #######################
   ## Output from JPRAT ##
   #######################
-  #data.truth=data.truth,
-  #data.theta=data.theta,
-  #data.combi=data.combi,
-  #data.count=data.count,
-  #data.count.outside=data.count.outside,
   jprat.output=jprat.output,
   nrisk=nrisk,
-  # data.truth.other=NULL,
-  # data.theta.other=NULL,
-  # nrisk.other=NULL,
-  # data.combi.other=NULL,
-  # s.names.use=NULL,
-  # s.names.other.use=NULL,
-  # ########################################################
-  # ## for computing sample sizes: users do not need them ##
-  # ########################################################
-  # type1.error=NULL,
-  # type2.error=NULL,
-  # treatment.effect=NULL,
-  # dropout.rate=NULL,
   #####################################
   ## Do we show results description? ##
   #####################################

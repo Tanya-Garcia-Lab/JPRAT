@@ -2,7 +2,7 @@
 % Please edit documentation in R/main.R
 \name{ggplot_at_a_over_b}
 \alias{ggplot_at_a_over_b}
-\title{ggplot_at_a_over_b: This function creates ggplots for the estimated functions f(a, b) over b.}
+\title{ggplots with "a number at risk" table}
 \usage{
 ggplot_at_a_over_b(
   filename,
@@ -27,52 +27,51 @@ ggplot_at_a_over_b(
 )
 }
 \arguments{
-\item{filename}{a character string for ggplots' file name starting with "gg". Use paste("gg_", filename.set, sep="").
-The "filename.set" is a character string value for a file name.}
+\item{filename}{A character string for the file name. Users can choose this file name by setting the input parameter \code{file.name.for.analysis} in the \code{\link{view.all.results}} function. The "gg" is prefixed to the file name that users choose internally.}
 
-\item{estimate}{estimated lower bounds for the confidence intervals at specific time points.}
+\item{estimate}{Estimates to be plotted over specific time points.}
 
-\item{theta.array.lo}{estimated lower bounds for the confidence intervals at specific time points.}
+\item{theta.array.lo}{Estimated lower bounds for the confidence intervals at specific time points.}
 
-\item{theta.array.hi}{estimated upper bounds for the confidence intervals at specific time points.}
+\item{theta.array.hi}{Estimated upper bounds for the confidence intervals at specific time points.}
 
-\item{index_a}{index for the functional covariate values X, where to draw plot.}
+\item{index_a}{Index for the functional covariate values X, where to draw plot.}
 
-\item{bvalues}{a vector of values for the x-axis. Here, specifically, a vector of time points for prediction (\code{time_val}).}
+\item{bvalues}{A vector of values for the x-axis. Here, specifically, a vector of time points for prediction (\code{time_val}).}
 
-\item{bvalues.cut}{a cut off for "bvalues" where tic marks should be drawn.}
+\item{bvalues.cut}{A cut off for \code{bvalues} where tic marks should be drawn.}
 
-\item{color.list}{a character vector of default color names, which will be used in plots.}
+\item{color.list}{A character vector of default color names, which will be used in plots.}
 
-\item{nrisk}{array for the numbers at risk at each time point.
-The dimension of array will be the number of nonfunctional covariate Z used in the analysis (z.choice, here denoted as zz) by the number of time points (\code{num_time}).}
+\item{nrisk}{Array for the numbers at risk at each time point. This array is returned from the function \code{\link{compute.number.at.risk.for.HD}}. See example in example.R file in /man/example/.
+The dimension of array will be the number of nonfunctional covariate Z used in the analysis (\code{z.choice}) by the number of time points (\code{num_time}).}
 
-\item{margin.move}{margin around entire plot to make y-label closer to y-axis. Defualt is unit(c(0,-10,0,0), "mm").}
+\item{margin.move}{Margin around entire plot to make y-label closer to y-axis. The default is unit(c(0,-10,0,0), "mm").}
 
-\item{cex.line}{magnification of thickness of the line relative to cex. Default is 1.5.}
+\item{cex.line}{Magnification of thickness of the line relative to cex. The default is 1.5.}
 
-\item{cex.size}{magnification of size of text in the legend relative to cex. Default is 20.}
+\item{cex.size}{Magnification of size of text in the legend relative to cex. The default is 20.}
 
-\item{cex.number}{magnification of size of text in the labels relative to cex. Default is 6.}
+\item{cex.number}{Magnification of size of text in the labels relative to cex. The default is 6.}
 
-\item{ylim}{limits of y-axis: minimum and maximum grid of y-axis.}
+\item{ylim}{Limits of y-axis: minimum and maximum grids of y-axis.}
 
-\item{conf.int}{a logical value whether the confidence interval will be plotted.}
+\item{conf.int}{A logical value whether the confidence interval will be plotted. The default is FALSE.}
 
-\item{label.names}{a character vector of names for labels in plots.}
+\item{label.names}{A character vector of names for labels in plots.}
 
-\item{ylab.use}{a character vector for the y-axis label. There are options such as alphax.ylab and study.ylab,
-which are character value for y-axis label depending on what parameters will be plotted.
+\item{ylab.use}{A character vector for the y-axis label. There are options such as alphax.ylab and study.ylab,
+which are character values for y-axis label depending on what parameters will be plotted.
 See the argument \code{ylabel.for.plots.comparing.studies} in the \code{\link{view.all.results}} function.}
 
-\item{xlab.use}{a character vector for the x-axis label. There are options: alphax.xlab and study.xlab, which are character values for x-axis label in plots.
+\item{xlab.use}{A character vector for the x-axis label. There are options: alphax.xlab and study.xlab, which are character values for x-axis label in plots.
 See the argument "xlabel.for.plots.comparing.studies" in the \code{\link{view.all.results}} function.}
 
-\item{add.second.legend}{a logical value whether the second legend will be added in plots.}
+\item{add.second.legend}{A logical value whether the second legend will be added in plots.}
 }
 \value{
-This function returns all analysis results including plots and tables.
+This function returns plots with a number at risk table from all analysis results. The default is FALSE.
 }
 \description{
-ggplot_at_a_over_b: This function creates ggplots for the estimated functions f(a, b) over b.
+This function creates ggplots for the estimated probabilities over time (age, years) with a number at risk table.
 }

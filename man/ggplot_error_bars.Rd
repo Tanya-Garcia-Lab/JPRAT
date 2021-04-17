@@ -2,7 +2,7 @@
 % Please edit documentation in R/main.R
 \name{ggplot_error_bars}
 \alias{ggplot_error_bars}
-\title{ggplot_error_bars: This function plots the line plots with error bars.}
+\title{Dot plot with error bars}
 \usage{
 ggplot_error_bars(
   filename,
@@ -23,40 +23,42 @@ ggplot_error_bars(
 )
 }
 \arguments{
-\item{filename}{See the \code{\link{ggplot_at_a_over_b}} function.}
+\item{filename}{A character string for the file name. Users can choose this file name by setting the input parameter \code{file.name.for.analysis} in the \code{\link{view.all.results}} function. The "gg" is prefixed to the file name that users choose internally.}
 
-\item{estimate}{array for the estimates (estimated parameters or estimated averaged parameters)
-with corresponding time points at each event.}
+\item{estimate}{Estimates to be plotted over specific time points.}
 
-\item{theta.array.lo}{See the \code{\link{ggplot_at_a_over_b}} function.}
+\item{theta.array.lo}{Estimated lower bounds for the confidence intervals at specific time points.}
 
-\item{theta.array.hi}{See the \code{\link{ggplot_at_a_over_b}} function.}
+\item{theta.array.hi}{Estimated upper bounds for the confidence intervals at specific time points.}
 
-\item{index_a}{a character vector of names for the clinical events.}
+\item{index_a}{Index for the functional covariate values X, where to draw plot.}
 
-\item{bvalues}{See the \code{\link{ggplot_at_a_over_b}} function.}
+\item{bvalues}{A vector of values for the x-axis. Here, specifically, a vector of time points for prediction (\code{time_val}).}
 
-\item{color.list}{See the \code{\link{ggplot_at_a_over_b}} function.}
+\item{color.list}{A character vector of default color names, which will be used in plots.}
 
-\item{cex.line}{magnification of thickness of the error bar relative to cex. Default is 1.5.}
+\item{cex.line}{Magnification of thickness of the line relative to cex. The default is 1.5.}
 
-\item{cex.size}{magnification of size of text in the legend relative to cex. Default is 20.}
+\item{cex.size}{Magnification of size of text in the legend relative to cex. The default is 20.}
 
-\item{cex.number}{magnification of size of text in the labels relative to cex. Default is 6.}
+\item{cex.number}{Magnification of size of text in the labels relative to cex. The default is 6.}
 
-\item{ylim}{See the \code{\link{ggplot_at_a_over_b}} function.}
+\item{ylim}{Limits of y-axis: minimum and maximum grids of y-axis.}
 
-\item{conf.int}{See the \code{\link{ggplot_at_a_over_b}} function.}
+\item{conf.int}{A logical value whether the confidence interval will be plotted. The default is FALSE.}
 
-\item{label.names}{See the \code{\link{ggplot_at_a_over_b}} function.}
+\item{label.names}{A character vector of names for labels in plots.}
 
-\item{ylab.use}{See the \code{\link{ggplot_at_a_over_b}} function.}
+\item{ylab.use}{A character vector for the y-axis label. There are options such as alphax.ylab and study.ylab,
+which are character values for y-axis label depending on what parameters will be plotted.
+See the argument \code{ylabel.for.plots.comparing.studies} in the \code{\link{view.all.results}} function.}
 
-\item{xlab.use}{See the \code{\link{ggplot_at_a_over_b}} function.}
+\item{xlab.use}{A character vector for the x-axis label. There are options: alphax.xlab and study.xlab, which are character values for x-axis label in plots.
+See the argument "xlabel.for.plots.comparing.studies" in the \code{\link{view.all.results}} function.}
 }
 \value{
-line plots with errors bars for each event occured at specific time points (\code{bvalues}).
+dot plots for predicted probabilites with errors bars for each event occurred at specific time points (\code{bvalues}).
 }
 \description{
-ggplot_error_bars: This function plots the line plots with error bars.
+This function creates dot plot (predicted probabilities) with error bars.
 }

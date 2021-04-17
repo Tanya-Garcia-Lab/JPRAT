@@ -23,7 +23,7 @@
 #'
 #'\item{null.theta}{A list of all estimated parameters and coefficients ("beta", "alphas", "Ft" and ``Ft.predicted") in the model.
 #'                  Each element of the list contains arrays of zeros at the specific time points, the values of covariates and the event of interest in each study,
-#'                  whose dimension determined by the length of studies, events, time points
+#'                  whose dimension is determined by the length of studies, events, time points
 #'                  where prediction occurs, and coefficients of the nonfunctional covariates.}
 #'
 #'
@@ -75,12 +75,12 @@
 #'
 #' ## List of all components to be estimated; each element has zero arrays.
 #'
-#' null.theta <- all_null_theta(theta.names, study.names, event.names=event.names,
+#' null.theta <- all.null.theta(theta.names, study.names, event.names=event.names,
 #'                              z_lab_names, x_lab_names, label.dim.simus=simus,
 #'                                label.name.simus=label.name.simus, time_val, param.label,
 #'                                time_choice.predicted, time_choice.predicted.toadd, la)
 #'
-all_null_theta <- function(theta.names,
+all.null.theta <- function(theta.names,
                            study.names,
                            event.names,
                            z_lab_names,
@@ -211,7 +211,7 @@ all_null_theta <- function(theta.names,
 #'          the names of outcome events (event), the names for all components to be estimated (theta), the labels of the nonfunctional covariates Z (zz), the labels of the functional covariates X (xx),
 #'          all estimated values for theta: "est", "varest", "varlo", "varhi", "boot_varest", "boot_varlo","boot_varhi" (val) and the time points.}
 #'          If write.output=FALSE, jprat.output returns a list whose elements contain the estimated values for \eqn{beta(t)}, \eqn{alpha(X,t)}, \eqn{Ft(t)} and \eqn{F_{es}(t|X, Z)} for each study (see \code{null.theta.simus.est.ciboot} for the array from)
-#'           and for a pair of studies for comparison (see \code{null.theta.simus.est.ci} for the array form)}
+#'           and for a pair of studies for comparison (see \code{null.theta.simus.est.ci} for the array form).}
 #'          \item{eflag}{an integer number to check if any error comes up while estimation algorithm is processed.
 #'                       If this value is -1, then the marginal distribution \eqn{F_{es}(t|X, Z)} has missing values (NA).}
 #'
@@ -480,10 +480,10 @@ jprat.wrapper <- function(
   ## get null theta arrays for storage ##
   #######################################
 
-  ##all_null_theta : array to store all estimates. set to NULL values
+  ##all.null.theta : array to store all estimates. set to NULL values
 
 
-  null.theta <- all_null_theta(theta.names,
+  null.theta <- all.null.theta(theta.names,
                                study.names,
                                event.names=s.names,
                                z_lab_names,
@@ -497,7 +497,7 @@ jprat.wrapper <- function(
   )
 
   ## get combi null theta arrays
-  combi.null.theta <- all_null_theta(theta.names.combi,
+  combi.null.theta <- all.null.theta(theta.names.combi,
                                      study.names=combi.names,
                                      event.names=s.names,
                                      z_lab_names,
@@ -511,7 +511,7 @@ jprat.wrapper <- function(
 
 
   ## for bootstrap
-  boot.null.theta <- all_null_theta(theta.names,
+  boot.null.theta <- all.null.theta(theta.names,
                                     study.names,
                                     event.names=s.names,
                                     z_lab_names,
@@ -523,7 +523,7 @@ jprat.wrapper <- function(
                                     la
   )
 
-  boot.combi.null.theta <- all_null_theta(theta.names.combi,
+  boot.combi.null.theta <- all.null.theta(theta.names.combi,
                                           study.names=combi.names,
                                           event.names=s.names,
                                           z_lab_names,

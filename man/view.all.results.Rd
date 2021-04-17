@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_results.R
 \name{view.all.results}
 \alias{view.all.results}
-\title{This function returns analysis results including plots and tables.}
+\title{Output of JPRAT}
 \usage{
 view.all.results(
   study.names,
@@ -48,109 +48,119 @@ view.all.results(
 )
 }
 \arguments{
-\item{study.names}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{study.names}{A character vector of name of studies used in the analysis. e.g., c("cohort", "predict", "pharos").}
 
-\item{input.data.list}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{input.data.list}{A list of datasets to be analyzed. In the case, you use datasets given from JPRAT, then there are two options:
+use list(cohort=data_cohort, predict=data_predict, pharos=data_pharos) if you choose \code{what.analyzed.separately="event" or "eventstudy"};
+otherwise use list(study1=simu_data1_model_A, study2=simu_data2_model_A) (See \code{what.analyzed.separately="none" or "study"} for option details).}
 
-\item{nonfunctional.covariate.names}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{nonfunctional.covariate.names}{A character vector for the name of the nonfunctional covariates that is used in the analysis.}
 
-\item{functional.covariate.names}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{functional.covariate.names}{A character vector for the name of the functional covariates that is used in the analysis.}
 
-\item{othercovariate.names}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{othercovariate.names}{A character vector for the name of other covariates, which are not to be analyzed but kept within data during the analysis procedure.}
 
-\item{event.outcome.names}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{event.outcome.names}{A character vector for the name of the time-to-event of interest (outcomes).}
 
-\item{delta.names}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{delta.names}{A character vector for the name of the censoring indicator for the time-to-event outcomes.}
 
-\item{time.points.for.prediction}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{time.points.for.prediction}{A vector of time points at which the predicted values of marginal distribution will be estimated. Users may encounter a warning message that "Not enough data at time points (e.g., base_age);  May have divergent in the integration while bootstrapping." We recommend that users evaluate the proportional odds model at the average of nonfunctional covariate (e.g., base_age) across all subjects in each study. This may get rid of the warning messages.}
 
-\item{time.points.for.conditional.prediction}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{time.points.for.conditional.prediction}{A vector of time points \eqn{t} at which the predicted values of conditional distribution \eqn{Pr(T <t + t_{0}| T>t)} will be estimated.}
 
-\item{time.points.for.conditional.prediction.toadd}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{time.points.for.conditional.prediction.toadd}{A vector of future time points \eqn{t_{0}} at which the predicted values of conditional distribution \eqn{Pr(T <t + t_{0} | T>t)} will be estimated.}
 
-\item{nonfunctional.covariate.value}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{nonfunctional.covariate.value}{A numeric value interested for the nonfunctional covariate. e.g., 40 for \code{base_age}, which will be used for prediction.}
 
-\item{functional.covariate.values.of.interest}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{functional.covariate.values.of.interest}{A vector of specific functional covariate values \eqn{X=x} where the smooth functional parameter \eqn{\alpha(X=x,t)} will be estimated. For example, we set \eqn{x=46,48,50} in the analysis. We recommend that the specific functional covariate values \eqn{X=x} should be chosen between the minimum and the maximum of functional covariate values. Otherwise, users may encounter a warning message.}
 
-\item{number.of.bootstraps}{ADD DETAILS HERE!}
+\item{number.of.bootstraps}{Number of iterations used in bootstrap estimation.}
 
-\item{use.functional.beta.intercept}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{use.functional.beta.intercept}{A logical value whether a functional intercept \eqn{\beta_{0}(t)} is included in the time-varying proportional odds model. The default option is TRUE.}
 
-\item{use.functional.event.coefficients}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{use.functional.event.coefficients}{A logical value whether the event specific effect \eqn{\gamma_{e}(t)} will be used in the time-varying proportional odds model. The default option is TRUE.}
 
-\item{use.functional.study.coefficients}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{use.functional.study.coefficients}{A logical value whether the study specific effect \eqn{\omega_{s}(t)} will be used in the time-varying proportional odds model. The default option is TRUE.}
 
-\item{check.study.equality}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{check.study.equality}{A logical value whether estimates are similar across studies: The default option is TRUE when what.analyzed.separately is "none"; otherwise, FALSE.}
 
-\item{estimated.parameters.common.for.all.studies}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{estimated.parameters.common.for.all.studies}{A logical value whether the model parameters are same across studies. The default option is FALSE.}
 
-\item{what.analyzed.separately}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{what.analyzed.separately}{A character value to determine whether the event information from all studies is analyzed jointly or separately with distinct or shared study parameters in the model: the options are "studyevent" (studies and event), "study", "event", or "none".}
 
-\item{estimation.when.censoring.depends.on.z}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{estimation.when.censoring.depends.on.z}{A logical value whether the estimation process assumes that a censoring distribution depends on nonfunctional covariates \eqn{Z}. If covariates \eqn{Z} does not follow a binomial distribution, then the default option is FALSE.}
 
-\item{use.bootstrap.variance}{See this argument in the \code{\link{jprat.wrapper}} function.}
+\item{use.bootstrap.variance}{A logical value whether the bootstrap variances will be evaluated. The default option is TRUE.}
 
-\item{functional.covariate.values.of.interest.ci}{a vector of specific functional covariate values of X,
- where the confidence interval of smooth functional parameter \eqn{\alpha(X=x,t)} will be estimated.
- For example, we set the values \eqn{x=46, 51} in the analysis.
- We recommend users to choose the same vector of functional covariate values X as in the interested functional covariate values (\code{functional.covariate.values.of.interest})
+\item{functional.covariate.values.of.interest.ci}{A vector of specific functional covariate values of \eqn{X},
+ where the confidence intervals of smooth functional parameter \eqn{\alpha(X=x,t)} will be estimated.
+ For example, we set the values \eqn{x=46, 51} at specific times \eqn{t}in the analysis.
+ We recommend users to choose the same vector of functional covariate values \eqn{X} as in the interested functional covariate values (\code{functional.covariate.values.of.interest})
 to ease estimation procedure in the analysis.}
 
-\item{time.points.of.interest}{a vector of specific time points at which the smooth functional parameters \eqn{\alpha(X,t)}
+\item{time.points.of.interest}{A vector of specific time points at which the smooth functional parameters \eqn{\alpha(X,t)}
 will be predicted. These time points are used to be labeled for the plot.
 For example, we set the values \eqn{x=46, 56} in the analysis.
 We recommend users to choose these time points vector as the subset of time points for prediction (\code{time.points.for.prediction}).}
 
-\item{time.points.of.interest.ci}{a vector of time points at which confidence intervals of \eqn{\alpha(X,t)} are predicted.
+\item{time.points.of.interest.ci}{A vector of time points at which confidence intervals of \eqn{\alpha(X,t)} are predicted.
 These time points are used to be labeled for the plot. For example, we set the values \eqn{x=46, 51, 56, 61, 66} in the analysis.
 We recommend that these time points vector should be chosen as the subset of time points for prediction (\code{time.points.for.prediction}) or as the same time points for estimating \eqn{\alpha(X,t)} (\code{time.points.of.interest}).}
 
-\item{label.for.alpha.values.over.time}{a vector of specific time points at which the smooth functional parameters \eqn{\alpha(X,t)} will be predicted.
+\item{label.for.alpha.values.over.time}{A vector of specific time points at which the smooth functional parameters \eqn{\alpha(X,t)} will be predicted.
 These time points are used to be labeled for the plot. Currently, we do not make a plot for the smooth functional parameters \eqn{\alpha(X,t)}.
-Default is NULL.}
+The default is NULL.}
 
-\item{color.names}{a character vector to denote which colors will be used for the labels of events of interest in plots. e.g., c("firebrick1", "darkgreen", "black").}
+\item{color.names}{A character vector to denote which colors will be used for the labels of events of interest in plots. e.g., c("firebrick1", "darkgreen", "black").}
 
-\item{legend.names}{a character vector to label event of interests in plots. e.g., c("Motor Diagnosis (DCL=4)",  "Cognitive Impairment" , "Stage II TFC").}
+\item{legend.names}{A character vector to label event of interests in plots. e.g., c("Motor Diagnosis (DCL=4)",  "Cognitive Impairment" , "Stage II TFC").}
 
-\item{functional.covariate.comparisons}{a vector of functional covariate values of X at which the smooth functional parameters \eqn{\alpha(X=x,\cdot)} were estimated and compared.
+\item{functional.covariate.comparisons}{A vector of functional covariate values of \eqn{X} at which the smooth functional parameters \eqn{\alpha(X=x,\cdot)} were estimated and compared.
 For example, the functional covariate values are \eqn{x=c(46, 51)} and the parameters of \eqn{\alpha(x=46,\cdot)} and \eqn{\alpha(x=51,\cdot)} will be compared.
-We recommend that these covariate values X should be the same as the vector of functional covariate values of X for confidence intervals (\code{functional.covariate.values.of.interest.ci}).}
+We recommend that these covariate values \eqn{X} should be the same as the vector of functional covariate values of \eqn{X}
+for confidence intervals (\code{functional.covariate.values.of.interest.ci}).}
 
-\item{functional.covariate.comparisons.for.sample.size}{a specific functional covariate values of X to use the sample size calculation,
-which will be compared across studies. Currently, we are not interested in sample size calculation. Default is NULL.}
+\item{functional.covariate.comparisons.for.sample.size}{A specific functional covariate values of \eqn{X} to use the sample size calculation,
+which will be compared across studies. Currently, we are not interested in sample size calculation. The default is NULL.}
 
-\item{do.plots}{a logical value whether the results plot will be generated. Default is TRUE.}
+\item{do.plots}{A logical value whether the plot will be generated as results. The default is TRUE.}
 
-\item{plot.confidence.intervals}{a logical value whether the confidence intervals of the predicted marginal distributions will be shown in the plot. Default is TRUE.}
+\item{plot.confidence.intervals}{A logical value whether confidence intervals of the predicted marginal distributions will be shown in the plot. The default is TRUE.}
 
-\item{add.number.at.risk.legend}{a logical value whether number of subjects who is at risks at the interested time points will be added with legends in plots.}
+\item{add.number.at.risk.legend}{A logical value whether number of subjects who are at risks at the interested time points will be added with legends in plots. The default is TRUE.}
 
-\item{ylabel.for.plots.comparing.studies}{a character value for y-label in plots when studies are comparing or event of interests were compared in each study. Default is "Probability".}
+\item{ylabel.for.plots.comparing.studies}{A character value for y-label in plots when studies are comparing or event of interests are compared in each study. The default is "Probability".}
 
-\item{xlabel.for.plots.comparing.studies}{a character value for x-label in plots when studies are comparing for each event of interest or event of interests were compared in each study. Default is "Age(years)".}
+\item{xlabel.for.plots.comparing.studies}{A character value for x-label in plots when studies are comparing for each event of interest or event of interests are compared in each study. The default is "Age(years)".}
 
-\item{file.name.for.analysis}{a character value, which is used as the part of plot names.}
+\item{file.name.for.analysis}{A character value, which is used as the part of plot names.}
 
-\item{jprat.output}{list of jprat output. See return value \code{jprat.output} in the \code{\link{jprat.wrapper}} function.}
+\item{jprat.output}{A list of estimated values. See argument \code{write.ouput} in \code{\link{jprat.wrapper}} function. If \code{write.ouput=TRUE}, the jprat function returns the results as a list of dataframes; otherwise, it returns the results as a list of arrays for the estimated values.
+See return values in \code{\link{jprat.wrapper}} function for details.}
 
-\item{nrisk}{data file for the number of subjects who is at risk at the interested the time points defined by users.
-nrisk results are flattened by time if write.output is TRUE from the function \code{\link{compute.number.at.risk.for.HD}}, otherwise it is not flattened.}
+\item{nrisk}{Data file for the number of subjects who are at risk at the interested the time points.}
 
-\item{show.results.description}{a logical value whether the description of plots and tables will be produced. Default is FALSE.}
+\item{show.results.description}{A logical value whether the description of plots and tables will be produced. The default is FALSE.}
 
-\item{is.nrisk.data.frame}{a logical value whether output for nrisk is the data frame. If users choose write.output is TRUE from the function \code{\link{compute.number.at.risk.for.HD}}, this argument should be TRUE. Otherwise, FALSE.}
+\item{is.nrisk.data.frame}{A logical value whether output for nrisk is the data frame. If write.output=TRUE  (see input argument for \code{\link{compute.number.at.risk.for.HD}} function), it should be TRUE; Otherwise, FALSE.}
 
-\item{write.jprat.output}{a logical value whether output for the jprat function will be created. If write.output=TRUE in  the  \code{\link{jprat.wrapper}} function, then it should be TRUE; FALSE otherwise.}
+\item{write.jprat.output}{A logical value whether output for the jprat function will be created. If write.output=TRUE (see input argument for \code{\link{jprat.wrapper}} function), then it should be TRUE; Otherwise, FALSE.}
 }
 \value{
-This function returns ggplots.
+This function returns the results of JPRAT algorithm via ggplots and the results whether study parameters were different using the bootstrap based joint confidence interval.
 }
 \description{
-This function returns analysis results including plots and tables.
+This function returns the results of JPRAT estimates using ggplots and
+             the evaluation of study differences between functional parameters
+             using the bootstrap-based joint confidence intervals.
 }
 \details{
-The number of risks at each time point will be printed in the plot.
+We generate two different datasets and apply them to JPRAT algorithm. One is generated by mimicking the real data used in Section 4 (Garcia et al., Biostatistics, 2017) and the other is generated using Model A (Joint model with disticnt study parameters) with parameter setting A.
+         The ggplots were shown for:
+         \itemize{
+         \item Estimated marginal distribution functions with pointwise 95% confidence band for HD motor diagnosis with age at study entry (46 years) and CAG repeat-length (40 repeats).
+         \item Predicted probability  (and error bars) an individual with 47 CAG repeats who is 46, 51, 56 experiences motor-diagnosis.
+}
 }
 \examples{
 ## remove history         ##
@@ -159,7 +169,8 @@ The number of risks at each time point will be printed in the plot.
 
 ## Four options whether study and event are analyzed separately:
 ## what.analyzed.separately="studyevent", "event", "study" or "none"
-    what.analyzed.separately= "none"
+
+     what.analyzed.separately= "none"
 
 
 ## Load your data in the list format: should match order of study.names
@@ -483,4 +494,15 @@ The number of risks at each time point will be printed in the plot.
     )
 
 
+}
+\references{
+To see the detailed description for the JPRAT estimation procedure, we refer to
+         \itemize{
+         \item Garcia, T. P., Marder, K., Wang, Y. (2017). Time-varying proportional odds model for mega-analysis of clustered event
+         times. Biostatistics, 20(1), 129-146.
+         }
+         To see the detailed real data analysis, we refer to
+         \itemize{
+         \item Garcia, T.P., Wang, Y., Shoulson, I., Paulsen, J.S. and Marder, K. (2018). Disease progression in Huntington disease:
+         An analysis of multiple longitudinal outcomes. Journal of Huntington's disease, 7, 337-344}
 }

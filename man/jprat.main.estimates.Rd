@@ -157,16 +157,16 @@ If covariates Z does not follow a binomial distribution, then the default option
 \item{z.proportions}{The marginal probability of the nonfunctional coavariate \eqn{Z}. The default value is NULL.}
 
 \item{betaest.store}{An array to store the estimated functional parameters \eqn{\beta(t)} (beta) at each time point. See the return value \code{null.theta.simus.est.ciboot}
-in the \code{\link{all_null_theta}} function.}
+in the \code{\link{all.null.theta}} function.}
 
-\item{alphasest.store}{An array to store the estimated smooth functional parameter \eqn{\alpha(X,t)} (alphas). See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimension of this array.}
+\item{alphasest.store}{An array to store the estimated smooth functional parameter \eqn{\alpha(X,t)} (alphas). See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all.null.theta}} function for the dimension of this array.}
 
-\item{Ftest.store}{An array to store the estimated marginal distribution \eqn{F_{es}(t)} (Ft). See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimension of this array.}
+\item{Ftest.store}{An array to store the estimated marginal distribution \eqn{F_{es}(t)} (Ft). See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all.null.theta}} function for the dimension of this array.}
 
 \item{Ftest.predicted.store}{An array of values for the predicted monotone marginal distributions \eqn{F_{es}(t|X, Z, t>t_{0})}
 beyond time \eqn{t_{0}} (\code{Ftest.predicted}) in the \code{\link{gamm4.estimates}} function
 and the return value \code{Ft.predicted.var.boot} in the \code{\link{boot.compare.studies}} function at each iteration.
-See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimensions of the array.}
+See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all.null.theta}} function for the dimensions of the array.}
 
 \item{combi.study}{The total number of distinct studies to be compared.}
 
@@ -178,11 +178,11 @@ See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_n
 The default value is 100. See the argument \code{number.of.bootstraps} in the \code{\link{jprat.wrapper}} function.}
 
 \item{boot.null.theta}{A list of "null.theta",  "null.theta.simus", "null.theta.simus.ci", "null.theta.ci",
-"null.theta.simus.est.ci", "null.theta.simus.est.ciboot", and ``null.theta.est.ci", which are return values in the \code{\link{all_null_theta}} function for the bootstrap estimates.
+"null.theta.simus.est.ci", "null.theta.simus.est.ciboot", and ``null.theta.est.ci", which are return values in the \code{\link{all.null.theta}} function for the bootstrap estimates.
  The label for simulation dimensions is "boot".}
 
 \item{boot.combi.null.theta}{A list of "null.theta",  null.theta.simus", "null.theta.simus.ci", "null.theta.ci", "null.theta.simus.est.ci",
-"null.theta.simus.est.ciboot", and "null.theta.est.ci", which are return values in the \code{\link{all_null_theta}} function
+"null.theta.simus.est.ciboot", and "null.theta.est.ci", which are return values in the \code{\link{all.null.theta}} function
  for comparing bootstrap estimates ("beta”, "alphas”, "Ft” and "Ft.predicted”) among different studies.
  The label for simulation dimensions is "boot".}
 
@@ -250,7 +250,7 @@ This can be done using \code{\link[mgcv]{gamm4}} in \code{\link{mgcv}} package i
 }
 \details{
 For the structure of the arrays of \code{betabootci.store}, \code{alphasbootci.store} and \code{Ftbootci.store}, see the return value of \code{null.theta.simus.est.ci}
-          in the \code{\link{all_null_theta}} function.
+          in the \code{\link{all.null.theta}} function.
          For the structure of the arrays of \code{betaest.store}, \code{alphasest.store},\code{Ftest.store}, and \code{Ftest.predicted.store},
-         see the return value of \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function.
+         see the return value of \code{null.theta.simus.est.ciboot} in the \code{\link{all.null.theta}} function.
 }
