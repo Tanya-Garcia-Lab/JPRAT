@@ -173,8 +173,8 @@ and returns the estimated JPRAT parameters using the generalized additive mixed 
 \details{
 The estimates depend on whether analysis will be performed separately or jointly. See the argument \code{analyze.separately}
          \code{\link{jprat.main.estimates}}.  For the structure of the return values (betaest, alphaest, Ftest, and Ftest.predicted), see the return value \code{null.theta.est.ci}
-         in the \code{\link{all.null.theta}} function.
+         in the \code{\link{all_null_theta}} function.
 }
 \seealso{
-jprat.main.estimates, all.null.theta
+jprat.main.estimates, all_null_theta
 }

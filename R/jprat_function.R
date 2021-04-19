@@ -55,32 +55,7 @@
 #'the estimated bootstrap variances, the lower and upper bounds of bootstrap confidence intervals were added to the last dimensions of arrays in \code{null.theta.simus}.}
 #'
 #'
-#' @examples
-#'
-#' library(JPRAT)
-#'
-#' ## input parameters
-#' theta.names=c("beta", "alphas", "Ft");
-#' study.names=c("cohort", "predict", "pharos");
-#' event.names=c("hdage_nobase", "mcione", "dep2");
-#' z_lab_names=c("base_age");
-#' x_lab_names=c(40, 46);
-#' simus=5;
-#' label.name.simus=paste("iter",1:simus,sep="");
-#' time_val=seq(40, 100, by=5);
-#' param.label=c("beta0", "beta1");
-#' time_choice.predicted=NULL;
-#' time_choice.predicted.toadd=NULL;
-#' la=1;
-#'
-#' ## List of all components to be estimated; each element has zero arrays.
-#'
-#' null.theta <- all.null.theta(theta.names, study.names, event.names=event.names,
-#'                              z_lab_names, x_lab_names, label.dim.simus=simus,
-#'                                label.name.simus=label.name.simus, time_val, param.label,
-#'                                time_choice.predicted, time_choice.predicted.toadd, la)
-#'
-all.null.theta <- function(theta.names,
+all_null_theta <- function(theta.names,
                            study.names,
                            event.names,
                            z_lab_names,
@@ -142,7 +117,6 @@ all.null.theta <- function(theta.names,
 #' @title JPRAT algorithm
 #' @description This function calls JPRAT algorithm and runs it.
 #'
-#' @aliases jprat.wrapper jprat.main.estimates  gamm4.estimates
 #'
 #' @param study.names A character vector of name of studies used in the analysis. e.g., c("cohort", "predict", "pharos").
 #' @param input.data.list A list of datasets to be analyzed. In the case, you use datasets given from JPRAT, then there are two options:
@@ -216,69 +190,8 @@ all.null.theta <- function(theta.names,
 #'                       If this value is -1, then the marginal distribution \eqn{F_{es}(t|X, Z)} has missing values (NA).}
 #'
 #' @import mgcv
-#' @examples
 #'
-#' ## See more examples man/example.R
-#'
-#' ## Study and event are analyzed separately:
-#' what.analyzed.separately= "studyevent"
-#'
-#' ## Load your data in the list format:
-#' input.data.list=list(cohort=data_cohort, predict=data_predict, pharos=data_pharos);
-#'
-#' ####################################
-#' # For JPRAT estimation: Input data #
-#' ####################################
-#'
-#' study.names=c("cohort", "predict", "pharos");
-#' othercovariate.names=c("firstyear", "lastyear");
-#' event.outcome.names=c("hdage_nobase", "mcione", "dep2");
-#' delta.names=c("delta.hdage_nobase", "delta.mcione", "delta.dep2");
-#' nonfunctional.covariate.names=c("base_age");
-#' functional.covariate.names="CAG";
-#'
-#' time.points.for.prediction=seq(46, 66, by=5);
-#' time.points.for.conditional.prediction=c(46,51, 56);
-#' time.points.for.conditional.prediction.toadd=c(5);
-#' nonfunctional.covariate.value=c(40);
-#' functional.covariate.values.of.interest=c(46, 48, 50) ;
-#'
-#' number.of.bootstraps=10;
-#' use.functional.beta.intercept= TRUE ;
-#' use.functional.event.coefficients= TRUE;
-#' use.functional.study.coefficients=TRUE;
-#' check.study.equality=FALSE
-#' estimated.parameters.common.for.all.studies=FALSE
-#'
-#' use.bootstrap.variance=TRUE;
-#' estimation.when.censoring.depends.on.z=FALSE ;
-#' write.output=TRUE;
-#'
-#' #############################################
-#' ## a function to estimate JPRAT algorithm  ##
-#' #############################################
-#'
-#' jprat.estimat.results<-jprat.wrapper(study.names=study.names,
-#'    input.data.list=input.data.list,
-#'    nonfunctional.covariate.names=nonfunctional.covariate.names,
-#'    functional.covariate.names=functional.covariate.names,
-#'    othercovariate.names=othercovariate.names,
-#'    event.outcome.names=event.outcome.names,
-#'    delta.names=delta.names,
-#'    time.points.for.prediction=time.points.for.prediction,
-#'    time.points.for.conditional.prediction=time.points.for.conditional.prediction,
-#'    time.points.for.conditional.prediction.toadd=time.points.for.conditional.prediction.toadd,
-#'    nonfunctional.covariate.value=nonfunctional.covariate.value,
-#'    functional.covariate.values.of.interest=functional.covariate.values.of.interest,
-#'    number.of.bootstraps=number.of.bootstraps,
-#'    use.functional.beta.intercept=use.functional.beta.intercept,
-#'    use.functional.event.coefficients=use.functional.event.coefficients,
-#'    use.functional.study.coefficients=use.functional.study.coefficients,
-#'    check.study.equality=check.study.equality,
-#'    estimated.parameters.common.for.all.studies=estimated.parameters.common.for.all.studies,
-#'    what.analyzed.separately=what.analyzed.separately,
-#'    estimation.when.censoring.depends.on.z=estimation.when.censoring.depends.on.z,
-#'    use.bootstrap.variance=use.bootstrap.variance, write.output=write.output)
+#' @example man/examples/example.R
 #'
 jprat.wrapper <- function(
   study.names,
@@ -480,10 +393,10 @@ jprat.wrapper <- function(
   ## get null theta arrays for storage ##
   #######################################
 
-  ##all.null.theta : array to store all estimates. set to NULL values
+  ##all_null_theta : array to store all estimates. set to NULL values
 
 
-  null.theta <- all.null.theta(theta.names,
+  null.theta <- all_null_theta(theta.names,
                                study.names,
                                event.names=s.names,
                                z_lab_names,
@@ -497,7 +410,7 @@ jprat.wrapper <- function(
   )
 
   ## get combi null theta arrays
-  combi.null.theta <- all.null.theta(theta.names.combi,
+  combi.null.theta <- all_null_theta(theta.names.combi,
                                      study.names=combi.names,
                                      event.names=s.names,
                                      z_lab_names,
@@ -511,7 +424,7 @@ jprat.wrapper <- function(
 
 
   ## for bootstrap
-  boot.null.theta <- all.null.theta(theta.names,
+  boot.null.theta <- all_null_theta(theta.names,
                                     study.names,
                                     event.names=s.names,
                                     z_lab_names,
@@ -523,7 +436,7 @@ jprat.wrapper <- function(
                                     la
   )
 
-  boot.combi.null.theta <- all.null.theta(theta.names.combi,
+  boot.combi.null.theta <- all_null_theta(theta.names.combi,
                                           study.names=combi.names,
                                           event.names=s.names,
                                           z_lab_names,

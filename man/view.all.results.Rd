@@ -166,15 +166,17 @@ We generate two different datasets and apply them to JPRAT algorithm. One is gen
 ## remove history         ##
 ## rm(list=ls(all=TRUE))  ##
 ############################
+#library(JPRAT)
 
-## Four options whether study and event are analyzed separately:
-## what.analyzed.separately="studyevent", "event", "study" or "none"
+## Choose option whether study and event are analyzed separately:
+## Four options are available for what.analyzed.separately="studyevent", "event", "study" or "none"
 
      what.analyzed.separately= "none"
 
 
 ## Load your data in the list format: should match order of study.names
-## Choose different list of data depending on the settings such as
+## Choose different datasets depending on your choice for what.analyzed.separately:
+
     if(what.analyzed.separately=="event"||what.analyzed.separately=="studyevent"){
 
        input.data.list=list(cohort=data_cohort, predict=data_predict, pharos=data_pharos);
@@ -187,9 +189,9 @@ We generate two different datasets and apply them to JPRAT algorithm. One is gen
 
 
 
-###################################################################
-##Input data for JPRAT estimation procedure: paramaeter settings ##
-###################################################################
+####################################################################
+## Input data for JPRAT estimation procedure: parameter settings  ##
+####################################################################
 
     if(what.analyzed.separately=="event"||what.analyzed.separately=="studyevent"){
 
@@ -237,7 +239,7 @@ We generate two different datasets and apply them to JPRAT algorithm. One is gen
     use.functional.study.coefficients=TRUE;
     use.bootstrap.variance=TRUE;
     estimation.when.censoring.depends.on.z=FALSE ;
-    write.output=FALSE;
+    write.output=TRUE;
 
 #############################################
 ## a function to estimate JPRAT algorithm  ##
@@ -268,6 +270,7 @@ We generate two different datasets and apply them to JPRAT algorithm. One is gen
 ##########################################################
 ## Get a table for the number of people who are at risk ##
 ##########################################################
+
     if(what.analyzed.separately=="event"||what.analyzed.separately=="studyevent"){
 
       study.names=c("cohort", "predict", "pharos");
@@ -308,8 +311,10 @@ We generate two different datasets and apply them to JPRAT algorithm. One is gen
       estimated.parameters.common.for.all.studies=TRUE
     }
 
+###############################################################################
+## a function to create a table for the number of patients who are at risk   ##
+###############################################################################
 
-## a function to create a table for the number of patients who are at risk
     number.at.risk <- compute.number.at.risk.for.HD(study.names,
      input.data.list,
      event.outcome.names,
@@ -319,7 +324,7 @@ We generate two different datasets and apply them to JPRAT algorithm. One is gen
      functional.covariate.values.of.interest,
      time.points.for.prediction,
      estimated.parameters.common.for.all.studies,
-     write.output=FALSE
+     write.output=TRUE
      )
 
 
@@ -338,8 +343,8 @@ We generate two different datasets and apply them to JPRAT algorithm. One is gen
       time.points.for.prediction=seq(46, 66, by=5);
       functional.covariate.values.of.interest=c(46, 48, 50) ;
       nonfunctional.covariate.value=c(40);
-      color.names=c("firebrick1", "darkgreen", "black"); ## for color.label.key
-      legend.names=c("Motor Diagnosis (DCL=4)") #, "Cognitive Impairment", "Stage II TFC")
+      color.names=c("firebrick1", "darkgreen", "black");
+      legend.names=c("Motor Diagnosis (DCL=4)");
 
 
     }else{
@@ -351,8 +356,8 @@ We generate two different datasets and apply them to JPRAT algorithm. One is gen
       time.points.for.prediction=  c(seq(40,60,by=1))
       functional.covariate.values.of.interest=c(42);
       nonfunctional.covariate.value=c(42);
-      color.names=c("firebrick1", "darkgreen"); ## for color.label.key
-      legend.names=c("event1", "event2"); #c("Motor Diagnosis (DCL=4)", "Cognitive Impairment")
+      color.names=c("firebrick1", "darkgreen");
+      legend.names=c("event1", "event2");
 
     }
 
@@ -365,22 +370,29 @@ We generate two different datasets and apply them to JPRAT algorithm. One is gen
     file.name.for.analysis="test" ## figure names
     show.results.description=TRUE;
 
+
+## is.nrisk.data.frame=TRUE when users choose write.output=TRUE
+## and output for nrisk returns as the form of dataframe.
+## is.nrisk.data.frame=FALSE when users choose write.output=FALSE
+## and output for nrisk returns as an array form.
+## users need to choose write.jprat.output=TRUE in jprat.wrapper function;
+## FALSE otherwise.
+
+
     if(write.output==TRUE){
-    is.nrisk.data.frame=TRUE;      ##so is.nrisk.data.frame=TRUE.
-                         ## if users choose write.output=FALSE, then nrisk is array form,
-                          ## so is.nrisk.data.frame=FALSE.
-    write.jprat.output=TRUE; ## users need to choose write.jprat.output=TRUE
-                            ## when they choose write.output=TRUE in jprat function;
-                            ## FALSE otherwise.
+
+    is.nrisk.data.frame=TRUE;
+    write.jprat.output=TRUE;
+
     }else{
       is.nrisk.data.frame=FALSE;
       write.jprat.output=FALSE;
     }
 
-    ####################################
-    ## functions to get default values #
-    ####################################
-    #default.options<-default.options.for.data.setting()
+
+####################################
+## functions to get default values #
+####################################
 
     if(what.analyzed.separately=="studyevent"){
 
@@ -404,24 +416,16 @@ We generate two different datasets and apply them to JPRAT algorithm. One is gen
 
     }
 
-    # reformatted.data.for.analysis.results<-data.reformatted.for.analysis.results(
-    #   study.names, event.outcome.names,
-    #   color.names, legend.names,
-    #   which.nonfunctional.covariate.comparisons)
 
-    ## obtain default values
-    ## default values
-    #use_real_data<-default.options$use_real_data
-    #combine.data<-default.options$combine.data
-
-    ## datasets are reformatted, so that results plots and tables can be produced;
-    #num_study<-reformatted.data.for.analysis.results$num_study;
+    ## allocate jprat outputs
     jprat.output<-jprat.estimat.results$jprat.output
     nrisk<-number.at.risk
 
 
+##################################################################
+## a function to display all results including tables and plots ##
+##################################################################
 
-## a function to display all results including tables and plots
     results.out <- view.all.results(
       ############################
       # arguments for JPRAT     ##
@@ -458,7 +462,6 @@ We generate two different datasets and apply them to JPRAT algorithm. One is gen
       time.points.of.interest,
       time.points.of.interest.ci,
       label.for.alpha.values.over.time=NULL,
-      #which.nonfunctional.covariate.comparisons,
       color.names=color.names, ## returns color.labels
       legend.names=legend.names, ## returns legend.labels
       functional.covariate.comparisons=functional.covariate.comparisons,
@@ -478,12 +481,7 @@ We generate two different datasets and apply them to JPRAT algorithm. One is gen
       #######################
       ## Output from JPRAT ##
       #######################
-      #data.truth=data.truth,
-      #data.theta=data.theta,
-      #data.combi=data.combi,
       jprat.output=jprat.output,
-      #data.count=data.count,
-      #data.count.outside=data.count.outside,
       nrisk=nrisk,
       #####################################
       ## Do we show results description? ##

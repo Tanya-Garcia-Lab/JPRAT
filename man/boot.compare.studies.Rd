@@ -136,11 +136,11 @@ If covariates Z does not follow a binomial distribution, then the default option
 \item{link.type}{A character value for the name of the link function for the additive mixed effect model (the generalized linear model): "logit” for proportional odds model or "cloglog" for cox proportional hazards. See the argument \code{glm.link.type} in the \code{\link{jprat.wrapper}} function.}
 
 \item{boot.null.theta}{A list of "null.theta",  "null.theta.simus", "null.theta.simus.ci", "null.theta.ci",
-"null.theta.simus.est.ci", "null.theta.simus.est.ciboot", and ``null.theta.est.ci", which are return values in the \code{\link{all.null.theta}} function for the bootstrap estimates.
+"null.theta.simus.est.ci", "null.theta.simus.est.ciboot", and ``null.theta.est.ci", which are return values in the \code{\link{all_null_theta}} function for the bootstrap estimates.
  The label for simulation dimensions is "boot".}
 
 \item{boot.combi.null.theta}{A list of "null.theta",  null.theta.simus", "null.theta.simus.ci", "null.theta.ci", "null.theta.simus.est.ci",
-"null.theta.simus.est.ciboot", and "null.theta.est.ci", which are return values in the \code{\link{all.null.theta}} function
+"null.theta.simus.est.ciboot", and "null.theta.est.ci", which are return values in the \code{\link{all_null_theta}} function
  for comparing bootstrap estimates ("beta”, "alphas”, "Ft” and "Ft.predicted”) among different studies.
  The label for simulation dimensions is "boot".}
 
@@ -163,30 +163,30 @@ A list of
                   between a pair of studies at each time point for each clinical event,
                   which includes the estimated bootstrap variances,
                   the lower and upper bounds of the bootstrap confidence intervals for \eqn{\beta(t)}.
-                  See \code{null.theta.ci} in the \code{[\link{all.null.theta}]} for the dimension of this array.}
+                  See \code{null.theta.ci} in the \code{[\link{all_null_theta}]} for the dimension of this array.}
 \item{alphasbootci}{A multi-dimensional array for the differences of estimated bootstrap smooth functional parameters \eqn{\alpha(X, t)}
                     between a pair of studies at each time point and the functional covariate value X for each clinical event.
-                    See \code{null.theta.ci} in the \code{[\link{all.null.theta}]} for the dimension of this array.}
+                    See \code{null.theta.ci} in the \code{[\link{all_null_theta}]} for the dimension of this array.}
 \item{Ftbootci}{A multi-dimensional array for the differences of estimated bootstrap marginal distribution \eqn{Ft_{es}(t|X, Z)}
                 between a pair of studies at each time point, each functional covariate value X and
                 each nonfunctional covariate value Z for each clinical event.
-                See \code{null.theta.ci} in the \code{[\link{all.null.theta}]} for the dimension of this array.}
+                See \code{null.theta.ci} in the \code{[\link{all_null_theta}]} for the dimension of this array.}
 \item{beta.var.boot}{A multi-dimensional array for the estimated bootstrap functional parameters \eqn{\beta(t)} at each time point
                      and each clinical event per study, which includes values of the estimated bootstrap variances,
                      the lower and the upper bounds of confidence intervals for \eqn{\beta(t)}.
-                     See \code{null.theta.ci} in the \code{[\link{all.null.theta}]} for the dimension of this array.}
+                     See \code{null.theta.ci} in the \code{[\link{all_null_theta}]} for the dimension of this array.}
 \item{alphas.var.boot}{A multi-dimensional array for the estimated bootstrap smooth functional parameters \eqn{\alpha(X, t)} at each time point
                        and each functional covariate value X for each clinical event per study.
-                       See \code{null.theta.ci} in the \code{[\link{all.null.theta}]} for the dimension of this array.}
+                       See \code{null.theta.ci} in the \code{[\link{all_null_theta}]} for the dimension of this array.}
 \item{Ft.var.boot}{A multi-dimensional array for the estimated bootstrap marginal distribution \eqn{Ft_{es}(t|X, Z)}
                    at each time point, each functional covariate value X
                    and each nonfunctional covariate value Z for each clinical event per study.
-                   See \code{null.theta.ci} in the \code{[\link{all.null.theta}]} for the dimension of this array.}
+                   See \code{null.theta.ci} in the \code{[\link{all_null_theta}]} for the dimension of this array.}
 \item{Ft.predicted.var.boot}{A multi-dimensional array for the estimated predcited bootstrap marginal distribution \eqn{Ft_{es}(t|X, Z, t>t_{0})}
                             at each time \eqn{t},
                             each functional covariate value X and each nonfunctional covariate value Z for each clinical event per study
                             given that a subject does not experience each event by \eqn{t_0}.
-                            See \code{null.theta.ci} in the \code{[\link{all.null.theta}]} for the dimension of this array.}
+                            See \code{null.theta.ci} in the \code{[\link{all_null_theta}]} for the dimension of this array.}
 \item{count.store.boot}{a data frame for the bootstrap rate of event times for uncensored, censored, uncensored but zero, and other cases,
                         which depends on the binary status of the event for each subject: "zero" (censored), "one" (uncensored), or "others" (missing).
                         See "count.store" in the \code{\link{gamm4.estimates}} for details.}

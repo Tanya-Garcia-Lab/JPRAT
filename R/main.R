@@ -11,8 +11,7 @@
 #' which assesses if functional terms between studies differ over a range of time points.
 #' It uses the maximizing double penalized quasi-likelihood (DPQL) to estimate the JPRAT parameters and coefficients
 #' and the generalized approximate cross-validation for the smoothing parameters \eqn{\lambda}.
-#' This can be done using \code{\link[mgcv]{gamm4}} in \code{\link{mgcv}} package in R.
-#' @aliases jprat.wrapper gamm4.estimates jprat.main.estimates
+#' This can be done using \code{gamm4} function in \code{\link{mgcv}} package in R.
 #'
 #' @param method A character value for which estimation procedure will be used to estimate all parameters of the additive logistic mixed effects model: "gamm4" or "new".
 #' The default option is "gamm4".
@@ -31,7 +30,7 @@
 #'             the pseudo-values (ytest).
 #' @param num_time A length of the vector of time points at which the predicted values of marginal distributions will be estimated.
 #'                 See the argument \code{time.points.for.prediction} in the \code{\link{jprat.wrapper}} function.
-#' @inheritParams all.null.theta
+#' @inheritParams all_null_theta
 #' @param null.theta A list of all estimated parameters and coefficients ("beta", "alphas", "Ft" and ``Ft.predicted") in the model.
 #'             Each element of the list contains arrays of zeros at the specific time points, the values of covariates and the event of interest in each study,
 #'             whose dimension is determined by the length of studies, events, time points where prediction occurs, and coefficients of the nonfunctional covariates.
@@ -67,23 +66,23 @@
 #' @param link.type A character value for the name of the link function for the additive mixed effect model (the generalized linear model): "logit” for proportional odds model or "cloglog" for cox proportional hazards. See the argument \code{glm.link.type} in the \code{\link{jprat.wrapper}} function.
 #' @param z.proportions The marginal probability of the nonfunctional coavariate \eqn{Z}. The default value is NULL.
 #' @param betaest.store An array to store the estimated functional parameters \eqn{\beta(t)} (beta) at each time point. See the return value \code{null.theta.simus.est.ciboot}
-#'                       in the \code{\link{all.null.theta}} function.
-#' @param alphasest.store An array to store the estimated smooth functional parameter \eqn{\alpha(X,t)} (alphas). See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all.null.theta}} function for the dimension of this array.
-#' @param Ftest.store An array to store the estimated marginal distribution \eqn{F_{es}(t)} (Ft). See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all.null.theta}} function for the dimension of this array.
+#'                       in the \code{\link{all_null_theta}} function.
+#' @param alphasest.store An array to store the estimated smooth functional parameter \eqn{\alpha(X,t)} (alphas). See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimension of this array.
+#' @param Ftest.store An array to store the estimated marginal distribution \eqn{F_{es}(t)} (Ft). See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimension of this array.
 #' @param Ftest.predicted.store An array of values for the predicted monotone marginal distributions \eqn{F_{es}(t|X, Z, t>t_{0})}
 #'                              beyond time \eqn{t_{0}} (\code{Ftest.predicted}) in the \code{\link{gamm4.estimates}} function
 #'                              and the return value \code{Ft.predicted.var.boot} in the \code{\link{boot.compare.studies}} function at each iteration.
-#'                              See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all.null.theta}} function for the dimensions of the array.
+#'                              See the return value \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function for the dimensions of the array.
 #' @param combi.study The total number of distinct studies to be compared.
 #' @param combi.choice A matrix of all combination of two pairs of studies to be compared (paired in column-wise), whose dimension is 2 by the total number of studies (\code{combi.study}).
 #' @param combi.names A character vector of names for the pairs of study combinations. For example, cohort-predict, cohort-pharos, predict-pharos.
 #' @param boot  The number of bootstrap iterations. The bootstrap procedure is to do hypothesis testing, which compares functional parameters over the time points among studies.
 #'              The default value is 100. See the argument \code{number.of.bootstraps} in the \code{\link{jprat.wrapper}} function.
 #' @param boot.null.theta A list of "null.theta",  "null.theta.simus", "null.theta.simus.ci", "null.theta.ci",
-#'                        "null.theta.simus.est.ci", "null.theta.simus.est.ciboot", and ``null.theta.est.ci", which are return values in the \code{\link{all.null.theta}} function for the bootstrap estimates.
+#'                        "null.theta.simus.est.ci", "null.theta.simus.est.ciboot", and ``null.theta.est.ci", which are return values in the \code{\link{all_null_theta}} function for the bootstrap estimates.
 #'                         The label for simulation dimensions is "boot".
 #' @param boot.combi.null.theta A list of "null.theta",  null.theta.simus", "null.theta.simus.ci", "null.theta.ci", "null.theta.simus.est.ci",
-#'                              "null.theta.simus.est.ciboot", and "null.theta.est.ci", which are return values in the \code{\link{all.null.theta}} function
+#'                              "null.theta.simus.est.ciboot", and "null.theta.est.ci", which are return values in the \code{\link{all_null_theta}} function
 #'                               for comparing bootstrap estimates ("beta”, "alphas”, "Ft” and "Ft.predicted”) among different studies.
 #'                               The label for simulation dimensions is "boot".
 #' @param betabootci.store A multi-dimensional zero array to store the bootstrap estimated functional parameters \eqn{\beta(t)} for comparing study differences.
@@ -135,9 +134,9 @@
 #'                      and the bootstrap estimates (see return value \code{Ftbootci} in the \code{\link{boot.compare.studies}} function)
 #'                      at each iteration. }
 #' @details For the structure of the arrays of \code{betabootci.store}, \code{alphasbootci.store} and \code{Ftbootci.store}, see the return value of \code{null.theta.simus.est.ci}
-#'           in the \code{\link{all.null.theta}} function.
+#'           in the \code{\link{all_null_theta}} function.
 #'          For the structure of the arrays of \code{betaest.store}, \code{alphasest.store},\code{Ftest.store}, and \code{Ftest.predicted.store},
-#'          see the return value of \code{null.theta.simus.est.ciboot} in the \code{\link{all.null.theta}} function.
+#'          see the return value of \code{null.theta.simus.est.ciboot} in the \code{\link{all_null_theta}} function.
 #' @import abind
 #' @import gamm4
 #'
@@ -384,7 +383,7 @@ jprat.main.estimates<-function(method="gamm4",
 #' @description This function returns the estimated jack-knife pseudo-values using the Kaplan-Meier estimator
 #' and returns the estimated JPRAT parameters using the generalized additive mixed model (\code{\link{gamm4}}) in \code{\link{mgcv}}.
 #' @inheritParams jprat.main.estimates
-#' @inheritParams all.null.theta
+#' @inheritParams all_null_theta
 #' @param null.theta A list of all estimated parameters and coefficients ("beta", "alphas", "Ft" and ``Ft.predicted") in the model.
 #'                  Each element of the list contains arrays of zeros at the specific time points, the values of covariates and the event of interest in each study,
 #'                  whose dimension is determined by the length of studies, events, time points
@@ -426,9 +425,9 @@ jprat.main.estimates<-function(method="gamm4",
 #'
 #' @details The estimates depend on whether analysis will be performed separately or jointly. See the argument \code{analyze.separately}
 #'          \code{\link{jprat.main.estimates}}.  For the structure of the return values (betaest, alphaest, Ftest, and Ftest.predicted), see the return value \code{null.theta.est.ci}
-#'          in the \code{\link{all.null.theta}} function.
+#'          in the \code{\link{all_null_theta}} function.
 #'
-#' @seealso jprat.main.estimates, all.null.theta
+#' @seealso jprat.main.estimates, all_null_theta
 #'
 #' @import gamm4
 #' @export
@@ -514,7 +513,7 @@ gamm4.estimates <- function(arbitrary, num_study, np,
 #' @description This function uses the bootstrap-based joint confidence intervals to test if functional parameters between studies differ over a range of time points.
 #' It determines which model would be suitable for the JPRAT estimation.
 #' @inheritParams jprat.main.estimates
-#' @inheritParams all.null.theta
+#' @inheritParams all_null_theta
 #' @param knot.length The number of knots used to construct the basis functions.
 #' @param est.values A list of arrays of the estimates ("est") for the functional coefficient \eqn{\beta(t)},
 #'        the smooth functional coefficient \eqn{\alpha(X,t)},
@@ -540,30 +539,30 @@ gamm4.estimates <- function(arbitrary, num_study, np,
 #'                   between a pair of studies at each time point for each clinical event,
 #'                   which includes the estimated bootstrap variances,
 #'                   the lower and upper bounds of the bootstrap confidence intervals for \eqn{\beta(t)}.
-#'                   See \code{null.theta.ci} in the \code{[\link{all.null.theta}]} for the dimension of this array.}
+#'                   See \code{null.theta.ci} in the \code{[\link{all_null_theta}]} for the dimension of this array.}
 #' \item{alphasbootci}{A multi-dimensional array for the differences of estimated bootstrap smooth functional parameters \eqn{\alpha(X, t)}
 #'                     between a pair of studies at each time point and the functional covariate value X for each clinical event.
-#'                     See \code{null.theta.ci} in the \code{[\link{all.null.theta}]} for the dimension of this array.}
+#'                     See \code{null.theta.ci} in the \code{[\link{all_null_theta}]} for the dimension of this array.}
 #' \item{Ftbootci}{A multi-dimensional array for the differences of estimated bootstrap marginal distribution \eqn{Ft_{es}(t|X, Z)}
 #'                 between a pair of studies at each time point, each functional covariate value X and
 #'                 each nonfunctional covariate value Z for each clinical event.
-#'                 See \code{null.theta.ci} in the \code{[\link{all.null.theta}]} for the dimension of this array.}
+#'                 See \code{null.theta.ci} in the \code{[\link{all_null_theta}]} for the dimension of this array.}
 #' \item{beta.var.boot}{A multi-dimensional array for the estimated bootstrap functional parameters \eqn{\beta(t)} at each time point
 #'                      and each clinical event per study, which includes values of the estimated bootstrap variances,
 #'                      the lower and the upper bounds of confidence intervals for \eqn{\beta(t)}.
-#'                      See \code{null.theta.ci} in the \code{[\link{all.null.theta}]} for the dimension of this array.}
+#'                      See \code{null.theta.ci} in the \code{[\link{all_null_theta}]} for the dimension of this array.}
 #' \item{alphas.var.boot}{A multi-dimensional array for the estimated bootstrap smooth functional parameters \eqn{\alpha(X, t)} at each time point
 #'                        and each functional covariate value X for each clinical event per study.
-#'                        See \code{null.theta.ci} in the \code{[\link{all.null.theta}]} for the dimension of this array.}
+#'                        See \code{null.theta.ci} in the \code{[\link{all_null_theta}]} for the dimension of this array.}
 #' \item{Ft.var.boot}{A multi-dimensional array for the estimated bootstrap marginal distribution \eqn{Ft_{es}(t|X, Z)}
 #'                    at each time point, each functional covariate value X
 #'                    and each nonfunctional covariate value Z for each clinical event per study.
-#'                    See \code{null.theta.ci} in the \code{[\link{all.null.theta}]} for the dimension of this array.}
+#'                    See \code{null.theta.ci} in the \code{[\link{all_null_theta}]} for the dimension of this array.}
 #' \item{Ft.predicted.var.boot}{A multi-dimensional array for the estimated predcited bootstrap marginal distribution \eqn{Ft_{es}(t|X, Z, t>t_{0})}
 #'                             at each time \eqn{t},
 #'                             each functional covariate value X and each nonfunctional covariate value Z for each clinical event per study
 #'                             given that a subject does not experience each event by \eqn{t_0}.
-#'                             See \code{null.theta.ci} in the \code{[\link{all.null.theta}]} for the dimension of this array.}
+#'                             See \code{null.theta.ci} in the \code{[\link{all_null_theta}]} for the dimension of this array.}
 #' \item{count.store.boot}{a data frame for the bootstrap rate of event times for uncensored, censored, uncensored but zero, and other cases,
 #'                         which depends on the binary status of the event for each subject: "zero" (censored), "one" (uncensored), or "others" (missing).
 #'                         See "count.store" in the \code{\link{gamm4.estimates}} for details.}
@@ -4772,7 +4771,7 @@ appendList <- function (x, val){
 
 
 #############################################
-# dependent function for all.null.theta     #
+# dependent function for all_null_theta     #
 #############################################
 
 get.null.theta <- function(theta.names,
@@ -4882,7 +4881,7 @@ get.null.theta <- function(theta.names,
 }
 
 #######################################################################
-## add dimension to null array: dependent function for all.null.theta #
+## add dimension to null array: dependent function for all_null_theta #
 #######################################################################
 
 add.dimension.null <- function(null.theta,location,label.dim,label.name){
@@ -9195,7 +9194,7 @@ sort.results <- function(
   ## get necessary information
 
   ## get null theta arrays
-  null.theta <- all.null.theta(theta.names,
+  null.theta <- all_null_theta(theta.names,
                                study.names,
                                event.names=s.names,
                                z_lab_names,
@@ -9207,7 +9206,7 @@ sort.results <- function(
   )
 
   ## get combi null theta arrays
-  combi.null.theta <- all.null.theta(theta.names.combi,
+  combi.null.theta <- all_null_theta(theta.names.combi,
                                      study.names=combi.names,
                                      event.names=s.names,
                                      z_lab_names,
@@ -9368,7 +9367,7 @@ sort.results <- function(
 #   ## get necessary information
 #
 #   ## get null theta arrays
-#   null.theta <- all.null.theta(theta.names,
+#   null.theta <- all_null_theta(theta.names,
 #                                study.names,
 #                                event.names=s.names,
 #                                z_lab_names,
@@ -9380,7 +9379,7 @@ sort.results <- function(
 #   )
 #
 #   ## get combi null theta arrays
-#   combi.null.theta <- all.null.theta(theta.names.combi,
+#   combi.null.theta <- all_null_theta(theta.names.combi,
 #                                      study.names=combi.names,
 #                                      event.names=s.names,
 #                                      z_lab_names,
