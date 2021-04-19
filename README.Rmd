@@ -9,7 +9,6 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "man/figures/README-",
   out.width = "100%"
 )
 ```
@@ -35,17 +34,19 @@ devtools::install_github("unkyunglee/JPRAT")
 We applied two different data sets to run JPRAT function and get results depending on whether study and event are analyzed separately.
 
 
-```{r usage, echo = T,  results="hide", message=FALSE, warning=FALSE}
+```{r usage, echo = F,  results="hide", message=FALSE, warning=FALSE}
 library(JPRAT)
 
 
-## Four options whether study and event are analyzed separately:
-## what.analyzed.separately="studyevent", "event", "study" or "none"
-what.analyzed.separately= "studyevent"
+## Choose option whether study and event are analyzed separately:
+## Four options are available for what.analyzed.separately="studyevent", "event", "study" or "none"
+
+     what.analyzed.separately= "none"
 
 
 ## Load your data in the list format: should match order of study.names
-## Choose different list of data depending on the settings such as
+## Choose different datasets depending on your choice for what.analyzed.separately:
+
     if(what.analyzed.separately=="event"||what.analyzed.separately=="studyevent"){
 
        input.data.list=list(cohort=data_cohort, predict=data_predict, pharos=data_pharos);
@@ -56,9 +57,11 @@ what.analyzed.separately= "studyevent"
     }
 
 
-###################################################################
-##Input data for JPRAT estimation procedure: paramaeter settings ##
-###################################################################
+
+
+####################################################################
+## Input data for JPRAT estimation procedure: parameter settings  ##
+####################################################################
 
     if(what.analyzed.separately=="event"||what.analyzed.separately=="studyevent"){
 
@@ -69,6 +72,11 @@ what.analyzed.separately= "studyevent"
       delta.names=c("delta.hdage_nobase", "delta.mcione", "delta.dep2");
       nonfunctional.covariate.names=c("base_age");
       functional.covariate.names="CAG";
+      time.points.for.prediction=seq(46, 66, by=5);
+      time.points.for.conditional.prediction=c(46,51, 56);
+      time.points.for.conditional.prediction.toadd=c(5);
+      nonfunctional.covariate.value=c(40);
+      functional.covariate.values.of.interest=c(46, 48, 50) ;
 
     }else if(what.analyzed.separately== "none"||what.analyzed.separately=="study"){
 
@@ -78,34 +86,14 @@ what.analyzed.separately= "studyevent"
       delta.names=c("delta.event1", "delta.event2");
       nonfunctional.covariate.names=c("base_age");
       functional.covariate.names="CAG";
+      time.points.for.prediction=  c(seq(40,60,by=1));
+      time.points.for.conditional.prediction=c(40, 55);
+      time.points.for.conditional.prediction.toadd=c(5,10);
+      nonfunctional.covariate.value=c(42);
+      functional.covariate.values.of.interest=c(42);
 
     }
 
-
-    if(what.analyzed.separately=="event"||what.analyzed.separately=="studyevent"){
-
-        time.points.for.prediction=seq(46, 66, by=5);
-        time.points.for.conditional.prediction=c(46,51, 56);
-        time.points.for.conditional.prediction.toadd=c(5);
-        nonfunctional.covariate.value=c(40);
-        functional.covariate.values.of.interest=c(46, 48, 50) ;
-
-    }else if(what.analyzed.separately=="none"||what.analyzed.separately=="study"){
-
-
-        time.points.for.prediction=  c(seq(40,60,by=1))
-        time.points.for.conditional.prediction=c(40, 55);
-        time.points.for.conditional.prediction.toadd=c(5,10);
-        nonfunctional.covariate.value=c(42)
-        functional.covariate.values.of.interest=c(42)
-
-    }
-
-
-    number.of.bootstraps=10;
-    use.functional.beta.intercept= TRUE ;
-    use.functional.event.coefficients= TRUE;
-    use.functional.study.coefficients=TRUE;
 
     if(what.analyzed.separately!="none"){
       check.study.equality=FALSE
@@ -115,11 +103,13 @@ what.analyzed.separately= "studyevent"
       estimated.parameters.common.for.all.studies=TRUE
     }
 
+    number.of.bootstraps=10;
+    use.functional.beta.intercept= TRUE ;
+    use.functional.event.coefficients= TRUE;
+    use.functional.study.coefficients=TRUE;
     use.bootstrap.variance=TRUE;
     estimation.when.censoring.depends.on.z=FALSE ;
-    write.output=FALSE;
-    
-    
+    write.output=TRUE;
 
 #############################################
 ## a function to estimate JPRAT algorithm  ##
@@ -150,6 +140,7 @@ what.analyzed.separately= "studyevent"
 ##########################################################
 ## Get a table for the number of people who are at risk ##
 ##########################################################
+
     if(what.analyzed.separately=="event"||what.analyzed.separately=="studyevent"){
 
       study.names=c("cohort", "predict", "pharos");
@@ -190,8 +181,10 @@ what.analyzed.separately= "studyevent"
       estimated.parameters.common.for.all.studies=TRUE
     }
 
+###############################################################################
+## a function to create a table for the number of patients who are at risk   ##
+###############################################################################
 
-## a function to create a table for the number of patients who are at risk
     number.at.risk <- compute.number.at.risk.for.HD(study.names,
      input.data.list,
      event.outcome.names,
@@ -201,11 +194,12 @@ what.analyzed.separately= "studyevent"
      functional.covariate.values.of.interest,
      time.points.for.prediction,
      estimated.parameters.common.for.all.studies,
-     write.output=FALSE
+     write.output=TRUE
      )
 
-    
-    
+
+
+
 ##############################
 ## parameters to get results #
 ##############################
@@ -216,6 +210,12 @@ what.analyzed.separately= "studyevent"
       time.points.of.interest= c(46, 56);
       time.points.of.interest.ci=seq(46, 66, by=5);
       functional.covariate.comparisons=c(46, 51);
+      time.points.for.prediction=seq(46, 66, by=5);
+      functional.covariate.values.of.interest=c(46, 48, 50) ;
+      nonfunctional.covariate.value=c(40);
+      color.names=c("firebrick1", "darkgreen", "black");
+      legend.names=c("Motor Diagnosis (DCL=4)");
+
 
     }else{
 
@@ -223,37 +223,14 @@ what.analyzed.separately= "studyevent"
       time.points.of.interest= c(40, 55);
       time.points.of.interest.ci=seq(40, 60, by=5);# c(seq(40,60,by=1))
       functional.covariate.comparisons=c(40, 55);
+      time.points.for.prediction=  c(seq(40,60,by=1))
+      functional.covariate.values.of.interest=c(42);
+      nonfunctional.covariate.value=c(42);
+      color.names=c("firebrick1", "darkgreen");
+      legend.names=c("event1", "event2");
 
     }
 
-
-
-      if(what.analyzed.separately=="event"||what.analyzed.separately=="studyevent"){
-
-        time.points.for.prediction=seq(46, 66, by=5);
-        functional.covariate.values.of.interest=c(46, 48, 50) ;
-        nonfunctional.covariate.value=c(40);
-
-      }else if(what.analyzed.separately=="none"||what.analyzed.separately=="study"){
-
-        time.points.for.prediction=  c(seq(40,60,by=1))
-        functional.covariate.values.of.interest=c(42);
-        nonfunctional.covariate.value=c(42);
-
-      }
-
-
-    if(what.analyzed.separately=="event"||what.analyzed.separately=="studyevent"){
-
-        color.names=c("firebrick1", "darkgreen", "black"); ## for color.label.key
-        legend.names=c("Motor Diagnosis (DCL=4)") #, "Cognitive Impairment", "Stage II TFC")
-
-    }else if(what.analyzed.separately=="none"||what.analyzed.separately=="study"){
-
-      color.names=c("firebrick1", "darkgreen"); ## for color.label.key
-      legend.names=c("event1", "event2"); #c("Motor Diagnosis (DCL=4)", "Cognitive Impairment")
-
-    }
 
     do.plots=TRUE;
     plot.confidence.intervals=TRUE;
@@ -263,24 +240,29 @@ what.analyzed.separately= "studyevent"
     file.name.for.analysis="test" ## figure names
     show.results.description=TRUE;
 
+
+## is.nrisk.data.frame=TRUE when users choose write.output=TRUE 
+## and output for nrisk returns as the form of dataframe.
+## is.nrisk.data.frame=FALSE when users choose write.output=FALSE 
+## and output for nrisk returns as an array form.
+## users need to choose write.jprat.output=TRUE in jprat.wrapper function; 
+## FALSE otherwise.
+
+
     if(write.output==TRUE){
-    is.nrisk.data.frame=TRUE;      ##so is.nrisk.data.frame=TRUE.
-                         ## if users choose write.output=FALSE, then nrisk is array form,
-                          ## so is.nrisk.data.frame=FALSE.
-    write.jprat.output=TRUE; ## users need to choose write.jprat.output=TRUE
-                            ## when they choose write.output=TRUE in jprat function;
-                            ## FALSE otherwise.
+
+    is.nrisk.data.frame=TRUE;      
+    write.jprat.output=TRUE;     
+    
     }else{
       is.nrisk.data.frame=FALSE;
       write.jprat.output=FALSE;
     }
-    ####################################
-    ## functions to get default values #
-    ####################################
-    #default.options<-default.options.for.data.setting()
 
-
-
+    
+####################################
+## functions to get default values #
+####################################
 
     if(what.analyzed.separately=="studyevent"){
 
@@ -304,10 +286,16 @@ what.analyzed.separately= "studyevent"
 
     }
 
+
+    ## allocate jprat outputs
     jprat.output<-jprat.estimat.results$jprat.output
     nrisk<-number.at.risk
-    
-## a function to display all results including tables and plots
+
+
+##################################################################
+## a function to display all results including tables and plots ##
+##################################################################
+
     results.out <- view.all.results(
       ############################
       # arguments for JPRAT     ##
@@ -344,7 +332,6 @@ what.analyzed.separately= "studyevent"
       time.points.of.interest,
       time.points.of.interest.ci,
       label.for.alpha.values.over.time=NULL,
-      #which.nonfunctional.covariate.comparisons,
       color.names=color.names, ## returns color.labels
       legend.names=legend.names, ## returns legend.labels
       functional.covariate.comparisons=functional.covariate.comparisons,
@@ -364,12 +351,7 @@ what.analyzed.separately= "studyevent"
       #######################
       ## Output from JPRAT ##
       #######################
-      #data.truth=data.truth,
-      #data.theta=data.theta,
-      #data.combi=data.combi,
       jprat.output=jprat.output,
-      #data.count=data.count,
-      #data.count.outside=data.count.outside,
       nrisk=nrisk,
       #####################################
       ## Do we show results description? ##
@@ -378,6 +360,8 @@ what.analyzed.separately= "studyevent"
       is.nrisk.data.frame=is.nrisk.data.frame,
       write.jprat.output=write.jprat.output
     )
+
+
 
 
 ```
