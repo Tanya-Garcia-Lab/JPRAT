@@ -117,10 +117,7 @@ The Joint Progression of Risk Assessment Tool (JPRAT) evaluates and compares all
 }
 }
 \examples{
-## remove history         ##
-## rm(list=ls(all=TRUE))  ##
-############################
-#library(JPRAT)
+library(JPRAT)
 
 ## Choose option whether study and event are analyzed separately:
 ## Four options are available for what.analyzed.separately="studyevent", "event", "study" or "none"
@@ -193,6 +190,7 @@ The Joint Progression of Risk Assessment Tool (JPRAT) evaluates and compares all
     use.functional.study.coefficients=TRUE;
     use.bootstrap.variance=TRUE;
     estimation.when.censoring.depends.on.z=FALSE ;
+    estimate.variances="est"
     write.output=TRUE;
 
 #############################################
@@ -219,7 +217,9 @@ The Joint Progression of Risk Assessment Tool (JPRAT) evaluates and compares all
    estimated.parameters.common.for.all.studies=estimated.parameters.common.for.all.studies,
    what.analyzed.separately=what.analyzed.separately,
    estimation.when.censoring.depends.on.z=estimation.when.censoring.depends.on.z,
-   use.bootstrap.variance=use.bootstrap.variance, write.output=write.output)
+   use.bootstrap.variance=use.bootstrap.variance,
+   estimate.variances=estimate.variances,
+   write.output=write.output)
 
 ##########################################################
 ## Get a table for the number of people who are at risk ##

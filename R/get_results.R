@@ -68,9 +68,6 @@
 #' @import gridExtra
 #' @export
 #'
-#' @example man/examples/example.R
-#'
-#'
 view.all.results <- function(
   ############################
   # arguments for JPRAT     ##
