@@ -2,7 +2,7 @@
 % Please edit documentation in R/main.R
 \name{compute.number.at.risk.for.HD}
 \alias{compute.number.at.risk.for.HD}
-\title{compute.number.at.risk.for.HD: This function returns number of subjects who are at risk for HD for each study at times.}
+\title{Number at risk for HD data}
 \usage{
 compute.number.at.risk.for.HD(
   study.names,
@@ -41,8 +41,8 @@ otherwise use list(study1=simu_data1_model_A, study2=simu_data2_model_A) (See \c
 \item{write.output}{A logical value whether outputs should be saved into data files. The default option is TRUE.}
 }
 \value{
-a table for the number of subjects who are at risk for HD for each study at times.(ignores specific covariate values)
+a table for the number of subjects who are at risk for HD for each study at times.
 }
 \description{
-compute.number.at.risk.for.HD: This function returns number of subjects who are at risk for HD for each study at times.
+This function returns the number of subjects who are at risk for HD for each study at times.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/main.R
 \name{data.reformatted.for.analysis.results}
 \alias{data.reformatted.for.analysis.results}
-\title{data.reformatted.for.analysis.results: This code reform datasets for JPRAT to be able to understand the given datasets to produce results tables and plots.}
+\title{Reformat Datasets}
 \usage{
 data.reformatted.for.analysis.results(
   study.names,
@@ -13,19 +13,22 @@ data.reformatted.for.analysis.results(
 )
 }
 \arguments{
-\item{study.names}{See the argument in the \code{\link{jprat.wrapper}} function.}
+\item{study.names}{A character vector of name of studies used in the analysis. e.g., c("cohort", "predict", "pharos").}
 
-\item{event.outcome.names}{See the argument in the \code{\link{jprat.wrapper}} function.}
+\item{event.outcome.names}{A character vector for the name of the time-to-event of interest (outcomes).}
 
-\item{color.names}{See the argument in the \code{\link{view.all.results}} function.}
+\item{color.names}{A character vector to denote which colors will be used for the labels of events of interest in plots. e.g., c("firebrick1", "darkgreen", "black").}
 
-\item{legend.names}{See the argument in the \code{\link{view.all.results}} function.}
-
-\item{which.nonfunctional.covariate.comparisons}{See the argument in the \code{\link{view.all.results}} function.}
+\item{legend.names}{A character vector to label event of interests in plots. e.g., c("Motor Diagnosis (DCL=4)",  "Cognitive Impairment" , "Stage II TFC").}
 }
 \value{
-FILL IN HERE!!
+A list of
+     \item{num_study}{The number of studies used in analyses. If the real data analysis used three studies called "cohort", "predict", "pharos", then number of studies is 3. i.e., \code{num_study=3}.}
+     \item{nonfunctional.covariate.comparisons}{A list of comparison sets where the predicted values of nonfunctional covariates \eqn{Z} will be compared.}
+     \item{color.labels}{A character vector of the colors' name used in labeling events of interest in plots. Users need to provide the color names.}
+     \item{legend.labels}{A character vector to label event names in plots. Users need to provide the names for events of interest.}
+    \item{event.comparison.table}{A list of numbers corresponding to outcomes.}
 }
 \description{
-data.reformatted.for.analysis.results: This code reform datasets for JPRAT to be able to understand the given datasets to produce results tables and plots.
+This function reforms datasets so that JPRAT can understand and proceed analysis.
 }

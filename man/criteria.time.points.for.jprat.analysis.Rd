@@ -2,9 +2,7 @@
 % Please edit documentation in R/main.R
 \name{criteria.time.points.for.jprat.analysis}
 \alias{criteria.time.points.for.jprat.analysis}
-\title{criteria.time.points.for.jprat.analysis:
-This function returns warning message if the criteria are not met for \code{functional.covariate.values.of.interest}, \code{functional.covariate.values.of.interest.ci},
-\code{time.points.of.interest}, \code{time.points.of.interest.ci}, \code{functional.covariate.comparisons} and \code{time.points.for.conditional.prediction}.}
+\title{Criteria for time points in JPRAT analysis}
 \usage{
 criteria.time.points.for.jprat.analysis(
   study.names,
@@ -61,11 +59,10 @@ These time points are used to be labeled for the plot. For example, we set the v
 We recommend that these time points vector should be chosen as the subset of time points for prediction (\code{time.points.for.prediction}) or as the same time points for estimating \eqn{\alpha(X,t)} (\code{time.points.of.interest}).}
 }
 \value{
-warning messages if the criteria does not match for arguments  \code{functional.covariate.values.of.interest}, \code{functional.covariate.values.of.interest.ci},
+Warning messages if criteria for time points are not met for arguments  \code{functional.covariate.values.of.interest}, \code{functional.covariate.values.of.interest.ci},
 \code{time.points.of.interest}, \code{time.points.of.interest.ci}, \code{functional.covariate.comparisons} and \code{time.points.for.conditional.prediction}.
 }
 \description{
-criteria.time.points.for.jprat.analysis:
-This function returns warning message if the criteria are not met for \code{functional.covariate.values.of.interest}, \code{functional.covariate.values.of.interest.ci},
+This function returns warning messages if criteria are not met for \code{functional.covariate.values.of.interest}, \code{functional.covariate.values.of.interest.ci},
 \code{time.points.of.interest}, \code{time.points.of.interest.ci}, \code{functional.covariate.comparisons} and \code{time.points.for.conditional.prediction}.
 }
