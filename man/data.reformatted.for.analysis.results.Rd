@@ -22,8 +22,7 @@ data.reformatted.for.analysis.results(
 \item{legend.names}{A character vector to label event of interests in plots. e.g., c("Motor Diagnosis (DCL=4)",  "Cognitive Impairment" , "Stage II TFC").}
 
 \item{which.nonfunctional.covariate.comparisons}{A numeric vector for which nonfunctional covariates will be compared.
-In our analysis, we only consider one nonfunctional covariate for baseline age. The default value is c(1, 1).
-We only consider one nonfunctional covariate and there is nothing to compare between covariates.}
+In the analysis, we only consider one nonfunctional covariate  "baseline age", i.e., there is nothing to compare between covariates.}
 }
 \value{
 A list of

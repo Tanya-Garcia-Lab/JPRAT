@@ -2163,12 +2163,10 @@ data.reformatted.for.jprat.analysis<-function(use_real_data,
 
 
 
-
-
-
 #' @title Reformat Datasets
 #' @description This function reforms datasets so that JPRAT can understand and proceed analysis.
-#'
+#' @param  which.nonfunctional.covariate.comparisons A numeric vector for which nonfunctional covariates will be compared.
+#'                                                In the analysis, we only consider one nonfunctional covariate  "baseline age", i.e., there is nothing to compare between covariates.
 #' @inheritParams jprat.wrapper
 #' @inheritParams view.all.results
 #' @return A list of

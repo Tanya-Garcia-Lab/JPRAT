@@ -3,7 +3,7 @@ library(JPRAT)
 ## Choose option whether study and event are analyzed separately:
 ## Four options are available for what.analyzed.separately="studyevent", "event", "study" or "none"
 
-     what.analyzed.separately= "none"
+     what.analyzed.separately= "study"
 
 
 ## Load your data in the list format: should match order of study.names
@@ -72,7 +72,7 @@ library(JPRAT)
     use.bootstrap.variance=TRUE;
     estimation.when.censoring.depends.on.z=FALSE ;
     estimate.variances="est"
-    write.output=TRUE;
+    write.output=FALSE;
 
 #############################################
 ## a function to estimate JPRAT algorithm  ##
@@ -159,7 +159,7 @@ library(JPRAT)
      functional.covariate.values.of.interest,
      time.points.for.prediction,
      estimated.parameters.common.for.all.studies,
-     write.output=TRUE
+     write.output=FALSE
      )
 
 

@@ -21,7 +21,7 @@ A dataframe including 915 subjects' longitudinal data with the following 12 vari
 }
 }
 \source{
-see data-raw/create_data.R
+see data-raw/data_generation.R
 }
 \usage{
 data_predict
