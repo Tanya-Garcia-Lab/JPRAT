@@ -1,6 +1,123 @@
 #########################
 # Begin documentation  ##
 #########################
+#' @title Initialization of Parameters and Coefficients
+#' @description This function constructs a list of all parameters and coefficients. The structure of each parameter or coefficient is a multi-dimensional array,
+#' whose dimension size depends on the number of studies, the number of events, the number of covariates and the length of time points,etc.
+#' This function also initializes all parameters and coefficients to zero arrays.
+#'
+#' @param theta.names A character vector of functional parameters' names that will be estimated in the model: "beta" (include intercept), "alphas" and "Ft" (or "Ft.predicted") corresponds to
+#'                     \eqn{\beta_{es}(t)} (\eqn{\beta_0(t)}) ,  \eqn{\alpha(X, t)}, and \eqn{F_{es}(t)}.
+#' @inheritParams jprat.wrapper
+#' @param event.names See the argument \code{event.outcome.names} in the \code{\link{jprat.wrapper}} function.
+#' @param z_lab_names A vector of character values for the names of nonfunctional covariates Z.
+#' @param x_lab_names  A vector of character values for the names of functional covariates X in the functional coefficients \eqn{\alpha(X, t)}.
+#' @param label.dim.simus The number of simulation runs (or bootstrap iteration runs), which determines the length of the dimension when extra dimensions are added to store the simulation results.
+#' @param label.name.simus A character string of names that will be used to label the dimensions (in row wise) whose lengths are given by \code{label.dim.simus} when extra dimensions are added to store the simulation results.
+#' @param time_val See the argument \code{time.points.for.prediction} in the \code{\link{jprat.wrapper}} function.
+#' @param param.label A character vector of the names for all coefficients of nonfunctional covariate Z in the model.
+#' @param time_choice.predicted See the argument \code{time.points.for.conditional.prediction} in the \code{\link{jprat.wrapper}} function.
+#' @param time_choice.predicted.toadd See the argument \code{time.points.for.conditional.prediction.toadd} in the \code{\link{jprat.wrapper}} function.
+#' @param la A length of smooth functional parameters \eqn{\alpha(X,t)} in the model. The default value is 1 in the data analysis study.
+#'
+#' @details A list of zero arrays will be created to store those estimates of \eqn{\beta_{es}(t)} (\eqn{\beta_0(t)}) ,  \eqn{\alpha(X, t)}, and \eqn{F_{es}(t)} in the time varying, proportional odds model.
+#' @references Garcia, T.P., Marder, K., and Wang, Y. (2019). Time-varying proportional odds model for mega-analysis of clustered event times. Biostatistics, 20(1), 129-146.
+#' @return A list of
+#'
+#'\item{null.theta}{A list of all estimated parameters and coefficients ("beta", "alphas", "Ft" and ``Ft.predicted") in the model.
+#'                  Each element of the list contains arrays of zeros at the specific time points, the values of covariates and the event of interest in each study,
+#'                  whose dimension is determined by the length of studies, events, time points
+#'                  where prediction occurs, and coefficients of the nonfunctional covariates.}
+#'
+#'
+#'\item{null.theta.simus}{A list of all estimated parameters and coefficients ("beta", "alphas", "Ft" and ``Ft.predicted"), where each element of the list contains arrays of zeros.
+#'  Each element has an additional dimension as the first dimension of each array, which is extended arrays from \code{null.theta}
+#'  The number of simulations determines the length of the additional dimension (\code{label.dim.simus}) with its dimension names (\code{label.names.simus}) as a character string.}
+#'
+#'
+#'\item{null.theta.ci}{A list of all estimated parameters and coefficients ("beta", "alphas", "Ft" and ``Ft.predicted"), where each element of the list contains arrays of zeros.
+#', where three dimensions for the estimated variance, the lower and upper bounds of the confidence intervals were added to the last dimensions of arrays in \code{null.theta}.}
+#'
+#'
+#'\item{null.theta.est.ci}{A list of all estimated parameters and coefficients ("beta", "alphas", "Ft" and ``Ft.predicted"), where each element of the list contains arrays of zeros.
+#' Four dimensions for the estimates, the estimated variance, the lower and upper bounds of the confidence intervals were added to the last dimensions of arrays in \code{null.theta}.}
+#'
+#'
+#'\item{null.theta.simus.ci}{
+#'A list of all estimated parameters and coefficients ("beta", "alphas", "Ft" and ``Ft.predicted"),
+#'where each element of the list contains arrays of zeros. Three dimensions for the estimated variance, the lower and upper bounds of the confidence intervals
+#'were added to the last dimensions of arrays in \code{null.theta.simus}.}
+#'
+#'\item{null.theta.simus.est.ci}{A list of all estimated parameters and coefficients ("beta", "alphas", "Ft" and ``Ft.predicted"),
+#'where each element of the list contains arrays of zeros. Four dimensions for the estimates, the estimated variance, the lower and upper bounds of the confidence intervals
+#'were added to the last dimensions of arrays in \code{null.theta.simus}.}
+#'
+#'
+#'\item{null.theta.simus.est.ciboot}{A list of all estimated parameters and coefficients ("beta", "alphas", "Ft" and ``Ft.predicted"),
+#'where each element of the list contains arrays of zeros. Seven dimensions for the estimates, the estimated variance, the lower and upper bounds of the confidence intervals,
+#'the estimated bootstrap variances, the lower and upper bounds of bootstrap confidence intervals were added to the last dimensions of arrays in \code{null.theta.simus}.}
+#'
+#'
+all_null_theta <- function(theta.names,
+                           study.names,
+                           event.names,
+                           z_lab_names,
+                           x_lab_names,
+                           label.dim.simus,label.name.simus,
+                           time_val,param.label,
+                           time_choice.predicted,time_choice.predicted.toadd,
+                           la){
+
+
+  ## obtain null array for theta.names (beta, alphas, Ft)
+  null.theta <- get.null.theta(theta.names,
+                               study.names,
+                               event.names,
+                               z_lab_names,
+                               x_lab_names,
+                               time_val,param.label,
+                               time_choice.predicted,
+                               time_choice.predicted.toadd,la)
+
+  ## add simus layer
+  null.theta.simus <- add.dimension.null(null.theta,location="first",
+                                         label.dim=label.dim.simus,label.name=label.name.simus)
+
+  ## ci results layer
+  null.theta.ci <-  add.dimension.null(null.theta,location="last",
+                                       label.dim=3,label.name=c("varest","varlo","varhi"))
+
+  ## est, ci results
+  null.theta.est.ci <-  add.dimension.null(null.theta,location="last",
+                                           label.dim=4,label.name=c("est","varest","varlo","varhi"))   # estimation for each time point
+
+
+  ## simus and ci results layer to null.theta
+  null.theta.simus.ci <-  add.dimension.null(null.theta.simus,location="last",
+                                             label.dim=3,label.name=c("varest","varlo","varhi"))
+
+  ## simus, est, ci results
+  null.theta.simus.est.ci <- add.dimension.null(null.theta.simus,location="last",
+                                                label.dim=4,label.name=c("est","varest","varlo","varhi"))
+
+  ## simus, est, ci and ciboot  results
+  null.theta.simus.est.ciboot <- add.dimension.null(null.theta.simus,location="last",
+                                                    label.dim=7,label.name=c("est","varest","varlo","varhi",
+                                                                             "boot_varest","boot_varlo","boot_varhi"))
+
+  list(null.theta=null.theta,
+       null.theta.ci=null.theta.ci,
+       null.theta.est.ci =null.theta.est.ci,
+       null.theta.simus=null.theta.simus,
+       null.theta.simus.ci=null.theta.simus.ci,
+       null.theta.simus.est.ci=null.theta.simus.est.ci,
+       null.theta.simus.est.ciboot=null.theta.simus.est.ciboot
+  )
+}
+
+
+
+
 ####################################
 ## main jprat estimation function ##
 ####################################
@@ -1405,19 +1522,15 @@ get.cis <- function(out,flatten.name,
 ####################################
 ## get number at risk for HD data ##
 ####################################
-#' compute.number.at.risk.for.HD: This function returns number of subjects who are at risk for HD for each study at times.
+#' @title Number at risk for HD data
+#' @description This function returns the number of subjects who are at risk for HD for each study at times.
 #' @inheritParams jprat.wrapper
 #'
-#' @return a table for the number of subjects who are at risk for HD for each study at times.(ignores specific covariate values)
+#' @return a table for the number of subjects who are at risk for HD for each study at times.
 #' @import survival
 #'
 #'
-## @examples
-#'
-#'
 compute.number.at.risk.for.HD <- function(study.names,
-                                          #data.sets.as.list,#
-                                          #data.file.names,
                                           input.data.list,
                                           event.outcome.names,
                                           nonfunctional.covariate.names,
@@ -1429,9 +1542,6 @@ compute.number.at.risk.for.HD <- function(study.names,
                                           time.points.for.prediction,
                                           estimated.parameters.common.for.all.studies,
                                           write.output
-                                          #xmin,#
-                                          #xmax,#
-                                          #use_real_data#
 ){
 
 
@@ -1664,20 +1774,19 @@ compute.number.at.risk.for.HD <- function(study.names,
 
 
 
-#' criteria.time.points.for.jprat.analysis:
-#' This function returns warning message if the criteria are not met for \code{functional.covariate.values.of.interest}, \code{functional.covariate.values.of.interest.ci},
+#' @title Criteria for time points in JPRAT analysis
+#' @description This function returns warning messages if criteria are not met for \code{functional.covariate.values.of.interest}, \code{functional.covariate.values.of.interest.ci},
 #' \code{time.points.of.interest}, \code{time.points.of.interest.ci}, \code{functional.covariate.comparisons} and \code{time.points.for.conditional.prediction}.
+#'
 #' @inheritParams jprat.wrapper
 #' @inheritParams view.all.results
-#' @return warning messages if the criteria does not match for arguments  \code{functional.covariate.values.of.interest}, \code{functional.covariate.values.of.interest.ci},
+#'
+#' @return Warning messages if criteria for time points are not met for arguments  \code{functional.covariate.values.of.interest}, \code{functional.covariate.values.of.interest.ci},
 #' \code{time.points.of.interest}, \code{time.points.of.interest.ci}, \code{functional.covariate.comparisons} and \code{time.points.for.conditional.prediction}.
 #'
-#' @export
 #'
-#'
-criteria.time.points.for.jprat.analysis<-function(#data.sets.as.list,
+criteria.time.points.for.jprat.analysis<-function(
   study.names,
-  #data.file.names,
   input.data.list,
   time.points.for.prediction,
   nonfunctional.covariate.names,
@@ -1685,8 +1794,6 @@ criteria.time.points.for.jprat.analysis<-function(#data.sets.as.list,
   nonfunctional.covariate.value,
   time.points.for.conditional.prediction,
   functional.covariate.values.of.interest,
-  #xmin,
-  #xmax,
   functional.covariate.values.of.interest.ci,
   functional.covariate.comparisons,
   time.points.of.interest,
@@ -2059,19 +2166,18 @@ data.reformatted.for.jprat.analysis<-function(use_real_data,
 
 
 
-#' data.reformatted.for.analysis.results: This code reform datasets for JPRAT to be able to understand the given datasets to produce results tables and plots.
+#' @title Reformat Datasets
+#' @description This function reforms datasets so that JPRAT can understand and proceed analysis.
 #'
-#' @param study.names See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param event.outcome.names See the argument in the \code{\link{jprat.wrapper}} function.
-#' @param color.names See the argument in the \code{\link{view.all.results}} function.
-#' @param legend.names See the argument in the \code{\link{view.all.results}} function.
-#' @param which.nonfunctional.covariate.comparisons See the argument in the \code{\link{view.all.results}} function.
-#'
-#' @return FILL IN HERE!!
+#' @inheritParams jprat.wrapper
+#' @inheritParams view.all.results
+#' @return A list of
+#'      \item{num_study}{The number of studies used in analyses. If the real data analysis used three studies called "cohort", "predict", "pharos", then number of studies is 3. i.e., \code{num_study=3}.}
+#'      \item{nonfunctional.covariate.comparisons}{A list of comparison sets where the predicted values of nonfunctional covariates \eqn{Z} will be compared.}
+#'      \item{color.labels}{A character vector of the colors' name used in labeling events of interest in plots. Users need to provide the color names.}
+#'      \item{legend.labels}{A character vector to label event names in plots. Users need to provide the names for events of interest.}
+#'     \item{event.comparison.table}{A list of numbers corresponding to outcomes.}
 #' @import stats
-#' @export
-#'
-## @examples
 #'
 data.reformatted.for.analysis.results<-function(study.names, event.outcome.names=NULL,
                                                 color.names,

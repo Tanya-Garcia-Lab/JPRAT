@@ -1,18 +1,15 @@
 ---
-title: "JPRAT"
+title: "README"
 output: github_document
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
-```{r, include = FALSE}
+```{r, echo = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  out.width = "100%"
+  fig.path = "README-"
 )
 ```
-
 
 <!-- badges: start -->
 The R package `JPRAT` is the Joint Progression of Risk Assessment Tool, which evaluates and compares all outcomes simultaneously across multiple studies and adjusts for outcome dependencies. The JPRAT is an estimation procedure that handles multiple data hierarchy using an additive logistic mixed effect model. This algorithm handles censoring with pseudo-values and functional covariate effects with splines. The description for the detailed estimation procedure is in the following paper:
@@ -26,46 +23,49 @@ The R package `JPRAT` is the Joint Progression of Risk Assessment Tool, which ev
 
 You can install the development version from [GitHub](https://github.com/) with:
 
-``` r
-# install.packages("devtools")
-devtools::install_github("unkyunglee/JPRAT")
+```{r, eval=FALSE}
+devtools::install_github("unkyunglee/JPRAT_UPDATE")
 ```
+
 ## Usage
-We applied two different data sets to run JPRAT function and get results depending on whether study and event are analyzed separately.
+We applied two different datasets to JPRAT algorithm. You can choose an analysis option depending on whether study and event are analyzed separately. We first load JPRAT package.
 
 
-```{r usage, echo = F,  results="hide", message=FALSE, warning=FALSE}
-library(JPRAT)
+```{r load-packages,  results="hide", eval=FALSE, message=FALSE}
+library(JPRATUPDATE)
+
+##Load datasets used in analysis procedure.
+
+
+head(data_cohort)
+head(data_pharos)
+head(data_predict)
+head(simu_data1_model_A) 
+head(simu_data2_model_A)
 
 
 ## Choose option whether study and event are analyzed separately:
 ## Four options are available for what.analyzed.separately="studyevent", "event", "study" or "none"
 
-     what.analyzed.separately= "none"
-
+ what.analyzed.separately= "none"
 
 ## Load your data in the list format: should match order of study.names
 ## Choose different datasets depending on your choice for what.analyzed.separately:
 
-    if(what.analyzed.separately=="event"||what.analyzed.separately=="studyevent"){
+  if(what.analyzed.separately=="event"||what.analyzed.separately=="studyevent"){
 
        input.data.list=list(cohort=data_cohort, predict=data_predict, pharos=data_pharos);
 
     }else if(what.analyzed.separately=="none"||what.analyzed.separately=="study"){
-
-       input.data.list=list(study1=simu_data1_model_A, study2=simu_data2_model_A);
-    }
-
-
-
+      
+      input.data.list=list(study1=simu_data1_model_A, study2=simu_data2_model_A);
+  }
 
 ####################################################################
 ## Input data for JPRAT estimation procedure: parameter settings  ##
 ####################################################################
 
     if(what.analyzed.separately=="event"||what.analyzed.separately=="studyevent"){
-
-
       study.names=c("cohort", "predict", "pharos");
       othercovariate.names=c("firstyear", "lastyear");
       event.outcome.names=c("hdage_nobase", "mcione", "dep2");
@@ -77,9 +77,7 @@ library(JPRAT)
       time.points.for.conditional.prediction.toadd=c(5);
       nonfunctional.covariate.value=c(40);
       functional.covariate.values.of.interest=c(46, 48, 50) ;
-
     }else if(what.analyzed.separately== "none"||what.analyzed.separately=="study"){
-
       study.names=c("study1", "study2");
       othercovariate.names=NULL;
       event.outcome.names=c("event1", "event2");
@@ -91,7 +89,6 @@ library(JPRAT)
       time.points.for.conditional.prediction.toadd=c(5,10);
       nonfunctional.covariate.value=c(42);
       functional.covariate.values.of.interest=c(42);
-
     }
 
 
@@ -109,7 +106,8 @@ library(JPRAT)
     use.functional.study.coefficients=TRUE;
     use.bootstrap.variance=TRUE;
     estimation.when.censoring.depends.on.z=FALSE ;
-    write.output=TRUE;
+    estimate.variances="est"
+    write.output=FALSE;
 
 #############################################
 ## a function to estimate JPRAT algorithm  ##
@@ -135,7 +133,8 @@ library(JPRAT)
    estimated.parameters.common.for.all.studies=estimated.parameters.common.for.all.studies,
    what.analyzed.separately=what.analyzed.separately,
    estimation.when.censoring.depends.on.z=estimation.when.censoring.depends.on.z,
-   use.bootstrap.variance=use.bootstrap.variance, write.output=write.output)
+   use.bootstrap.variance=use.bootstrap.variance,
+   estimate.variances=estimate.variances, write.output=write.output)
 
 ##########################################################
 ## Get a table for the number of people who are at risk ##
@@ -194,10 +193,8 @@ library(JPRAT)
      functional.covariate.values.of.interest,
      time.points.for.prediction,
      estimated.parameters.common.for.all.studies,
-     write.output=TRUE
+     write.output=FALSE
      )
-
-
 
 
 ##############################
@@ -221,7 +218,7 @@ library(JPRAT)
 
       functional.covariate.values.of.interest.ci=c(40, 55);
       time.points.of.interest= c(40, 55);
-      time.points.of.interest.ci=seq(40, 60, by=5);# c(seq(40,60,by=1))
+      time.points.of.interest.ci=seq(40, 60, by=5);
       functional.covariate.comparisons=c(40, 55);
       time.points.for.prediction=  c(seq(40,60,by=1))
       functional.covariate.values.of.interest=c(42);
