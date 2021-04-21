@@ -1,37 +1,41 @@
----
-title: "README"
-output: github_document
----
-
-```{r, echo = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "README-"
-)
-```
+README
+================
 
 <!-- badges: start -->
-The R package `JPRAT` is the Joint Progression of Risk Assessment Tool, which evaluates and compares all outcomes simultaneously across multiple studies and adjusts for outcome dependencies. The JPRAT is an estimation procedure that handles multiple data hierarchy using an additive logistic mixed effect model. This algorithm handles censoring with pseudo-values and functional covariate effects with splines. The description for the detailed estimation procedure is in the following paper:
 
-  **Garcia, T. P., Marder, K., and Wang, Y. (2017). Time-varying proportional odds model for mega-analysis of clustered event times, Biostatistics, 20(1), 129-146. \
-  Garcia, T.P., Wang, Y., Shoulson, I., Paulsen, J.S. and Marder, K. (2018). Disease progression in Huntington disease: An analysis of multiple longitudinal outcomes. Journal of Huntington's disease, 7, 337-344 **
-<!-- badges: end -->
+The R package `JPRAT` is the Joint Progression of Risk Assessment Tool,
+which evaluates and compares all outcomes simultaneously across multiple
+studies and adjusts for outcome dependencies. The JPRAT is an estimation
+procedure that handles multiple data hierarchy using an additive
+logistic mixed effect model. This algorithm handles censoring with
+pseudo-values and functional covariate effects with splines. The
+description for the detailed estimation procedure is in the following
+paper:
 
+**Garcia, T. P., Marder, K., and Wang, Y. (2017). Time-varying
+proportional odds model for mega-analysis of clustered event times,
+Biostatistics, 20(1), 129-146.  
+Garcia, T.P., Wang, Y., Shoulson, I., Paulsen, J.S. and Marder, K.
+(2018). Disease progression in Huntington disease: An analysis of
+multiple longitudinal outcomes. Journal of Huntington’s disease, 7,
+337-344 ** <!-- badges: end -->
 
 ## Installation
 
-You can install the development version from [GitHub](https://github.com/) with:
+You can install the development version from
+[GitHub](https://github.com/) with:
 
-```{r, eval=FALSE}
+``` r
 devtools::install_github("unkyunglee/JPRAT")
 ```
 
 ## Usage
-We applied two different datasets to JPRAT algorithm. You can choose an analysis option depending on whether study and event are analyzed separately. We first load JPRAT package.
 
+We applied two different datasets to JPRAT algorithm. You can choose an
+analysis option depending on whether study and event are analyzed
+separately. We first load JPRAT package.
 
-```{r load-packages,  results="hide", eval=FALSE, message=FALSE}
+``` r
 library(JPRAT)
 
 ##Load datasets used in analysis procedure.
@@ -90,7 +94,6 @@ head(simu_data2_model_A)
       nonfunctional.covariate.value=c(42);
       functional.covariate.values.of.interest=c(42);
     }
-
 
     if(what.analyzed.separately!="none"){
       check.study.equality=FALSE
@@ -158,8 +161,6 @@ head(simu_data2_model_A)
 
     }
 
-
-
     if(what.analyzed.separately=="event"||what.analyzed.separately=="studyevent"){
 
       time.points.for.prediction=seq(46, 66, by=5);
@@ -213,7 +214,6 @@ head(simu_data2_model_A)
       color.names=c("firebrick1", "darkgreen", "black");
       legend.names=c("Motor Diagnosis (DCL=4)");
 
-
     }else{
 
       functional.covariate.values.of.interest.ci=c(40, 55);
@@ -227,7 +227,6 @@ head(simu_data2_model_A)
       legend.names=c("event1", "event2");
 
     }
-
 
     do.plots=TRUE;
     plot.confidence.intervals=TRUE;
@@ -244,7 +243,6 @@ head(simu_data2_model_A)
 ## and output for nrisk returns as an array form.
 ## users need to choose write.jprat.output=TRUE in jprat.wrapper function; 
 ## FALSE otherwise.
-
 
     if(write.output==TRUE){
 
@@ -263,11 +261,9 @@ head(simu_data2_model_A)
 
     if(what.analyzed.separately=="studyevent"){
 
-
       study.names=c("cohort", "predict", "pharos");
       event.outcome.names=c("hdage_nobase", "mcione", "dep2");
       legend.names=c("Motor Diagnosis (DCL=4)")
-
 
     }else if(what.analyzed.separately=="event"){
 
@@ -282,7 +278,6 @@ head(simu_data2_model_A)
       legend.names=c("Motor Diagnosis (DCL=4)", "Cognitive Impairment");
 
     }
-
 
     ## allocate jprat outputs
     jprat.output<-jprat.estimat.results$jprat.output
@@ -357,8 +352,4 @@ head(simu_data2_model_A)
       is.nrisk.data.frame=is.nrisk.data.frame,
       write.jprat.output=write.jprat.output
     )
-
-
-
-
 ```
